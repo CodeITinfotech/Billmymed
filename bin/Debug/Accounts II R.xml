@@ -1,0 +1,284 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+AccountsIIR
+</name>
+</assembly>
+<members>
+<member name="P:Accounts_II_R.My.Resources.Resources.ResourceManager">
+	<summary>
+  Returns the cached ResourceManager instance used by this class.
+</summary>
+</member><member name="P:Accounts_II_R.My.Resources.Resources.Culture">
+	<summary>
+  Overrides the current thread's CurrentUICulture property for all
+  resource lookups using this strongly typed resource class.
+</summary>
+</member><member name="P:Accounts_II_R.My.Resources.Resources.DefaultAnimation">
+	<summary>
+  Looks up a localized resource of type System.Drawing.Bitmap.
+</summary>
+</member><member name="T:Accounts_II_R.My.Resources.Resources">
+	<summary>
+  A strongly-typed resource class, for looking up localized strings, etc.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.TrialBalanceDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerDailyDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerMonthlyDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerDetailedDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.DayBookDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.AcPayableDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.AcReceivableDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.VoucherListDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ProfitNLoss1DataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ScheduleDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.TrialBalanceAllDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.BalSheetDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.SalesRegisterDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.MasterlistDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.VatReportsDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.PurRegisterDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ReceiptVouDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.PaymentVouDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.BankRecoDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.RcptPmtsDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.SchedulesTransSmryDataTable">
+	<summary>
+Represents the strongly named DataTable class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.TrialBalanceRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerDailyRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerMonthlyRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerDetailedRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.DayBookRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.AcPayableRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.AcReceivableRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.VoucherListRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ProfitNLoss1Row">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ScheduleRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.TrialBalanceAllRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.BalSheetRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.SalesRegisterRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.MasterlistRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.VatReportsRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.PurRegisterRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ReceiptVouRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.PaymentVouRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.BankRecoRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.RcptPmtsRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.SchedulesTransSmryRow">
+	<summary>
+Represents strongly named DataRow class.
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.TrialBalanceRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerDailyRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerMonthlyRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.LedgerDetailedRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.DayBookRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.AcPayableRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.AcReceivableRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.VoucherListRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ProfitNLoss1RowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ScheduleRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.TrialBalanceAllRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.BalSheetRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.SalesRegisterRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.MasterlistRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.VatReportsRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.PurRegisterRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.ReceiptVouRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.PaymentVouRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.BankRecoRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.RcptPmtsRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep.SchedulesTransSmryRowChangeEvent">
+	<summary>
+Row event argument class
+</summary>
+</member><member name="T:Accounts_II_R.DataSetRep">
+	<summary>
+Represents a strongly typed in-memory cache of data.
+</summary>
+</member>
+</members>
+</doc>

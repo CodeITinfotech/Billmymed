@@ -1,0 +1,62 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
+  <Profiles />
+  <Settings>
+    <Setting Name="ConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=VIJITH-LAPTOP\sqlexpress;Initial Catalog=RelyDataPharmaRetail;User ID=sa;Password=VALOTH&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=VIJITH-LAPTOP\sqlexpress;Initial Catalog=RelyDataPharmaRetail;User ID=sa;Password=VALOTH</Value>
+    </Setting>
+    <Setting Name="RelyDataPharmaRetailConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=APPA-PC\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail;User ID=SA;Password=VALOTH&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=APPA-PC\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail;User ID=SA;Password=VALOTH</Value>
+    </Setting>
+    <Setting Name="Relydatapharmaretail_MasterConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=SREENATH-LAPTOP\SQLEXPRESS;Initial Catalog=Relydatapharmaretail_Master;Integrated Security=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=SREENATH-LAPTOP\SQLEXPRESS;Initial Catalog=Relydatapharmaretail_Master;Integrated Security=True</Value>
+    </Setting>
+    <Setting Name="RelyDataPharmaRetail_3mConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=VIJITH-LAPTOP\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail_3m;Integrated Security=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=VIJITH-LAPTOP\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail_3m;Integrated Security=True</Value>
+    </Setting>
+    <Setting Name="RelyDataPharmaRetail_3mConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=VIJITH-LAPTOP\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail_3m;User ID=sa;Password=VALOTH&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=VIJITH-LAPTOP\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail_3m;User ID=sa;Password=VALOTH</Value>
+    </Setting>
+    <Setting Name="RelyDataPharmaRetailConnectionString1" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=VIJITH-LAPTOP\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail;Integrated Security=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=VIJITH-LAPTOP\SQLEXPRESS;Initial Catalog=RelyDataPharmaRetail;Integrated Security=True</Value>
+    </Setting>
+    <Setting Name="RelyDataPharmaRetail_JaoConnectionString" Type="(Connection string)" Scope="Application">
+      <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;ConnectionString&gt;Data Source=VIJITH-LAPTOP\SQLEXPRESS,1433;Initial Catalog=RelyDataPharmaRetail_Jao;Integrated Security=True&lt;/ConnectionString&gt;
+  &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
+&lt;/SerializableConnectionString&gt;</DesignTimeValue>
+      <Value Profile="(Default)">Data Source=VIJITH-LAPTOP\SQLEXPRESS,1433;Initial Catalog=RelyDataPharmaRetail_Jao;Integrated Security=True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

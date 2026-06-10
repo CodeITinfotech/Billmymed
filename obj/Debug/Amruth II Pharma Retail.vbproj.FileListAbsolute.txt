@@ -1,0 +1,1110 @@
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe.config
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Reliable_TabControlWithCloseButton1.pdb
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Reliable_TabControlWithCloseButton1.xml
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\RichTextBoxPrintCtrl.pdb
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\RichTextBoxPrintCtrl.xml
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+D:\Programme.net\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe.config
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.exe
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.xml
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.pdb
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.pdb
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.xml
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Reliable_TabControlWithCloseButton1.pdb
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\RichTextBoxPrintCtrl.pdb
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+F:\Rohan\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe.config
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Reliable_TabControlWithCloseButton1.pdb
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\RichTextBoxPrintCtrl.pdb
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Reliable_TabControlWithCloseButton1.xml
+D:\Programme.net\v2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\RichTextBoxPrintCtrl.xml
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe.config
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Reliable_TabControlWithCloseButton1.pdb
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Reliable_TabControlWithCloseButton1.xml
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\RichTextBoxPrintCtrl.pdb
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\RichTextBoxPrintCtrl.xml
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth_II_Pharma_Retail.Salesinvhp.resources
+\\Vijith-laptop\d\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\Amruth II Pharma Retail.exe.config
+\\Vijith-laptop\d\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.exe
+\\Vijith-laptop\d\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.xml
+\\Vijith-laptop\d\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\obj\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\PrePrintDirectClass.dll
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\PrePrintDirectClass.pdb
+D:\Programme.net\v1.2\Amruth II Pharma Retail\Amruth II Pharma Retail\bin\Debug\PrePrintDirectClass.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+H:\Programme.net\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+H:\Programme.net\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+H:\Programme.net\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+H:\Programme.net\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\ResolveAssemblyReference.cache
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\GenerateResource.read.1.tlog
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\GenerateResource.write.1.tlog
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\PrePrintDirectClass.pdb
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\PrePrintDirectClass.xml
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Reliable_TabControlWithCloseButton1.pdb
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Reliable_TabControlWithCloseButton1.xml
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\RichTextBoxPrintCtrl.pdb
+H:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\RichTextBoxPrintCtrl.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\PrePrintDirectClass.pdb
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\PrePrintDirectClass.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Reliable_TabControlWithCloseButton1.pdb
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Reliable_TabControlWithCloseButton1.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\RichTextBoxPrintCtrl.pdb
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\RichTextBoxPrintCtrl.xml
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+\\Appa-pc\h\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\PrePrintDirectClass.xml
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Reliable_TabControlWithCloseButton1.xml
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\RichTextBoxPrintCtrl.xml
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+\\Main-pc\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+E:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.StockAdj.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.StockAdj.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+E:\Programme.net\Copy of pharma\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+\\Sreenath-laptop\e\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+\\Sreenath-laptop\e\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.exe
+\\Sreenath-laptop\e\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+\\Sreenath-laptop\e\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.StockAdj.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+\\sreenath-laptop\E\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+\\Sreenath-laptop\e\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+\\Sreenath-laptop\e\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.StockAdj.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Interop.SHDocVw.dll
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\AxInterop.SHDocVw.dll
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.ResolveComReference.cache
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Interop.SHDocVw.dll
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\AxInterop.SHDocVw.dll
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ImageFrm.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2_Imp.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Bills.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PopsLogin.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderList.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FrmSearch.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapprod.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapsupplier.resources
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\ResolveAssemblyReference.cache
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\GenerateResource.read.1.tlog
+\\Vijith-laptop\d\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\GenerateResource.write.1.tlog
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Interop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\AxInterop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Interop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\AxInterop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.ResolveComReference.cache
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ImageFrm.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2_Imp.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Bills.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FrmBillSearch.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PopsLogin.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderList.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FrmSearch.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapprod.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapsupplier.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.StockAdj.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\Amruth II Pharma Retail V1.2\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe.config
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Interop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\AxInterop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.ResolveComReference.cache
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.xml
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.pdb
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\bin\Debug\Interop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\bin\Debug\AxInterop.SHDocVw.dll
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbprojResolveAssemblyReference.cache
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AboutUs.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.AccPostHeads.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Backup.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BarcodeEntry.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillCopy.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BillReturn.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardDetails.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CardSales.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ChangePassword.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Company.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchBarCode.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ImageFrm.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2_Imp.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Bills.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FrmBillSearch.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PopsLogin.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Upload.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderList.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FrmSearch.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapprod.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapsupplier.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.StockAdj.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailDetails.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.eMailSetting.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Mobile_Settings.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ProductGrouping.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditDateShift.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustGrp.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.CustHistory.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Customer.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.DateChange.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Duplicate.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EditSales.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.EmailSndng.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Salesinv.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesinvHp.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.TransactionDetails.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GenericPrint.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GetGodownFile.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphCompare.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Graphprofitability.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphPurchase.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.GraphSales.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccounts.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.InvAccountsPay.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Login.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Main.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.mapformr2.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OrderView.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.OTCConv.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Others.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrescriptionEntry.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PrintPreview.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Product.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PRSettlement.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseReturn.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Purchase.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.PurchaseCopy.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.QuickView.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reorder.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Reports1.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Restore.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesCopy.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SalesRtn.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SdfExport.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SerialReNumber.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ServiceTools.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Settings.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.ShiftChange.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SmsEmailSet.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSReg.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.SMSSendng.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Splash.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Suppliers.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.FromAmruth.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserMaster.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.UserRights.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.Resources.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth II Pharma Retail.vbproj.GenerateResource.Cache
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\obj\Debug\Amruth_II_Pharma_Retail.BatchAdd.resources
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.exe
+D:\Programme.net\Amruth II Pharma Retail V1.2_StockUpdate\Amruth II Pharma Retail V1.2\bin\Debug\Amruth II Pharma Retail.xml
