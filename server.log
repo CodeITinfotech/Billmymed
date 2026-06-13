@@ -6,18 +6,12 @@ nohup: ignoring input
  * Running on http://127.0.0.1:12000
  * Running on http://10.2.2.152:12000
 [33mPress CTRL+C to quit[0m
-10.2.21.2 - - [13/Jun/2026 08:22:10] "GET /suppliers/add HTTP/1.1" 200 -
-10.2.21.2 - - [13/Jun/2026 08:22:10] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:10] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:10] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:10] "GET /api/alerts/stock HTTP/1.1" 200 -
-10.2.21.2 - - [13/Jun/2026 08:22:28] "GET /customers/add HTTP/1.1" 200 -
-10.2.21.2 - - [13/Jun/2026 08:22:28] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:28] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:28] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:28] "GET /api/alerts/stock HTTP/1.1" 200 -
-10.2.21.2 - - [13/Jun/2026 08:22:39] "GET /products/categories HTTP/1.1" 200 -
-10.2.21.2 - - [13/Jun/2026 08:22:39] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:39] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:39] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
-10.2.21.2 - - [13/Jun/2026 08:22:39] "GET /api/alerts/stock HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:31:48] "[31m[1mPOST /suppliers/add HTTP/1.1[0m" 400 -
+10.2.41.130 - - [13/Jun/2026 08:31:48] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+10.2.41.130 - - [13/Jun/2026 08:31:58] "GET /sales/new HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:31:58] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:31:58] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:31:58] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:31:58] "GET /api/alerts/stock HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:32:08] "GET /suppliers/add HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:32:09] "GET /api/alerts/stock HTTP/1.1" 200 -

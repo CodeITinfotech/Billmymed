@@ -16,20 +16,22 @@ def generate_invoice_no(invoice_type='sale'):
         prefix = 'ES'
     
     today = datetime.utcnow()
-    date_str = today.strftime('%Y%m%d')
+    # Format: DD-MM-YY-00001
+    date_str = today.strftime('%d-%m-%y')
     
-    # Get last invoice number for today
+    # Get last invoice number for today with same prefix
     last_invoice = Invoice.query.filter(
         Invoice.invoice_no.like(f'{prefix}{date_str}%')
     ).order_by(Invoice.id.desc()).first()
     
     if last_invoice:
-        last_num = int(last_invoice.invoice_no[-4:])
+        # Extract the last 5 digits (e.g., "00001")
+        last_num = int(last_invoice.invoice_no[-5:])
         new_num = last_num + 1
     else:
         new_num = 1
     
-    return f'{prefix}{date_str}{str(new_num).zfill(4)}'
+    return f'{prefix}{date_str}-{str(new_num).zfill(5)}'
 
 @sales_bp.route('/')
 @login_required
