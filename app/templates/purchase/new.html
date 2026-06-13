@@ -103,13 +103,16 @@
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white py-2">
                         <div class="row g-2 text-center fw-bold small">
-                            <div class="col-4 text-start">Product</div>
-                            <div class="col-2">Batch</div>
-                            <div class="col-2">Expiry</div>
+                            <div class="col-2 text-start">Product</div>
+                            <div class="col-1">Expiry</div>
+                            <div class="col-1">Pur. Rate</div>
+                            <div class="col-1">Sell Rate</div>
                             <div class="col-1">MRP</div>
                             <div class="col-1">Qty</div>
                             <div class="col-1">Free</div>
+                            <div class="col-1">Tax %</div>
                             <div class="col-1 text-end">Amount</div>
+                            <div class="col-2">Action</div>
                         </div>
                     </div>
                     <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
@@ -352,62 +355,55 @@ function showBatchModal(productId, productCode, productName, batches) {
                         <i class="bi bi-info-circle me-2"></i><strong>${productName}</strong>
                     </div>
                     
-                    <!-- Batch Selection -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold text-secondary">
-                            <i class="bi bi-box me-1"></i>Batch Selection
-                        </label>
-                        <select class="form-select form-select-lg" id="modalBatch" onchange="fillBatchDetails()">
-                            ${batchOptions}
-                        </select>
+                    <!-- Batch Details Row -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-secondary">
+                                <i class="bi bi-upc me-1"></i>Batch Number
+                            </label>
+                            <div class="position-relative">
+                                <input type="text" class="form-control" id="modalBatchNo" placeholder="Type or select batch" autocomplete="off">
+                                <div class="position-absolute w-100 bg-white border rounded-bottom shadow-sm" id="batchDropdown" style="z-index: 1000; max-height: 150px; overflow-y: auto; display: none;">
+                                </div>
+                            </div>
+                            <small class="text-muted"><i class="bi bi-lightbulb me-1"></i>Type to search or enter new</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold"><i class="bi bi-calendar me-1"></i>Expiry Date</label>
+                            <input type="month" class="form-control" id="modalExpiry">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold"><i class="bi bi-box-seam me-1"></i>Pack Type</label>
+                            <select class="form-select" id="modalPackType">
+                                <option value="Strip">💊 Strip</option>
+                                <option value="Bottle">🧴 Bottle</option>
+                                <option value="Tablet">💊 Tablet</option>
+                                <option value="Capsule">💉 Capsule</option>
+                                <option value="Unit">📦 Unit</option>
+                            </select>
+                        </div>
                     </div>
                     
                     <hr class="my-3">
                     
-                    <!-- Batch Details Section -->
-                    <h6 class="text-secondary mb-3"><i class="bi bi-list-ul me-1"></i>Batch Details</h6>
+                    <!-- Purchase Section -->
+                    <h6 class="text-primary mb-3"><i class="bi bi-cart4 me-1"></i>Purchase Information</h6>
                     <div class="row g-3 mb-3">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Batch No <span class="text-danger">*</span></label>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold text-danger">Purchase Rate (Cost) <span class="text-danger">*</span></label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-upc"></i></span>
-                                <input type="text" class="form-control" id="modalBatchNo" placeholder="Enter batch number" required>
+                                <span class="input-group-text bg-light">₹</span>
+                                <input type="number" class="form-control" id="modalRate" step="0.01" value="0" placeholder="0.00" required>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Expiry Date</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                                <input type="month" class="form-control" id="modalExpiry">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Pricing Section -->
-                    <h6 class="text-secondary mb-3"><i class="bi bi-currency-dollar me-1"></i>Pricing Information</h6>
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label fw-semibold">MRP (Max Retail Price)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light">₹</span>
                                 <input type="number" class="form-control" id="modalMrp" step="0.01" value="0" placeholder="0.00">
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold text-danger">Rate (Cost) <span class="text-danger">*</span></label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light">₹</span>
-                                <input type="number" class="form-control" id="modalRate" step="0.01" value="0" placeholder="0.00" required>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold">Sale Rate</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light">₹</span>
-                                <input type="number" class="form-control" id="modalSaleRate" step="0.01" value="0" placeholder="0.00">
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label class="form-label fw-semibold">Tax (GST %)</label>
                             <select class="form-select" id="modalTaxPerc">
                                 <option value="0">0% - No Tax</option>
@@ -419,8 +415,27 @@ function showBatchModal(productId, productCode, productName, batches) {
                         </div>
                     </div>
                     
+                    <!-- Selling Section -->
+                    <h6 class="text-success mb-3"><i class="bi bi-currency-dollar me-1"></i>Selling Information</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Sale Rate</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light-success text-success">₹</span>
+                                <input type="number" class="form-control" id="modalSaleRate" step="0.01" value="0" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Profit Margin</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="modalMargin" step="0.01" value="0" placeholder="0.00" readonly>
+                                <span class="input-group-text bg-light text-success">%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Quantity Section -->
-                    <h6 class="text-secondary mb-3"><i class="bi bi-stack me-1"></i>Quantity & Packaging</h6>
+                    <h6 class="text-warning mb-3"><i class="bi bi-stack me-1"></i>Quantity</h6>
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label class="form-label fw-semibold">Quantity <span class="text-danger">*</span></label>
@@ -437,31 +452,32 @@ function showBatchModal(productId, productCode, productName, batches) {
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label fw-semibold">Pack Type</label>
-                            <select class="form-select" id="modalPackType">
-                                <option value="Strip">💊 Strip</option>
-                                <option value="Bottle">🧴 Bottle</option>
-                                <option value="TAB">💊 Tablet</option>
-                                <option value="Capsule">💉 Capsule</option>
-                                <option value="Unit">📦 Unit</option>
-                            </select>
+                            <label class="form-label fw-semibold">Total Units</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control bg-light" id="modalTotalUnits" value="1" readonly>
+                                <span class="input-group-text"><i class="bi bi-calculator"></i></span>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Amount Preview -->
-                    <div class="alert alert-secondary mt-4 mb-0">
+                    <div class="alert alert-dark mt-4 mb-0">
                         <div class="row text-center">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <small class="text-muted">Base Amount</small>
                                 <h5 class="mb-0" id="previewBase">₹0.00</h5>
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <small class="text-muted">Tax Amount</small>
                                 <h5 class="mb-0" id="previewTax">₹0.00</h5>
                             </div>
-                            <div class="col-4">
-                                <small class="text-muted fw-bold">Total Amount</small>
-                                <h5 class="mb-0 fw-bold text-success" id="previewTotal">₹0.00</h5>
+                            <div class="col-3">
+                                <small class="text-muted">Total Amount</small>
+                                <h5 class="mb-0" id="previewTotal">₹0.00</h5>
+                            </div>
+                            <div class="col-3">
+                                <small class="text-muted fw-bold">Per Unit Cost</small>
+                                <h5 class="mb-0 fw-bold text-success" id="previewPerUnit">₹0.00</h5>
                             </div>
                         </div>
                     </div>
@@ -481,10 +497,11 @@ function showBatchModal(productId, productCode, productName, batches) {
     // Add modal to body
     document.body.appendChild(modalDiv);
     
-    // Store product info in global variables for the onclick handler
+    // Store product info in global variables
     window._currentProductId = productId;
     window._currentProductCode = productCode;
     window._currentProductName = productName;
+    window._existingBatches = batchList;
     
     // Show modal using Bootstrap
     const modalInstance = new bootstrap.Modal(modalDiv);
@@ -498,32 +515,90 @@ function showBatchModal(productId, productCode, productName, batches) {
         handleAddToPurchase();
     });
     
-    // Add real-time amount preview
+    // Batch autocomplete functionality
+    const batchInput = document.getElementById('modalBatchNo');
+    const batchDropdown = document.getElementById('batchDropdown');
+    
+    batchInput.addEventListener('input', function() {
+        const value = this.value.toLowerCase();
+        if (value.length === 0) {
+            batchDropdown.style.display = 'none';
+            return;
+        }
+        
+        const matches = batchList.filter(b => 
+            b.batch_no && b.batch_no.toLowerCase().includes(value)
+        );
+        
+        if (matches.length > 0) {
+            batchDropdown.innerHTML = matches.map(b => {
+                const expDate = b.expiry_date ? b.expiry_date.substring(0, 7) : 'N/A';
+                return '<div class="p-2 border-bottom" style="cursor:pointer" onclick="selectBatch(\'' + (b.batch_no || '').replace(/'/g, "\\'") + '\', \'' + expDate + '\', ' + (b.mrp || 0) + ', ' + (b.rate || 0) + ', ' + (b.available_qty || 0) + ')"><strong>' + (b.batch_no || 'N/A') + '</strong> <small class=\"text-muted\">- Exp: ' + expDate + ' - Qty: ' + (b.available_qty || 0) + '</small></div>';
+            }).join('');
+            batchDropdown.style.display = 'block';
+        } else {
+            batchDropdown.style.display = 'none';
+        }
+    });
+    
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!batchInput.contains(e.target) && !batchDropdown.contains(e.target)) {
+            batchDropdown.style.display = 'none';
+        }
+    });
+    
+    // Real-time amount preview
     function updatePreview() {
         const rate = parseFloat(document.getElementById('modalRate').value) || 0;
         const qty = parseInt(document.getElementById('modalQty').value) || 0;
+        const freeQty = parseInt(document.getElementById('modalFreeQty').value) || 0;
         const taxPerc = parseFloat(document.getElementById('modalTaxPerc').value) || 0;
+        const saleRate = parseFloat(document.getElementById('modalSaleRate').value) || 0;
         
         const baseAmount = rate * qty;
         const taxAmount = baseAmount * (taxPerc / 100);
         const totalAmount = baseAmount + taxAmount;
+        const perUnitCost = qty > 0 ? totalAmount / qty : 0;
+        
+        // Calculate profit margin
+        let margin = 0;
+        if (rate > 0 && saleRate > 0) {
+            margin = ((saleRate - rate) / rate) * 100;
+        }
         
         document.getElementById('previewBase').textContent = '₹' + baseAmount.toFixed(2);
         document.getElementById('previewTax').textContent = '₹' + taxAmount.toFixed(2);
         document.getElementById('previewTotal').textContent = '₹' + totalAmount.toFixed(2);
+        document.getElementById('previewPerUnit').textContent = '₹' + perUnitCost.toFixed(2);
+        document.getElementById('modalMargin').value = margin.toFixed(2);
+        document.getElementById('modalTotalUnits').value = qty + freeQty;
     }
     
+    // Add event listeners for preview
     document.getElementById('modalRate').addEventListener('input', updatePreview);
     document.getElementById('modalQty').addEventListener('input', updatePreview);
+    document.getElementById('modalFreeQty').addEventListener('input', updatePreview);
     document.getElementById('modalTaxPerc').addEventListener('change', updatePreview);
+    document.getElementById('modalSaleRate').addEventListener('input', updatePreview);
     
     // Listen for modal close events
     modalDiv.addEventListener('hidden.bs.modal', function() {
         // Clean up if needed
     });
     
-    // Fill defaults if new batch
-    document.getElementById('modalBatchNo').value = '';
+    // Initialize preview
+    updatePreview();
+}
+
+// Global function for batch selection from dropdown
+function selectBatch(batchNo, expiry, mrp, rate, qty) {
+    document.getElementById('modalBatchNo').value = batchNo;
+    document.getElementById('modalExpiry').value = expiry;
+    document.getElementById('modalMrp').value = mrp;
+    document.getElementById('modalRate').value = rate;
+    document.getElementById('batchDropdown').style.display = 'none';
+    updatePreview();
 }
 
 function fillBatchDetails() {
@@ -630,21 +705,24 @@ function renderCart() {
     container.innerHTML = cart.map((item, index) => `
         <div class="border-bottom p-2">
             <div class="row g-2 text-center small align-items-center">
-                <div class="col-4 text-start">
+                <div class="col-2 text-start">
                     <strong>${item.product_name || item.product_code || 'N/A'}</strong>
-                    <br><small class="text-muted">Batch: ${item.batch_no || 'N/A'}</small>
+                    <br><small class="text-muted">Batch: ${item.batch_no || '-'}</small>
                 </div>
-                <div class="col-2">${item.expiry_date || '-'}</div>
-                <div class="col-1">${item.mrp ? item.mrp.toFixed(2) : '0.00'}</div>
+                <div class="col-1">${item.expiry_date || '-'}</div>
+                <div class="col-1">₹${item.rate ? item.rate.toFixed(2) : '0.00'}</div>
+                <div class="col-1">₹${item.sale_rate ? item.sale_rate.toFixed(2) : '0.00'}</div>
+                <div class="col-1">₹${item.mrp ? item.mrp.toFixed(2) : '0.00'}</div>
                 <div class="col-1">${item.quantity}</div>
                 <div class="col-1">${item.free_qty || 0}</div>
+                <div class="col-1">${item.tax_perc || 18}%</div>
                 <div class="col-1 text-end fw-bold">₹${item.amount ? item.amount.toFixed(2) : '0.00'}</div>
-                <div class="col-2 text-end">
-                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFromCart(${index})" title="Remove">
-                        <i class="bi bi-x"></i>
-                    </button>
+                <div class="col-2">
                     <button type="button" class="btn btn-outline-primary btn-sm" onclick="editCartItem(${index})" title="Edit">
                         <i class="bi bi-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFromCart(${index})" title="Delete">
+                        <i class="bi bi-trash"></i>
                     </button>
                 </div>
             </div>
