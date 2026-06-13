@@ -14,9 +14,6 @@
             <button onclick="window.print()" class="btn btn-outline-secondary">
                 <i class="bi bi-printer me-1"></i> Print
             </button>
-            <a href="{{ url_for('reports.export_expiry') }}" class="btn btn-outline-primary">
-                <i class="bi bi-download me-1"></i> Export
-            </a>
         </div>
     </div>
     
@@ -104,7 +101,7 @@
                         </div>
                         <div class="ms-3">
                             <p class="text-muted small mb-1">Expiring Soon</p>
-                            <h4 class="mb-0 fw-bold text-warning">{{ summary.expiring_soon }}</h4>
+                            <h4 class="mb-0 fw-bold text-warning">{{ summary.total - summary.expired }}</h4>
                         </div>
                     </div>
                 </div>
@@ -115,13 +112,13 @@
                 <div class="card-body py-3">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="bg-danger bg-opacity-10 rounded-3 p-2">
-                                <i class="bi bi-currency-rupee text-danger"></i>
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-box-seam text-primary"></i>
                             </div>
                         </div>
                         <div class="ms-3">
-                            <p class="text-muted small mb-1">Expired Value</p>
-                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(summary.expired_value) }}</h4>
+                            <p class="text-muted small mb-1">Total Batches</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.total }}</h4>
                         </div>
                     </div>
                 </div>
@@ -132,13 +129,13 @@
                 <div class="card-body py-3">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="bg-warning bg-opacity-10 rounded-3 p-2">
-                                <i class="bi bi-currency-rupee text-warning"></i>
+                            <div class="bg-info bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-calendar-event text-info"></i>
                             </div>
                         </div>
                         <div class="ms-3">
-                            <p class="text-muted small mb-1">At Risk Value</p>
-                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(summary.at_risk_value) }}</h4>
+                            <p class="text-muted small mb-1">Filter Days</p>
+                            <h4 class="mb-0 fw-bold">{{ expiry_days }} Days</h4>
                         </div>
                     </div>
                 </div>
@@ -150,7 +147,7 @@
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white py-3">
             <div class="d-flex justify-content-between align-items-center">
-                <h6 class="mb-0 fw-bold">Product Batches ({{ batches.total }})</h6>
+                <h6 class="mb-0 fw-bold">Product Batches ({{ batches|length }})</h6>
                 <div class="d-flex gap-2">
                     <span class="badge bg-danger">Expired</span>
                     <span class="badge bg-warning text-dark">Expiring within {{ expiry_days }} days</span>
@@ -174,8 +171,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for batch in batches.items %}
-                        <tr class="{{ 'table-danger' if batch.is_expired else ('table-warning' if batch.days_to_expiry <= 30 else '') }}">
+                        {% for batch in batches %}
+                        {% set days_left = (batch.expiry_date - today).days if batch.expiry_date else 0 %}
+                        <tr class="{{ 'table-danger' if days_left < 0 else ('table-warning' if days_left <= 30 else '') }}">
                             <td class="ps-3">
                                 <a href="{{ url_for('products.view', id=batch.product_id) }}" class="text-decoration-none">
                                     <strong>{{ batch.product.product_name if batch.product else 'N/A' }}</strong>
@@ -188,27 +186,29 @@
                                 {{ batch.expiry_date.strftime('%m/%y') if batch.expiry_date else '-' }}
                             </td>
                             <td class="text-center">
-                                {% if batch.is_expired %}
+                                {% set days_left = (batch.expiry_date - today).days if batch.expiry_date else 0 %}
+                                {% if days_left < 0 %}
                                 <span class="badge bg-danger">Expired</span>
-                                {% elif batch.days_to_expiry <= 30 %}
-                                <span class="badge bg-warning text-dark">{{ batch.days_to_expiry }} days</span>
+                                {% elif days_left <= 30 %}
+                                <span class="badge bg-warning text-dark">{{ days_left }} days</span>
                                 {% else %}
-                                <span class="badge bg-info">{{ batch.days_to_expiry }} days</span>
+                                <span class="badge bg-info">{{ days_left }} days</span>
                                 {% endif %}
                             </td>
                             <td class="text-center">
-                                <span class="fw-bold {{ 'text-danger' if batch.quantity == 0 else ('text-warning' if batch.quantity <= 10 else 'text-success') }}">
-                                    {{ batch.quantity }}
+                                <span class="fw-bold {{ 'text-danger' if batch.available_qty == 0 else ('text-warning' if batch.available_qty <= 10 else 'text-success') }}">
+                                    {{ batch.available_qty }}
                                 </span>
                             </td>
                             <td class="text-end">₹{{ "{:,.2f}".format(batch.mrp or 0) }}</td>
                             <td class="text-end fw-bold">₹{{ "{:,.2f}".format(batch.quantity * (batch.mrp or 0)) }}</td>
                             <td class="text-center">
-                                {% if batch.is_expired %}
+                                {% set days_left = (batch.expiry_date - today).days if batch.expiry_date else 0 %}
+                                {% if days_left < 0 %}
                                 <span class="badge bg-danger">Expired</span>
-                                {% elif batch.days_to_expiry <= 30 %}
+                                {% elif days_left <= 30 %}
                                 <span class="badge bg-warning text-dark">Critical</span>
-                                {% elif batch.days_to_expiry <= 90 %}
+                                {% elif days_left <= 90 %}
                                 <span class="badge bg-info">Attention</span>
                                 {% else %}
                                 <span class="badge bg-success">OK</span>
@@ -227,51 +227,9 @@
                         </tr>
                         {% endfor %}
                     </tbody>
-                    {% if batches.items %}
-                    <tfoot class="table-light">
-                        <tr>
-                            <td colspan="5" class="text-end fw-bold">Total:</td>
-                            <td class="text-center fw-bold">{{ summary.total_qty }}</td>
-                            <td></td>
-                            <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.total_value) }}</td>
-                            <td></td>
-                        </tr>
-                    </tfoot>
-                    {% endif %}
                 </table>
             </div>
         </div>
-        
-        <!-- Pagination -->
-        {% if batches.pages > 1 %}
-        <div class="card-footer bg-white">
-            <nav aria-label="Expiry pagination">
-                <ul class="pagination justify-content-center mb-0">
-                    <li class="page-item {{ 'disabled' if not batches.has_prev }}">
-                        <a class="page-link" href="{{ url_for('inventory.expiry_report', page=batches.prev_num, expiry_days=expiry_days, category_id=category_id, stock_filter=stock_filter, sort_by=sort_by) }}">
-                            Previous
-                        </a>
-                    </li>
-                    {% for p in batches.iter_pages() %}
-                        {% if p %}
-                        <li class="page-item {{ 'active' if p == batches.page }}">
-                            <a class="page-link" href="{{ url_for('inventory.expiry_report', page=p, expiry_days=expiry_days, category_id=category_id, stock_filter=stock_filter, sort_by=sort_by) }}">
-                                {{ p }}
-                            </a>
-                        </li>
-                        {% else %}
-                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                        {% endif %}
-                    {% endfor %}
-                    <li class="page-item {{ 'disabled' if not batches.has_next }}">
-                        <a class="page-link" href="{{ url_for('inventory.expiry_report', page=batches.next_num, expiry_days=expiry_days, category_id=category_id, stock_filter=stock_filter, sort_by=sort_by) }}">
-                            Next
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

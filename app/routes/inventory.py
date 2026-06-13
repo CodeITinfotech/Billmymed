@@ -156,6 +156,7 @@ def view_adjustment(id):
 def expiry_report():
     days = request.args.get('days', 30, type=int)
     cutoff_date = datetime.utcnow().date() + timedelta(days=days)
+    today = datetime.utcnow().date()
     
     batches = Batch.query.filter(
         Batch.expiry_date != None,
@@ -163,7 +164,21 @@ def expiry_report():
         Batch.available_qty > 0
     ).order_by(Batch.expiry_date).all()
     
-    return render_template('inventory/expiry_report.html', batches=batches, days=days)
+    # Calculate summary
+    expired = sum(1 for b in batches if b.expiry_date < today)
+    expiring_30 = sum(1 for b in batches if b.expiry_date and (b.expiry_date - today).days <= 30)
+    expiring_60 = sum(1 for b in batches if b.expiry_date and 30 < (b.expiry_date - today).days <= 60)
+    expiring_90 = sum(1 for b in batches if b.expiry_date and 60 < (b.expiry_date - today).days <= 90)
+    
+    summary = {
+        'total': len(batches),
+        'expired': expired,
+        'expiring_30': expiring_30,
+        'expiring_60': expiring_60,
+        'expiring_90': expiring_90
+    }
+    
+    return render_template('inventory/expiry_report.html', batches=batches, days=days, summary=summary, expiry_days=days, today=today)
 
 @inventory_bp.route('/stock-transfer')
 @login_required
