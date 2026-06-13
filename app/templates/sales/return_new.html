@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}New Sales Return - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">
+                <i class="bi bi-arrow-counterclockwise me-2"></i>New Sales Return
+            </h4>
+            <p class="text-muted mb-0">Return No: <code>{{ return_no }}</code></p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('sales.returns') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+    
+    {% if original_invoice %}
+    <!-- Original Invoice Info -->
+    <div class="alert alert-info d-flex align-items-center mb-4" role="alert">
+        <i class="bi bi-info-circle me-2"></i>
+        <div>
+            <strong>Returning items from Invoice:</strong> 
+            <a href="{{ url_for('sales.view', id=original_invoice.id) }}" class="alert-link">{{ original_invoice.invoice_no }}</a>
+            dated {{ original_invoice.invoice_date.strftime('%d/%m/%Y') }} to {{ original_invoice.customer.account_name if original_invoice.customer else 'Walk-in' }}
+        </div>
+    </div>
+    {% endif %}
+    
+    <form method="POST" action="{{ url_for('sales.create_return') }}">
+        <div class="row g-4">
+            <!-- Left Column - Return Items -->
+            <div class="col-12 col-lg-8">
+                <!-- Customer/Invoice Info -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body py-3">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label small mb-1">Customer</label>
+                                <select class="form-select" name="customer_id" id="customerSelect">
+                                    <option value="">Walk-in Customer</option>
+                                    {% for customer in customers %}
+                                    <option value="{{ customer.id }}" {% if original_invoice and original_invoice.customer_id == customer.id %}selected{% endif %}>
+                                        {{ customer.account_name }} ({{ customer.account_code }})
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label small mb-1">Return Date</label>
+                                <input type="date" class="form-control" name="return_date" value="{{ today }}" required>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label small mb-1">Reference Invoice</label>
+                                <input type="text" class="form-control" name="reference_no" placeholder="Invoice #" 
+                                       value="{{ original_invoice.invoice_no if original_invoice else '' }}">
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <label class="form-label small mb-1">Reason</label>
+                                <select class="form-select" name="reason">
+                                    <option value="defective">Defective</option>
+                                    <option value="expired">Expired</option>
+                                    <option value="wrong_item">Wrong Item</option>
+                                    <option value="customer_request">Customer Request</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {% if original_invoice %}
+                <!-- Items from Original Invoice -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">Select Items to Return</h6>
+                            <small class="text-muted">Click to select items</small>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3" style="width: 40px;">
+                                            <input class="form-check-input" type="checkbox" id="selectAll" onchange="toggleAllItems(this)">
+                                        </th>
+                                        <th>Product</th>
+                                        <th class="text-center">Batch</th>
+                                        <th class="text-center">Expiry</th>
+                                        <th class="text-center">Sold Qty</th>
+                                        <th class="text-center">Return Qty</th>
+                                        <th class="text-end">Rate</th>
+                                        <th class="text-end">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in original_invoice.items %}
+                                    <tr class="item-row" data-item-id="{{ item.id }}">
+                                        <td class="ps-3">
+                                            <input class="form-check-input item-checkbox" type="checkbox" name="return_items" 
+                                                   value="{{ item.id }}" onchange="toggleItem(this)">
+                                        </td>
+                                        <td>
+                                            <strong>{{ item.product.product_name if item.product else 'N/A' }}</strong>
+                                            <br><small class="text-muted">{{ item.product.product_code if item.product else '' }}</small>
+                                        </td>
+                                        <td class="text-center"><code>{{ item.batch_no or '-' }}</code></td>
+                                        <td class="text-center">{{ item.expiry_date.strftime('%m/%y') if item.expiry_date else '-' }}</td>
+                                        <td class="text-center">{{ item.quantity }}</td>
+                                        <td class="text-center" style="width: 100px;">
+                                            <input type="number" class="form-control form-control-sm text-center return-qty" 
+                                                   name="qty_{{ item.id }}" min="1" max="{{ item.quantity }}" value="1"
+                                                   onchange="updateAmount(this, {{ item.unit_rate }})" disabled>
+                                        </td>
+                                        <td class="text-end">₹{{ "{:,.2f}".format(item.unit_rate) }}</td>
+                                        <td class="text-end">
+                                            <span class="item-amount">₹0.00</span>
+                                            <input type="hidden" name="amount_{{ item.id }}" value="0">
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Manual Item Entry -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-2">
+                        <h6 class="mb-0">Add Return Items</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-secondary">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Select a customer and reference invoice to load items, or manually enter items below.
+                        </div>
+                        <div id="returnItems">
+                            <!-- Dynamic item rows will be added here -->
+                        </div>
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="addReturnItem()">
+                            <i class="bi bi-plus-lg me-1"></i>Add Item
+                        </button>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Notes -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <label class="form-label">Notes / Remarks</label>
+                        <textarea class="form-control" name="notes" rows="3" placeholder="Enter any notes about this return..."></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Summary -->
+            <div class="col-12 col-lg-4">
+                <!-- Return Summary -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Return Summary</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Items Selected</span>
+                            <span id="selectedCount">0</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Total Qty</span>
+                            <span id="totalQty">0</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Total Amount</h5>
+                            <h4 class="mb-0 text-danger fw-bold" id="totalAmount">₹0.00</h4>
+                        </div>
+                        <input type="hidden" name="total_amount" id="totalAmountInput" value="0">
+                        <input type="hidden" name="original_invoice_id" value="{{ original_invoice.id if original_invoice else '' }}">
+                    </div>
+                </div>
+                
+                <!-- Refund Method -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Refund Method</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label class="form-label small text-muted">Refund Type</label>
+                            <select class="form-select" name="refund_type">
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
+                                <option value="bank">Bank Transfer</option>
+                                <option value="credit">Credit to Customer</option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small text-muted">Amount</label>
+                            <input type="number" class="form-control" name="refund_amount" id="refundAmount" 
+                                   value="0" min="0" step="0.01">
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="updateStock" name="update_stock" value="1" checked>
+                            <label class="form-check-label" for="updateStock">
+                                Update stock on return
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-check-circle me-2"></i>Process Return
+                    </button>
+                    <a href="{{ url_for('sales.returns') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% block extra_js %}
+<script>
+function toggleAllItems(checkbox) {
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = checkbox.checked;
+        const row = cb.closest('tr');
+        const qtyInput = row.querySelector('.return-qty');
+        qtyInput.disabled = !checkbox.checked;
+        if (!checkbox.checked) {
+            qtyInput.value = 1;
+            row.querySelector('.item-amount').textContent = '₹0.00';
+            row.querySelector('input[name^="amount_"]').value = 0;
+        } else {
+            updateAmount(qtyInput, parseFloat(qtyInput.closest('td').nextElementSibling.textContent.replace('₹', '').replace(',', '')));
+        }
+    });
+    calculateTotal();
+}
+
+function toggleItem(checkbox) {
+    const row = checkbox.closest('tr');
+    const qtyInput = row.querySelector('.return-qty');
+    qtyInput.disabled = !checkbox.checked;
+    if (!checkbox.checked) {
+        qtyInput.value = 1;
+        row.querySelector('.item-amount').textContent = '₹0.00';
+        row.querySelector('input[name^="amount_"]').value = 0;
+    }
+    calculateTotal();
+}
+
+function updateAmount(qtyInput, rate) {
+    const row = qtyInput.closest('tr');
+    const qty = parseInt(qtyInput.value) || 0;
+    const amount = qty * rate;
+    row.querySelector('.item-amount').textContent = '₹' + amount.toFixed(2);
+    row.querySelector('input[name^="amount_"]').value = amount.toFixed(2);
+    calculateTotal();
+}
+
+function calculateTotal() {
+    let count = 0;
+    let totalQty = 0;
+    let totalAmount = 0;
+    
+    document.querySelectorAll('.item-row').forEach(row => {
+        const checkbox = row.querySelector('.item-checkbox');
+        if (checkbox.checked) {
+            count++;
+            const qty = parseInt(row.querySelector('.return-qty').value) || 0;
+            totalQty += qty;
+            totalAmount += parseFloat(row.querySelector('input[name^="amount_"]').value) || 0;
+        }
+    });
+    
+    document.getElementById('selectedCount').textContent = count;
+    document.getElementById('totalQty').textContent = totalQty;
+    document.getElementById('totalAmount').textContent = '₹' + totalAmount.toFixed(2);
+    document.getElementById('totalAmountInput').value = totalAmount.toFixed(2);
+    document.getElementById('refundAmount').value = totalAmount.toFixed(2);
+}
+
+let itemCounter = 0;
+function addReturnItem() {
+    itemCounter++;
+    const html = `
+        <div class="row g-2 mb-2 item-entry">
+            <div class="col-5">
+                <select class="form-select form-select-sm" name="product_${itemCounter}">
+                    <option value="">Select Product</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <input type="number" class="form-control form-control-sm" name="qty_${itemCounter}" placeholder="Qty" min="1">
+            </div>
+            <div class="col-2">
+                <input type="number" class="form-control form-control-sm" name="rate_${itemCounter}" placeholder="Rate" step="0.01">
+            </div>
+            <div class="col-2">
+                <input type="number" class="form-control form-control-sm" name="amount_${itemCounter}" placeholder="Amt" step="0.01">
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-outline-danger btn-sm" onclick="this.closest('.item-entry').remove()">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        </div>
+    `;
+    document.getElementById('returnItems').insertAdjacentHTML('beforeend', html);
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    // Customer select2
+    $('#customerSelect').select2({
+        placeholder: 'Walk-in Customer',
+        allowClear: true
+    });
+    
+    // Auto-calculate if items are pre-selected
+    calculateTotal();
+});
+</script>
+{% endblock %}
+{% endblock %}

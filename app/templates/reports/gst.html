@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}GST Report - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">GST Report</h4>
+            <p class="text-muted mb-0">Goods and Services Tax summary and details</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+                <i class="bi bi-printer me-1"></i> Print
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <form method="GET" class="row g-3">
+                <div class="col-6 col-md-3">
+                    <label class="form-label small mb-1">From Date</label>
+                    <input type="date" class="form-control" name="from_date" value="{{ from_date }}">
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="form-label small mb-1">To Date</label>
+                    <input type="date" class="form-control" name="to_date" value="{{ to_date }}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small mb-1">Report Type</label>
+                    <select class="form-select" name="report_type">
+                        <option value="summary" {% if report_type == 'summary' %}selected{% endif %}>Summary</option>
+                        <option value="detailed" {% if report_type == 'detailed' %}selected{% endif %}>Detailed</option>
+                        <option value="b2b" {% if report_type == 'b2b' %}selected{% endif %}>B2B</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small mb-1">Tax Type</label>
+                    <select class="form-select" name="tax_type">
+                        <option value="">All</option>
+                        <option value="sales" {% if tax_type == 'sales' %}selected{% endif %}>Sales GST</option>
+                        <option value="purchase" {% if tax_type == 'purchase' %}selected{% endif %}>Purchase GST</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a href="{{ url_for('reports.gst') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- GST Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-currency-rupee text-success"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Taxable Sales</p>
+                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(summary.taxable_sales) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-danger bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-currency-rupee text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Taxable Purchase</p>
+                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(summary.taxable_purchase) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-arrow-up-circle text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Output GST (Sales)</p>
+                            <h4 class="mb-0 fw-bold text-primary">₹{{ "{:,.2f}".format(summary.output_gst) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-arrow-down-circle text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Input GST (Purchase)</p>
+                            <h4 class="mb-0 fw-bold text-warning">₹{{ "{:,.2f}".format(summary.input_gst) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- GST Rate Breakdown -->
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 fw-bold">Sales GST Breakdown</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tax Rate</th>
+                                    <th class="text-end">Taxable Amount</th>
+                                    <th class="text-end">CGST</th>
+                                    <th class="text-end">SGST</th>
+                                    <th class="text-end">Total GST</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rate, data in sales_breakdown.items() %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">{{ rate }}%</span></td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(data.taxable) }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(data.cgst) }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(data.sgst) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(data.gst) }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">No sales GST data</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td class="fw-bold">Total</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.taxable_sales) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.output_gst / 2) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.output_gst / 2) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.output_gst) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 fw-bold">Purchase GST Breakdown</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Tax Rate</th>
+                                    <th class="text-end">Taxable Amount</th>
+                                    <th class="text-end">CGST</th>
+                                    <th class="text-end">SGST</th>
+                                    <th class="text-end">Total GST</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rate, data in purchase_breakdown.items() %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">{{ rate }}%</span></td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(data.taxable) }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(data.cgst) }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(data.sgst) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(data.gst) }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-3">No purchase GST data</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <td class="fw-bold">Total</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.taxable_purchase) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.input_gst / 2) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.input_gst / 2) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.input_gst) }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Net GST Summary -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-12 col-md-4 border-end">
+                    <h6 class="text-muted mb-2">Output GST (Payable)</h6>
+                    <h3 class="text-primary fw-bold mb-0">₹{{ "{:,.2f}".format(summary.output_gst) }}</h3>
+                </div>
+                <div class="col-12 col-md-4 border-end">
+                    <h6 class="text-muted mb-2">Input GST (Recoverable)</h6>
+                    <h3 class="text-warning fw-bold mb-0">₹{{ "{:,.2f}".format(summary.input_gst) }}</h3>
+                </div>
+                <div class="col-12 col-md-4">
+                    <h6 class="text-muted mb-2">Net GST Payable</h6>
+                    <h3 class="{{ 'text-success' if summary.net_gst >= 0 else 'text-danger' }} fw-bold mb-0">
+                        ₹{{ "{:,.2f}".format(summary.net_gst|abs) }}
+                        {% if summary.net_gst < 0 %}
+                        <small class="text-muted">(Refund)</small>
+                        {% endif %}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detailed Transactions -->
+    {% if report_type == 'detailed' %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h6 class="mb-0 fw-bold">GST Transactions Details</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Date</th>
+                            <th>Invoice/Ref #</th>
+                            <th>Party Name</th>
+                            <th>GSTIN</th>
+                            <th class="text-end">Taxable Amount</th>
+                            <th class="text-end">CGST</th>
+                            <th class="text-end">SGST</th>
+                            <th class="text-end">Total GST</th>
+                            <th>Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for txn in transactions %}
+                        <tr>
+                            <td class="ps-3">{{ txn.date.strftime('%d/%m/%Y') }}</td>
+                            <td><code>{{ txn.doc_no }}</code></td>
+                            <td>{{ txn.party_name }}</td>
+                            <td><code>{{ txn.gstin or '-' }}</code></td>
+                            <td class="text-end">₹{{ "{:,.2f}".format(txn.taxable_amount) }}</td>
+                            <td class="text-end">₹{{ "{:,.2f}".format(txn.cgst) }}</td>
+                            <td class="text-end">₹{{ "{:,.2f}".format(txn.sgst) }}</td>
+                            <td class="text-end fw-bold">₹{{ "{:,.2f}".format(txn.gst) }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if txn.type == 'sales' else 'warning' }}">
+                                    {{ txn.type|title }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="9" class="text-center py-4 text-muted">No transactions found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

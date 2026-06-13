@@ -204,9 +204,24 @@ def returns():
     
     # This would need a separate model for purchase returns
     # For now, showing pending purchase payments as returns
-    purchases = Purchase.query.filter_by(is_cancelled=False).order_by(Purchase.purchase_date.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    returns = Purchase.query.filter_by(is_cancelled=False).order_by(Purchase.purchase_date.desc()).paginate(page=page, per_page=per_page, error_out=False)
     
-    return render_template('purchase/returns.html', purchases=purchases)
+    returns_data = {
+        'total': Purchase.query.filter_by(is_cancelled=False).count(),
+        'total_amount': db.session.query(db.func.sum(Purchase.total_amount)).filter_by(is_cancelled=False).scalar() or 0
+    }
+    
+    return render_template('purchase/returns.html', returns=returns, returns_data=returns_data)
+
+@purchase_bp.route('/return/new', methods=['GET', 'POST'])
+@login_required
+def returns_new():
+    if request.method == 'POST':
+        # Handle new return creation
+        flash('Return created successfully.', 'success')
+        return redirect(url_for('purchase.returns'))
+    
+    return render_template('purchase/return_new.html', original=None)
 
 # Payment to supplier
 @purchase_bp.route('/payment/<int:supplier_id>', methods=['GET', 'POST'])

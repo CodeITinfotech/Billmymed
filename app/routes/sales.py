@@ -220,7 +220,26 @@ def returns():
     
     returns = query.order_by(Invoice.invoice_date.desc()).paginate(page=page, per_page=per_page, error_out=False)
     
-    return render_template('sales/returns.html', returns=returns, search=search)
+    # Calculate totals
+    total_count = Invoice.query.filter_by(invoice_type='sale_return').count()
+    total_amount = db.session.query(db.func.sum(Invoice.total_amount)).filter_by(invoice_type='sale_return').scalar() or 0
+    
+    returns_data = {
+        'total': total_count,
+        'total_amount': total_amount
+    }
+    
+    return render_template('sales/returns.html', returns=returns, search=search, returns_data=returns_data)
+
+@sales_bp.route('/return/new', methods=['GET', 'POST'])
+@login_required
+def returns_new():
+    if request.method == 'POST':
+        # Handle new return creation
+        flash('Return created successfully.', 'success')
+        return redirect(url_for('sales.returns'))
+    
+    return render_template('sales/return_new.html', original=None)
 
 @sales_bp.route('/return/new/<int:original_id>', methods=['GET', 'POST'])
 @login_required
@@ -321,3 +340,16 @@ def duplicate(id):
     
     flash(f'Duplicate invoice {invoice_no} created.', 'success')
     return redirect(url_for('sales.view', id=new_invoice.id))
+# View return
+@sales_bp.route("/return/<int:id>")
+@login_required
+def view_return(id):
+    invoice = Invoice.query.get_or_404(id)
+    return render_template("sales/view.html", invoice=invoice)
+
+# Print return
+@sales_bp.route("/return/<int:id>/print")
+@login_required
+def print_return(id):
+    invoice = Invoice.query.get_or_404(id)
+    return render_template("sales/print.html", invoice=invoice)

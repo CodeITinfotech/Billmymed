@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Purchase {{ purchase.purchase_no }} - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">
+                Purchase <code>{{ purchase.purchase_no }}</code>
+                {% if purchase.is_cancelled %}
+                <span class="badge bg-danger ms-2">Cancelled</span>
+                {% endif %}
+            </h4>
+            <p class="text-muted mb-0">{{ purchase.purchase_date.strftime('%d %B %Y') }}</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('purchase.print_purchase', id=purchase.id) }}" class="btn btn-outline-primary" target="_blank">
+                <i class="bi bi-printer me-1"></i> Print
+            </a>
+            <a href="{{ url_for('purchase.duplicate', id=purchase.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-copy me-1"></i> Duplicate
+            </a>
+            {% if not purchase.is_cancelled %}
+            <a href="{{ url_for('purchase.return_new', original_id=purchase.id) }}" class="btn btn-outline-warning">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Return
+            </a>
+            <form action="{{ url_for('purchase.cancel', id=purchase.id) }}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Cancel this purchase?')">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Purchase Details -->
+        <div class="col-12 col-lg-8">
+            <!-- Supplier Info -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6 class="text-muted small text-uppercase mb-2">Supplier</h6>
+                            <p class="mb-1 fw-medium">{{ purchase.supplier.account_name if purchase.supplier else 'N/A' }}</p>
+                            {% if purchase.supplier %}
+                            <p class="mb-1 text-muted small">{{ purchase.supplier.address or '' }}</p>
+                            <p class="mb-1 text-muted small">{{ purchase.supplier.city or '' }} {{ purchase.supplier.pin or '' }}</p>
+                            <p class="mb-0 text-muted small">Phone: {{ purchase.supplier.mobile or purchase.supplier.phone or 'N/A' }}</p>
+                            <p class="mb-0 text-muted small">GSTIN: {{ purchase.supplier.gstin or 'N/A' }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 text-md-end">
+                            <h6 class="text-muted small text-uppercase mb-2">Purchase Info</h6>
+                            <p class="mb-1">Invoice #: <strong>{{ purchase.invoice_no or 'N/A' }}</strong></p>
+                            <p class="mb-1">Date: {{ purchase.invoice_date.strftime('%d/%m/%Y') if purchase.invoice_date else purchase.purchase_date.strftime('%d/%m/%Y') }}</p>
+                            <p class="mb-1">Bill Type: <span class="badge bg-info">{{ purchase.bill_type|upper if purchase.bill_type else 'GST' }}</span></p>
+                            <p class="mb-0">Status: <span class="badge bg-{{ 'success' if purchase.payment_status == 'paid' else ('warning' if purchase.payment_status == 'partial' else 'secondary') }}">
+                                {{ purchase.payment_status|title }}
+                            </span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Items Table -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th class="text-center">Batch</th>
+                                    <th class="text-center">Expiry</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-center">Free</th>
+                                    <th class="text-end">MRP</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in purchase.items %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <strong>{{ item.product.product_name if item.product else 'N/A' }}</strong>
+                                        <br><small class="text-muted">{{ item.product.product_code if item.product else '' }}</small>
+                                    </td>
+                                    <td class="text-center"><code>{{ item.batch_no or '-' }}</code></td>
+                                    <td class="text-center">{{ item.expiry_date.strftime('%m/%y') if item.expiry_date else '-' }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-center">{{ item.free_qty or 0 }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(item.mrp or 0) }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(item.rate) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(item.amount) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary -->
+        <div class="col-12 col-lg-4">
+            <!-- Amount Summary -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">Payment Summary</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal</span>
+                        <span>₹{{ "{:,.2f}".format(purchase.subtotal) }}</span>
+                    </div>
+                    {% if purchase.discount_amt > 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Discount</span>
+                        <span class="text-danger">-₹{{ "{:,.2f}".format(purchase.discount_amt) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Tax (GST)</span>
+                        <span>₹{{ "{:,.2f}".format(purchase.tax_amt or 0) }}</span>
+                    </div>
+                    {% if purchase.round_off != 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Round Off</span>
+                        <span>{{ '+' if purchase.round_off > 0 else '' }}₹{{ "{:,.2f}".format(purchase.round_off) }}</span>
+                    </div>
+                    {% endif %}
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Total</h5>
+                        <h4 class="mb-0 text-primary fw-bold">₹{{ "{:,.2f}".format(purchase.total_amount) }}</h4>
+                    </div>
+                    
+                    {% if purchase.payment_status != 'paid' %}
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Cash</span>
+                        <span>₹{{ "{:,.2f}".format(purchase.cash_amount or 0) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Card</span>
+                        <span>₹{{ "{:,.2f}".format(purchase.card_amount or 0) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Online</span>
+                        <span>₹{{ "{:,.2f}".format(purchase.online_amount or 0) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Balance</span>
+                        <span class="text-danger fw-bold">₹{{ "{:,.2f}".format(purchase.total_amount - (purchase.cash_amount or 0) - (purchase.card_amount or 0) - (purchase.online_amount or 0)) }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Actions Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button onclick="window.print()" class="btn btn-primary">
+                            <i class="bi bi-printer me-2"></i>Print Purchase
+                        </button>
+                        {% if purchase.payment_status != 'paid' %}
+                        <a href="#" class="btn btn-success">
+                            <i class="bi bi-currency-rupee me-2"></i>Make Payment
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Info -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body py-3">
+                    <small class="text-muted d-block mb-1">Created by: {{ purchase.user.full_name if purchase.user else 'N/A' }}</small>
+                    <small class="text-muted d-block mb-1">Created on: {{ purchase.created_at.strftime('%d-%m-%Y %H:%M') }}</small>
+                    {% if purchase.is_cancelled %}
+                    <small class="text-danger d-block">Cancelled</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

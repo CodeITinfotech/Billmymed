@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Profit Report - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Profit Report</h4>
+            <p class="text-muted mb-0">Sales profit analysis and margin calculations</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button onclick="window.print()" class="btn btn-outline-secondary">
+                <i class="bi bi-printer me-1"></i> Print
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <form method="GET" class="row g-3">
+                <div class="col-6 col-md-3">
+                    <label class="form-label small mb-1">From Date</label>
+                    <input type="date" class="form-control" name="from_date" value="{{ from_date }}">
+                </div>
+                <div class="col-6 col-md-3">
+                    <label class="form-label small mb-1">To Date</label>
+                    <input type="date" class="form-control" name="to_date" value="{{ to_date }}">
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small mb-1">Category</label>
+                    <select class="form-select" name="category_id">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category_id|int == category.id %}selected{% endif %}>
+                            {{ category.category_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <label class="form-label small mb-1">Group By</label>
+                    <select class="form-select" name="group_by">
+                        <option value="daily" {% if group_by == 'daily' %}selected{% endif %}>Daily</option>
+                        <option value="product" {% if group_by == 'product' %}selected{% endif %}>Product</option>
+                        <option value="category" {% if group_by == 'category' %}selected{% endif %}>Category</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-search"></i>
+                    </button>
+                    <a href="{{ url_for('reports.profit') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-currency-rupee text-success"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Gross Sales</p>
+                            <h4 class="mb-0 fw-bold text-success">₹{{ "{:,.2f}".format(summary.gross_sales) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-danger bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-cart-check text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Cost of Goods</p>
+                            <h4 class="mb-0 fw-bold text-danger">₹{{ "{:,.2f}".format(summary.cost_of_goods) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-graph-up text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Gross Profit</p>
+                            <h4 class="mb-0 fw-bold text-primary">₹{{ "{:,.2f}".format(summary.gross_profit) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-percent text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Profit Margin</p>
+                            <h4 class="mb-0 fw-bold text-warning">{{ "%.1f"|format(summary.profit_margin) }}%</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-receipt text-info"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Total Invoices</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.invoice_count }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-box-seam text-success"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Items Sold</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.items_sold }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-danger bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-arrow-counterclockwise text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Returns Adjusted</p>
+                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(summary.returns) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-tag text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Discount Given</p>
+                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(summary.discount_given) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Profit Details Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h6 class="mb-0 fw-bold">Profit Details {% if group_by == 'daily' %}(Daily){% elif group_by == 'product' %}(By Product){% elif group_by == 'category' %}(By Category){% endif %}</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">{% if group_by == 'daily' %}Date{% elif group_by == 'product' %}Product{% elif group_by == 'category' %}Category{% else %}Date{% endif %}</th>
+                            <th class="text-center">Invoices</th>
+                            <th class="text-center">Items</th>
+                            <th class="text-end">Sales Amount</th>
+                            <th class="text-end">Cost Amount</th>
+                            <th class="text-end">Profit</th>
+                            <th class="text-end">Margin %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in profit_data %}
+                        <tr>
+                            <td class="ps-3 fw-medium">{{ item.name }}</td>
+                            <td class="text-center">{{ item.invoices }}</td>
+                            <td class="text-center">{{ item.items }}</td>
+                            <td class="text-end">₹{{ "{:,.2f}".format(item.sales) }}</td>
+                            <td class="text-end text-danger">₹{{ "{:,.2f}".format(item.cost) }}</td>
+                            <td class="text-end fw-bold text-success">₹{{ "{:,.2f}".format(item.profit) }}</td>
+                            <td class="text-end">
+                                <span class="badge bg-{{ 'success' if item.margin >= 20 else ('warning' if item.margin >= 10 else 'danger') }}">
+                                    {{ "%.1f"|format(item.margin) }}%
+                                </span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-graph-up fs-1"></i>
+                                    <p class="mt-2 mb-1">No profit data found for the selected period</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% if profit_data %}
+                    <tfoot class="table-light">
+                        <tr>
+                            <td class="ps-3 fw-bold">Total</td>
+                            <td class="text-center fw-bold">{{ summary.invoice_count }}</td>
+                            <td class="text-center fw-bold">{{ summary.items_sold }}</td>
+                            <td class="text-end fw-bold">₹{{ "{:,.2f}".format(summary.gross_sales) }}</td>
+                            <td class="text-end fw-bold text-danger">₹{{ "{:,.2f}".format(summary.cost_of_goods) }}</td>
+                            <td class="text-end fw-bold text-success">₹{{ "{:,.2f}".format(summary.gross_profit) }}</td>
+                            <td class="text-end fw-bold">{{ "%.1f"|format(summary.profit_margin) }}%</td>
+                        </tr>
+                    </tfoot>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

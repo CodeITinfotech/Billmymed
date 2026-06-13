@@ -249,6 +249,26 @@ def add_category():
     flash('Category added successfully.', 'success')
     return redirect(url_for('products.categories'))
 
+@products_bp.route('/categories/<int:id>/delete', methods=['POST'])
+@login_required
+def delete_category(id):
+    category = Category.query.get_or_404(id)
+    db.session.delete(category)
+    db.session.commit()
+    flash('Category deleted successfully.', 'success')
+    return redirect(url_for('products.categories'))
+
+@products_bp.route('/categories/<int:id>/update', methods=['POST'])
+@login_required
+def update_category(id):
+    category = Category.query.get_or_404(id)
+    category.category_code = request.form.get('category_code', '').strip()
+    category.category_name = request.form.get('category_name', '').strip()
+    category.description = request.form.get('description', '')
+    db.session.commit()
+    flash('Category updated successfully.', 'success')
+    return redirect(url_for('products.categories'))
+
 # Tax rates
 @products_bp.route('/tax-rates')
 @login_required
@@ -260,7 +280,7 @@ def tax_rates():
 @login_required
 def add_tax():
     tax_name = request.form.get('tax_name', '').strip()
-    tax_perc = request.form.get('tax_perc', 0, type=float)
+    tax_perc = request.form.get('tax_perc', request.form.get('tax_percentage', 0), type=float)
     
     tax = Tax(
         tax_name=tax_name,
@@ -275,4 +295,27 @@ def add_tax():
     db.session.commit()
     
     flash('Tax rate added successfully.', 'success')
+    return redirect(url_for('products.tax_rates'))
+
+@products_bp.route('/tax-rates/<int:id>/delete', methods=['POST'])
+@login_required
+def delete_tax(id):
+    tax = Tax.query.get_or_404(id)
+    db.session.delete(tax)
+    db.session.commit()
+    flash('Tax rate deleted successfully.', 'success')
+    return redirect(url_for('products.tax_rates'))
+
+@products_bp.route('/tax-rates/<int:id>/update', methods=['POST'])
+@login_required
+def update_tax(id):
+    tax = Tax.query.get_or_404(id)
+    tax.tax_name = request.form.get('tax_name', '').strip()
+    tax.tax_perc = request.form.get('tax_perc', 0, type=float)
+    tax.tax_type = request.form.get('tax_type', 'GST')
+    tax.cgst_perc = request.form.get('cgst_perc', 0, type=float)
+    tax.sgst_perc = request.form.get('sgst_perc', 0, type=float)
+    tax.igst_perc = request.form.get('igst_perc', 0, type=float)
+    db.session.commit()
+    flash('Tax rate updated successfully.', 'success')
     return redirect(url_for('products.tax_rates'))

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase {{ purchase.purchase_no }} - {{ config.COMPANY_NAME }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+            width: 210mm;
+            margin: 0 auto;
+            padding: 10mm;
+        }
+        
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .fw-bold { font-weight: bold; }
+        .text-uppercase { text-transform: uppercase; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #000;
+        }
+        
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .company-info {
+            font-size: 11px;
+        }
+        
+        .invoice-info {
+            margin: 15px 0;
+        }
+        
+        .invoice-info table {
+            width: 100%;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        .items-table th,
+        .items-table td {
+            padding: 5px 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        .items-table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        
+        .items-table .text-right {
+            text-align: right;
+        }
+        
+        .totals {
+            margin-top: 15px;
+            width: 300px;
+            margin-left: auto;
+        }
+        
+        .totals .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+        
+        .totals .grand-total {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+            padding-top: 10px;
+            border-top: 2px solid #000;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #000;
+            text-align: center;
+            font-size: 11px;
+        }
+        
+        @media print {
+            body {
+                width: 100%;
+                margin: 0;
+                padding: 10mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="company-name">{{ config.COMPANY_NAME }}</div>
+        <div class="company-info">
+            {{ settings.get('company_address', 'Address') }}<br>
+            Phone: {{ settings.get('company_phone', '') }} | Email: {{ settings.get('company_email', '') }}<br>
+            GSTIN: {{ settings.get('company_gstin', '') }} | DL: {{ settings.get('company_dl', '') }}
+        </div>
+    </div>
+    
+    <!-- Purchase Info -->
+    <div class="invoice-info">
+        <table>
+            <tr>
+                <td style="width: 50%;">
+                    <strong>Supplier:</strong><br>
+                    {{ purchase.supplier.account_name if purchase.supplier else 'N/A' }}<br>
+                    {% if purchase.supplier %}
+                    {{ purchase.supplier.address or '' }}<br>
+                    {{ purchase.supplier.city or '' }} {{ purchase.supplier.pin or '' }}<br>
+                    Phone: {{ purchase.supplier.mobile or purchase.supplier.phone or '' }}<br>
+                    GSTIN: {{ purchase.supplier.gstin or '' }}
+                    {% endif %}
+                </td>
+                <td style="width: 50%; text-align: right;">
+                    <strong>Purchase #:</strong> {{ purchase.purchase_no }}<br>
+                    <strong>Date:</strong> {{ purchase.purchase_date.strftime('%d/%m/%Y') }}<br>
+                    <strong>Invoice #:</strong> {{ purchase.invoice_no or 'N/A' }}<br>
+                    <strong>Invoice Date:</strong> {{ purchase.invoice_date.strftime('%d/%m/%Y') if purchase.invoice_date else 'N/A' }}<br>
+                    <strong>Bill Type:</strong> {{ purchase.bill_type|upper if purchase.bill_type else 'GST' }}
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <!-- Items -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Product</th>
+                <th class="text-right">Batch</th>
+                <th class="text-right">Expiry</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">MRP</th>
+                <th class="text-right">Rate</th>
+                <th class="text-right">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in purchase.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>
+                    {{ item.product.product_name[:40] if item.product else 'N/A' }}
+                    {% if item.product and item.product.product_code %}
+                    <br><small>{{ item.product.product_code }}</small>
+                    {% endif %}
+                </td>
+                <td class="text-right">{{ item.batch_no or '-' }}</td>
+                <td class="text-right">{{ item.expiry_date.strftime('%m/%y') if item.expiry_date else '-' }}</td>
+                <td class="text-right">{{ item.quantity }}{% if item.free_qty %} + {{ item.free_qty }}{% endif %}</td>
+                <td class="text-right">₹{{ "%.2f"|format(item.mrp or 0) }}</td>
+                <td class="text-right">₹{{ "%.2f"|format(item.rate) }}</td>
+                <td class="text-right">₹{{ "%.2f"|format(item.amount) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- Totals -->
+    <div class="totals">
+        <div class="row">
+            <span>Subtotal:</span>
+            <span>₹{{ "%.2f"|format(purchase.subtotal) }}</span>
+        </div>
+        {% if purchase.discount_amt > 0 %}
+        <div class="row">
+            <span>Discount:</span>
+            <span>-₹{{ "%.2f"|format(purchase.discount_amt) }}</span>
+        </div>
+        {% endif %}
+        <div class="row">
+            <span>GST:</span>
+            <span>₹{{ "%.2f"|format(purchase.tax_amt or 0) }}</span>
+        </div>
+        {% if purchase.round_off != 0 %}
+        <div class="row">
+            <span>Round Off:</span>
+            <span>{{ '+' if purchase.round_off > 0 else '' }}₹{{ "%.2f"|format(purchase.round_off) }}</span>
+        </div>
+        {% endif %}
+        <div class="row grand-total">
+            <span>TOTAL:</span>
+            <span>₹{{ "%.2f"|format(purchase.total_amount) }}</span>
+        </div>
+    </div>
+    
+    <!-- Amount in Words -->
+    <div style="margin-top: 20px;">
+        <strong>Amount in Words:</strong><br>
+        {{ numberToWords(purchase.total_amount|int) }} Rupees Only
+    </div>
+    
+    <!-- Payment Info -->
+    {% if purchase.payment_status != 'paid' %}
+    <div class="footer" style="margin-top: 20px; text-align: left;">
+        <strong>Payment Details:</strong><br>
+        Cash: ₹{{ "%.2f"|format(purchase.cash_amount or 0) }} | 
+        Card: ₹{{ "%.2f"|format(purchase.card_amount or 0) }} | 
+        Online: ₹{{ "%.2f"|format(purchase.online_amount or 0) }}<br>
+        <strong>Balance Due:</strong> ₹{{ "%.2f"|format(purchase.total_amount - (purchase.cash_amount or 0) - (purchase.card_amount or 0) - (purchase.online_amount or 0)) }}
+    </div>
+    {% endif %}
+    
+    <!-- Footer -->
+    <div class="footer">
+        <p>Thank you for your business!</p>
+        <p>Terms & Conditions Apply</p>
+    </div>
+    
+    <script>
+        function numberToWords(num) {
+            const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 
+                          'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            
+            if (num === 0) return 'Zero';
+            if (num < 20) return ones[num];
+            if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? ' ' + ones[num % 10] : '');
+            if (num < 1000) return ones[Math.floor(num / 100)] + ' Hundred' + (num % 100 ? ' ' + numberToWords(num % 100) : '');
+            if (num < 100000) return numberToWords(Math.floor(num / 1000)) + ' Thousand' + (num % 1000 ? ' ' + numberToWords(num % 1000) : '');
+            return numberToWords(Math.floor(num / 100000)) + ' Lakh' + (num % 100000 ? ' ' + numberToWords(num % 100000) : '');
+        }
+        
+        window.onload = function() {
+            window.print();
+        };
+    </script>
+</body>
+</html>

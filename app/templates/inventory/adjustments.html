@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}Stock Adjustments - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Stock Adjustments</h4>
+            <p class="text-muted mb-0">View and manage stock adjustment records</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('inventory.adjustment_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>
+                <span class="d-none d-sm-inline">New Adjustment</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <form method="GET" class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" name="search" 
+                               placeholder="Search by reason, product..." value="{{ search }}">
+                    </div>
+                </div>
+                <div class="col-6 col-md-2">
+                    <select class="form-select" name="adjustment_type">
+                        <option value="">All Types</option>
+                        <option value="add" {% if adjustment_type == 'add' %}selected{% endif %}>Add Stock</option>
+                        <option value="remove" {% if adjustment_type == 'remove' %}selected{% endif %}>Remove Stock</option>
+                        <option value="damage" {% if adjustment_type == 'damage' %}selected{% endif %}>Damage</option>
+                        <option value="theft" {% if adjustment_type == 'theft' %}selected{% endif %}>Theft/Loss</option>
+                        <option value="return" {% if adjustment_type == 'return' %}selected{% endif %}>Return</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <select class="form-select" name="status">
+                        <option value="">All Status</option>
+                        <option value="approved" {% if status == 'approved' %}selected{% endif %}>Approved</option>
+                        <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-2">
+                    <button type="submit" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-search"></i> Filter
+                    </button>
+                    <a href="{{ url_for('inventory.adjustments') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-list-check text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Total Adjustments</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.total }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-plus-circle text-success"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Stock Added</p>
+                            <h4 class="mb-0 fw-bold text-success">{{ summary.stock_added }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-danger bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-dash-circle text-danger"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Stock Removed</p>
+                            <h4 class="mb-0 fw-bold text-danger">{{ summary.stock_removed }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-hourglass-split text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Pending</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.pending }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Adjustments Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">Date</th>
+                            <th>Product</th>
+                            <th class="text-center">Batch</th>
+                            <th class="text-center">Type</th>
+                            <th class="text-center">Qty Change</th>
+                            <th class="text-center">Previous</th>
+                            <th class="text-center">New</th>
+                            <th>Reason</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for adjustment in adjustments.items %}
+                        <tr>
+                            <td class="ps-3">{{ adjustment.created_at.strftime('%d/%m/%Y') }}</td>
+                            <td>
+                                {% if adjustment.product %}
+                                <a href="{{ url_for('products.view', id=adjustment.product_id) }}" class="text-decoration-none">
+                                    <strong>{{ adjustment.product.product_name }}</strong>
+                                </a>
+                                <br><small class="text-muted">{{ adjustment.product.product_code }}</small>
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td class="text-center"><code>{{ adjustment.batch_no or '-' }}</code></td>
+                            <td class="text-center">
+                                {% if adjustment.adjustment_type == 'add' %}
+                                <span class="badge bg-success">Add</span>
+                                {% elif adjustment.adjustment_type == 'remove' %}
+                                <span class="badge bg-danger">Remove</span>
+                                {% elif adjustment.adjustment_type == 'damage' %}
+                                <span class="badge bg-warning text-dark">Damage</span>
+                                {% elif adjustment.adjustment_type == 'theft' %}
+                                <span class="badge bg-danger">Theft/Loss</span>
+                                {% elif adjustment.adjustment_type == 'return' %}
+                                <span class="badge bg-info">Return</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ adjustment.adjustment_type|title }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if adjustment.adjustment_type in ['add', 'return'] %}
+                                <span class="text-success fw-bold">+{{ adjustment.quantity_change }}</span>
+                                {% else %}
+                                <span class="text-danger fw-bold">{{ adjustment.quantity_change }}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ adjustment.previous_qty }}</td>
+                            <td class="text-center">{{ adjustment.new_qty }}</td>
+                            <td class="text-muted small">{{ adjustment.reason or '-' }}</td>
+                            <td class="text-center">
+                                <span class="badge bg-{{ 'success' if adjustment.status == 'approved' else 'warning' }}">
+                                    {{ adjustment.status|title }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('inventory.view_adjustment', id=adjustment.id) }}" class="btn btn-outline-primary" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    {% if adjustment.status == 'pending' and current_user.is_admin %}
+                                    <form action="{{ url_for('inventory.approve_adjustment', id=adjustment.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-success" title="Approve" onclick="return confirm('Approve this adjustment?')">
+                                            <i class="bi bi-check"></i>
+                                        </button>
+                                    </form>
+                                    <form action="{{ url_for('inventory.reject_adjustment', id=adjustment.id) }}" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger" title="Reject" onclick="return confirm('Reject this adjustment?')">
+                                            <i class="bi bi-x"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="bi bi-sliders fs-1"></i>
+                                    <p class="mt-2 mb-1">No stock adjustments found</p>
+                                    <a href="{{ url_for('inventory.adjustment_new') }}" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-plus-lg me-1"></i>New Adjustment
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if adjustments.pages > 1 %}
+        <div class="card-footer bg-white">
+            <nav aria-label="Adjustments pagination">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item {{ 'disabled' if not adjustments.has_prev }}">
+                        <a class="page-link" href="{{ url_for('inventory.adjustments', page=adjustments.prev_num, search=search, adjustment_type=adjustment_type, status=status) }}">
+                            Previous
+                        </a>
+                    </li>
+                    {% for p in adjustments.iter_pages() %}
+                        {% if p %}
+                        <li class="page-item {{ 'active' if p == adjustments.page }}">
+                            <a class="page-link" href="{{ url_for('inventory.adjustments', page=p, search=search, adjustment_type=adjustment_type, status=status) }}">
+                                {{ p }}
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+                    <li class="page-item {{ 'disabled' if not adjustments.has_next }}">
+                        <a class="page-link" href="{{ url_for('inventory.adjustments', page=adjustments.next_num, search=search, adjustment_type=adjustment_type, status=status) }}">
+                            Next
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

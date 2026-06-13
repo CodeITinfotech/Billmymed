@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block title %}Racks Management - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Racks & Locations</h4>
+            <p class="text-muted mb-0">Manage storage racks and product locations</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRackModal">
+                <i class="bi bi-plus-lg me-1"></i>
+                <span class="d-none d-sm-inline">Add Rack</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Filters -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body py-3">
+            <form method="GET" class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0">
+                            <i class="bi bi-search text-muted"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" name="search" 
+                               placeholder="Search rack name, location..." value="{{ search }}">
+                    </div>
+                </div>
+                <div class="col-6 col-md-2">
+                    <select class="form-select" name="warehouse">
+                        <option value="">All Warehouses</option>
+                        {% for wh in warehouses %}
+                        <option value="{{ wh.id }}" {% if warehouse|int == wh.id %}selected{% endif %}>
+                            {{ wh.warehouse_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 col-md-2">
+                    <select class="form-select" name="status">
+                        <option value="">All Status</option>
+                        <option value="active" {% if status == 'active' %}selected{% endif %}>Active</option>
+                        <option value="inactive" {% if status == 'inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-4">
+                    <button type="submit" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-search"></i> Filter
+                    </button>
+                    <a href="{{ url_for('inventory.racks') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Summary Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-grid-3x3-gap text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Total Racks</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.total }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-check-circle text-success"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Active Racks</p>
+                            <h4 class="mb-0 fw-bold text-success">{{ summary.active }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-info bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-box-seam text-info"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Products Stored</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.products_stored }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body py-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-warning bg-opacity-10 rounded-3 p-2">
+                                <i class="bi bi-grid-3x3-gap text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="ms-3">
+                            <p class="text-muted small mb-1">Warehouses</p>
+                            <h4 class="mb-0 fw-bold">{{ summary.warehouses }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Racks Grid -->
+    <div class="row g-3">
+        {% for rack in racks.items %}
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white py-2 d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="bi bi-grid-3x3-gap me-2"></i>{{ rack.rack_name }}
+                    </h6>
+                    <span class="badge bg-{{ 'success' if rack.is_active else 'secondary' }}">
+                        {{ 'Active' if rack.is_active else 'Inactive' }}
+                    </span>
+                </div>
+                <div class="card-body py-2">
+                    <div class="row small">
+                        <div class="col-6">
+                            <p class="text-muted mb-1">
+                                <i class="bi bi-building me-1"></i> {{ rack.warehouse.warehouse_name if rack.warehouse else 'N/A' }}
+                            </p>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-geo-alt me-1"></i> {{ rack.location or 'No location' }}
+                            </p>
+                        </div>
+                        <div class="col-6 text-end">
+                            <p class="text-muted mb-1">
+                                <i class="bi bi-box-seam me-1"></i> {{ rack.products.count() if rack.products else 0 }} Products
+                            </p>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-stack me-1"></i> {{ rack.current_stock or 0 }} Stock
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-white py-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="btn-group btn-group-sm">
+                            <button type="button" class="btn btn-outline-primary" 
+                                    onclick="editRack({{ rack.id }}, '{{ rack.rack_name }}', '{{ rack.location or '' }}', '{{ rack.warehouse_id or '' }}', {{ rack.is_active|int }})">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <a href="{{ url_for('inventory.rack_products', rack_id=rack.id) }}" class="btn btn-outline-info">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </div>
+                        <form action="{{ url_for('inventory.delete_rack', id=rack.id) }}" method="POST" class="d-inline">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                    onclick="return confirm('Delete this rack? Products will be unassigned.')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <div class="empty-state">
+                        <i class="bi bi-grid-3x3-gap fs-1"></i>
+                        <p class="mt-2 mb-1">No racks found</p>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addRackModal">
+                            <i class="bi bi-plus-lg me-1"></i>Add Rack
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if racks.pages > 1 %}
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Racks pagination">
+            <ul class="pagination justify-content-center mb-0">
+                <li class="page-item {{ 'disabled' if not racks.has_prev }}">
+                    <a class="page-link" href="{{ url_for('inventory.racks', page=racks.prev_num, search=search, warehouse=warehouse, status=status) }}">
+                        Previous
+                    </a>
+                </li>
+                {% for p in racks.iter_pages() %}
+                    {% if p %}
+                    <li class="page-item {{ 'active' if p == racks.page }}">
+                        <a class="page-link" href="{{ url_for('inventory.racks', page=p, search=search, warehouse=warehouse, status=status) }}">
+                            {{ p }}
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {{ 'disabled' if not racks.has_next }}">
+                    <a class="page-link" href="{{ url_for('inventory.racks', page=racks.next_num, search=search, warehouse=warehouse, status=status) }}">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Rack Modal -->
+<div class="modal fade" id="addRackModal" tabindex="-1" aria-labelledby="addRackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addRackModalLabel">
+                    <i class="bi bi-grid-3x3-gap me-2"></i>Add Rack
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('inventory.add_rack') }}" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="rack_name" class="form-label">Rack Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="rack_name" name="rack_name" required
+                               placeholder="e.g., RACK-A1, SHELF-01">
+                    </div>
+                    <div class="mb-3">
+                        <label for="warehouse_id" class="form-label">Warehouse <span class="text-danger">*</span></label>
+                        <select class="form-select" id="warehouse_id" name="warehouse_id" required>
+                            <option value="">Select Warehouse</option>
+                            {% for wh in warehouses %}
+                            <option value="{{ wh.id }}">{{ wh.warehouse_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location / Description</label>
+                        <textarea class="form-control" id="location" name="location" rows="2" 
+                                  placeholder="e.g., Ground floor, Near entrance"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="is_active" class="form-label">Status</label>
+                        <select class="form-select" id="is_active" name="is_active">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>Save
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Rack Modal -->
+<div class="modal fade" id="editRackModal" tabindex="-1" aria-labelledby="editRackModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editRackModalLabel">
+                    <i class="bi bi-pencil me-2"></i>Edit Rack
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('inventory.update_rack', id=0) }}" method="POST" id="editRackForm">
+                <div class="modal-body">
+                    <input type="hidden" id="edit_rack_id" name="rack_id">
+                    <div class="mb-3">
+                        <label for="edit_rack_name" class="form-label">Rack Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="edit_rack_name" name="rack_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_warehouse_id" class="form-label">Warehouse <span class="text-danger">*</span></label>
+                        <select class="form-select" id="edit_warehouse_id" name="warehouse_id" required>
+                            <option value="">Select Warehouse</option>
+                            {% for wh in warehouses %}
+                            <option value="{{ wh.id }}">{{ wh.warehouse_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_location" class="form-label">Location / Description</label>
+                        <textarea class="form-control" id="edit_location" name="location" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="edit_is_active" class="form-label">Status</label>
+                        <select class="form-select" id="edit_is_active" name="is_active">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>Update
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function editRack(id, name, location, warehouseId, isActive) {
+    document.getElementById('edit_rack_id').value = id;
+    document.getElementById('edit_rack_name').value = name;
+    document.getElementById('edit_location').value = location;
+    document.getElementById('edit_warehouse_id').value = warehouseId;
+    document.getElementById('edit_is_active').value = isActive;
+    document.getElementById('editRackForm').action = '/inventory/racks/edit/' + id;
+    new bootstrap.Modal(document.getElementById('editRackModal')).show();
+}
+</script>
+{% endblock %}
+{% endblock %}

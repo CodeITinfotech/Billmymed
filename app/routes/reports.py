@@ -113,45 +113,38 @@ def purchase():
     from_dt = datetime.strptime(from_date, '%Y-%m-%d')
     to_dt = datetime.strptime(to_date, '%Y-%m-%d') + timedelta(days=1)
     
-    if report_type == 'summary':
-        total_purchase = db.session.query(func.sum(Purchase.total_amount)).filter(
-            Purchase.purchase_date >= from_dt,
-            Purchase.purchase_date < to_dt,
-            Purchase.is_cancelled == False
-        ).scalar() or 0
-        
-        purchase_count = Purchase.query.filter(
-            Purchase.purchase_date >= from_dt,
-            Purchase.purchase_date < to_dt,
-            Purchase.is_cancelled == False
-        ).count()
-        
-        return render_template('reports/purchase_summary.html',
-                             from_date=from_date,
-                             to_date=to_date,
-                             total_purchase=total_purchase,
-                             purchase_count=purchase_count)
+    # Get purchases for the period
+    purchases = Purchase.query.filter(
+        Purchase.purchase_date >= from_dt,
+        Purchase.purchase_date < to_dt,
+        Purchase.is_cancelled == False
+    ).order_by(Purchase.purchase_date.desc()).all()
     
-    elif report_type == 'productwise':
-        results = db.session.query(
-            Product.product_code,
-            Product.product_name,
-            func.sum(PurchaseItem.quantity).label('total_qty'),
-            func.sum(PurchaseItem.amount).label('total_amount')
-        ).join(PurchaseItem, PurchaseItem.product_id == Product.id
-        ).join(Purchase, Purchase.id == PurchaseItem.purchase_id
-        ).filter(
-            Purchase.purchase_date >= from_dt,
-            Purchase.purchase_date < to_dt,
-            Purchase.is_cancelled == False
-        ).group_by(Product.id).order_by(func.sum(PurchaseItem.amount).desc()).all()
-        
-        return render_template('reports/purchase_productwise.html',
-                             from_date=from_date,
-                             to_date=to_date,
-                             results=results)
+    total_purchase = db.session.query(func.sum(Purchase.total_amount)).filter(
+        Purchase.purchase_date >= from_dt,
+        Purchase.purchase_date < to_dt,
+        Purchase.is_cancelled == False
+    ).scalar() or 0
     
-    return render_template('reports/purchase.html', from_date=from_date, to_date=to_date)
+    purchase_count = len(purchases)
+    
+    return render_template('reports/purchase.html',
+                         from_date=from_date,
+                         to_date=to_date,
+                         total_purchase=total_purchase,
+                         purchase_count=purchase_count,
+                         purchases=purchases,
+                         summary={
+                             'total_purchase': total_purchase,
+                             'bill_count': purchase_count,
+                             'total_discount': 0,
+                             'total_tax': 0,
+                             'paid_amount': 0,
+                             'pending_amount': 0,
+                             'returns': 0,
+                             'supplier_count': len(set([p.supplier_id for p in purchases])),
+                             'subtotal': total_purchase
+                         })
 
 @reports_bp.route('/stock')
 @login_required
@@ -191,7 +184,7 @@ def expiry():
         Batch.expiry_date,
         Batch.available_qty,
         Batch.mrp,
-        func.days(Batch.expiry_date - func.current_date()).label('days_to_expire')
+        (func.julianday(Batch.expiry_date) - func.julianday('now')).label('days_to_expire')
     ).join(Batch, Batch.product_id == Product.id
     ).filter(
         Batch.expiry_date != None,
@@ -300,7 +293,24 @@ def gst():
                          to_date=to_date,
                          sales=sales,
                          total_taxable=total_taxable,
-                         total_gst=total_gst)
+                         total_gst=total_gst,
+                         report_type=request.args.get('report_type', 'summary'),
+                         tax_type=request.args.get('tax_type', 'sales'),
+                         sales_breakdown={},
+                         purchase_breakdown={},
+                         transactions=[],
+                         summary={
+                             'taxable_sales': total_taxable,
+                             'taxable_purchase': 0,
+                             'total_gst': total_gst,
+                             'cgst': total_gst / 2,
+                             'sgst': total_gst / 2,
+                             'igst': 0,
+                             'count': len(sales),
+                             'output_gst': total_gst,
+                             'input_gst': 0,
+                             'net_gst': total_gst
+                         })
 
 @reports_bp.route('/profit')
 @login_required
@@ -329,13 +339,38 @@ def profit():
     
     total_sales = sum(r.sales_amount for r in results)
     total_profit = sum(r.sales_amount - r.estimated_cost for r in results)
+    invoice_count = len(set(r.product_code for r in results))  # Approximate
+    items_sold = sum(r.qty_sold for r in results)
+    
+    summary = {
+        'gross_sales': total_sales,
+        'cost_of_goods': total_sales - total_profit,
+        'gross_profit': total_profit,
+        'profit_margin': (total_profit / total_sales * 100) if total_sales > 0 else 0,
+        'invoice_count': invoice_count,
+        'items_sold': items_sold,
+        'returns': 0,
+        'discount_given': 0
+    }
+    
+    profit_data = [{
+        'product_code': r.product_code,
+        'product_name': r.product_name,
+        'qty_sold': r.qty_sold,
+        'sales_amount': r.sales_amount,
+        'cost': r.estimated_cost,
+        'profit': r.sales_amount - r.estimated_cost,
+        'margin': ((r.sales_amount - r.estimated_cost) / r.sales_amount * 100) if r.sales_amount > 0 else 0
+    } for r in results]
     
     return render_template('reports/profit.html',
                          from_date=from_date,
                          to_date=to_date,
                          results=results,
                          total_sales=total_sales,
-                         total_profit=total_profit)
+                         total_profit=total_profit,
+                         summary=summary,
+                         profit_data=profit_data)
 
 @reports_bp.route('/dashboard-stats')
 @login_required
