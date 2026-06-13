@@ -67,30 +67,30 @@
                             <div class="col-12 col-md-4">
                                 <label for="product_type" class="form-label">Product Type</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="product_type" name="product_type" list="product_type_list" autocomplete="off">
+                                    <select class="form-select" id="product_type" name="product_type">
+                                        <option value="">Select Type</option>
+                                        <option value="Tablet">Tablet</option>
+                                        <option value="Capsule">Capsule</option>
+                                        <option value="Syrup">Syrup</option>
+                                        <option value="Injection">Injection</option>
+                                        <option value="Cream/Ointment">Cream/Ointment</option>
+                                        <option value="Drops">Drops</option>
+                                        <option value="Inhaler">Inhaler</option>
+                                        <option value="Granules">Granules</option>
+                                        <option value="Powder">Powder</option>
+                                        <option value="Liquid">Liquid</option>
+                                        <option value="Suspension">Suspension</option>
+                                        <option value="Gel">Gel</option>
+                                        <option value="Solution">Solution</option>
+                                        <option value="Pessary">Pessary</option>
+                                        <option value="Suppository">Suppository</option>
+                                        <option value="Patch">Patch</option>
+                                        <option value="Other">Other</option>
+                                    </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
-                                <datalist id="product_type_list">
-                                    <option value="Tablet">
-                                    <option value="Capsule">
-                                    <option value="Syrup">
-                                    <option value="Injection">
-                                    <option value="Cream/Ointment">
-                                    <option value="Drops">
-                                    <option value="Inhaler">
-                                    <option value="Granules">
-                                    <option value="Powder">
-                                    <option value="Liquid">
-                                    <option value="Suspension">
-                                    <option value="Gel">
-                                    <option value="Solution">
-                                    <option value="Pessary">
-                                    <option value="Suppository">
-                                    <option value="Patch">
-                                    <option value="Other">
-                                </datalist>
                             </div>
                             <div class="col-12 col-md-4">
                                 <label for="schedule" class="form-label">Schedule</label>
