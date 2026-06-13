@@ -6,18 +6,18 @@ nohup: ignoring input
  * Running on http://127.0.0.1:12000
  * Running on http://10.2.2.152:12000
 [33mPress CTRL+C to quit[0m
-10.2.49.2 - - [13/Jun/2026 08:08:17] "GET /products/ HTTP/1.1" 200 -
-10.2.49.2 - - [13/Jun/2026 08:08:17] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:08:17] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:08:17] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:08:17] "GET /api/alerts/stock HTTP/1.1" 200 -
-10.2.49.2 - - [13/Jun/2026 08:08:27] "GET /products/add HTTP/1.1" 200 -
-10.2.49.2 - - [13/Jun/2026 08:08:27] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:08:27] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:08:27] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:08:27] "GET /api/alerts/stock HTTP/1.1" 200 -
-10.2.49.2 - - [13/Jun/2026 08:09:53] "GET /products/ HTTP/1.1" 200 -
-10.2.49.2 - - [13/Jun/2026 08:09:53] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:09:53] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:09:53] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
-10.2.49.2 - - [13/Jun/2026 08:09:53] "GET /api/alerts/stock HTTP/1.1" 200 -
+10.2.21.2 - - [13/Jun/2026 08:22:10] "GET /suppliers/add HTTP/1.1" 200 -
+10.2.21.2 - - [13/Jun/2026 08:22:10] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:10] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:10] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:10] "GET /api/alerts/stock HTTP/1.1" 200 -
+10.2.21.2 - - [13/Jun/2026 08:22:28] "GET /customers/add HTTP/1.1" 200 -
+10.2.21.2 - - [13/Jun/2026 08:22:28] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:28] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:28] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:28] "GET /api/alerts/stock HTTP/1.1" 200 -
+10.2.21.2 - - [13/Jun/2026 08:22:39] "GET /products/categories HTTP/1.1" 200 -
+10.2.21.2 - - [13/Jun/2026 08:22:39] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:39] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:39] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+10.2.21.2 - - [13/Jun/2026 08:22:39] "GET /api/alerts/stock HTTP/1.1" 200 -

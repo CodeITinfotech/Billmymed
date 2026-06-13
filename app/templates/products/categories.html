@@ -44,7 +44,7 @@
                             </td>
                             <td class="text-muted">{{ category.description or '-' }}</td>
                             <td class="text-center">
-                                <span class="badge bg-secondary">{{ category.products.count() if category.products else 0 }}</span>
+                                <span class="badge bg-secondary">{{ category.products|length if category.products else 0 }}</span>
                             </td>
                             <td class="text-center">
                                 {% if category.is_active %}
