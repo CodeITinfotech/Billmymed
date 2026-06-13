@@ -154,7 +154,7 @@ def edit(id):
         return redirect(url_for('products.view', id=product.id))
     
     categories = Category.query.filter_by(is_active=True).order_by(Category.category_name).all()
-    return render_template('products/edit.html', product=product, categories=categories)
+    return render_template('products/add.html', product=product, categories=categories, is_edit=True)
 
 @products_bp.route('/<int:id>/delete', methods=['POST'])
 @login_required

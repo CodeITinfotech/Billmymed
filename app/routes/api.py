@@ -277,15 +277,23 @@ def get_product_batches_by_product(product_id):
         Batch.available_qty >= 0  # Allow all batches for purchase
     ).order_by(Batch.expiry_date).all()
     
-    return jsonify([{
-        'id': b.id,
-        'batch_no': b.batch_no,
-        'expiry_date': b.expiry_date.isoformat() if b.expiry_date else None,
-        'available_qty': b.available_qty,
-        'sale_rate': float(b.sale_rate) if b.sale_rate else 0,
-        'mrp': float(b.mrp) if b.mrp else 0,
-        'rate': float(b.purchase_rate) if b.purchase_rate else 0
-    } for b in batches])
+    # Get product pack_type
+    product = Product.query.get(product_id)
+    pack_type = product.pack_type if product and product.pack_type else 'Strip'
+    
+    return jsonify({
+        'pack_type': pack_type,
+        'batches': [{
+            'id': b.id,
+            'batch_no': b.batch_no,
+            'expiry_date': b.expiry_date.isoformat() if b.expiry_date else None,
+            'available_qty': b.available_qty,
+            'sale_rate': float(b.sale_rate) if b.sale_rate else 0,
+            'mrp': float(b.mrp) if b.mrp else 0,
+            'rate': float(b.purchase_rate) if b.purchase_rate else 0,
+            'pack_type': b.pack_type or pack_type
+        } for b in batches]
+    })
 
 # Dashboard stats
 @api_bp.route('/dashboard/stats')
