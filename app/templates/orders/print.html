@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Print Order {{ order.order_no }} - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block extra_css %}
+<style>
+@media print {
+    .no-print { display: none !important; }
+    body { font-size: 12px; }
+    .card { border: none !important; box-shadow: none !important; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="no-print mb-4 text-end">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="bi bi-printer me-1"></i> Print
+        </button>
+        <a href="{{ url_for('orders.list') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <!-- Header -->
+            <div class="row mb-4">
+                <div class="col-6">
+                    <h4 class="mb-1">{{ config.COMPANY_NAME }}</h4>
+                    <p class="mb-0 text-muted">{{ config.COMPANY_ADDRESS }}</p>
+                    <p class="mb-0 text-muted">Phone: {{ config.COMPANY_PHONE }}</p>
+                </div>
+                <div class="col-6 text-end">
+                    <h5 class="text-primary">PURCHASE ORDER</h5>
+                    <p class="mb-0"><strong>{{ order.order_no }}</strong></p>
+                    <p class="mb-0">Date: {{ order.order_date.strftime('%d-%m-%Y') }}</p>
+                </div>
+            </div>
+
+            <!-- Supplier -->
+            <div class="row mb-4">
+                <div class="col-6">
+                    <h6 class="text-muted mb-2">SUPPLIER</h6>
+                    <p class="mb-0"><strong>{{ order.supplier.account_name if order.supplier else 'N/A' }}</strong></p>
+                    <p class="mb-0">{{ order.supplier.address if order.supplier else '' }}</p>
+                    <p class="mb-0">{{ order.supplier.city if order.supplier else '' }}</p>
+                    <p class="mb-0">Phone: {{ order.supplier.mobile if order.supplier else '-' }}</p>
+                </div>
+                <div class="col-6 text-end">
+                    <h6 class="text-muted mb-2">EXPECTED DELIVERY</h6>
+                    <p class="mb-0">{{ order.expected_date.strftime('%d-%m-%Y') if order.expected_date else 'Not specified' }}</p>
+                </div>
+            </div>
+
+            <!-- Items Table -->
+            <table class="table table-bordered mb-4">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th class="text-end">Qty</th>
+                        <th class="text-end">Rate</th>
+                        <th class="text-end">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ item.product.product_name if item.product else 'N/A' }}</td>
+                        <td class="text-end">{{ item.quantity }}</td>
+                        <td class="text-end">₹{{ "%.2f"|format(item.unit_rate) }}</td>
+                        <td class="text-end">₹{{ "%.2f"|format(item.amount) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                        <td class="text-end">₹{{ "%.2f"|format(order.subtotal) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Tax:</strong></td>
+                        <td class="text-end">₹{{ "%.2f"|format(order.tax_amt) }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                        <td class="text-end"><strong>₹{{ "%.2f"|format(order.total_amount) }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            {% if order.remarks %}
+            <div class="mb-4">
+                <strong>Remarks:</strong> {{ order.remarks }}
+            </div>
+            {% endif %}
+
+            <!-- Signatures -->
+            <div class="row mt-5">
+                <div class="col-6">
+                    <p class="text-muted mb-0">Supplier Signature</p>
+                    <div style="border-top: 1px solid #ccc; width: 200px; margin-top: 50px;"></div>
+                </div>
+                <div class="col-6 text-end">
+                    <p class="text-muted mb-0">Authorized Signature</p>
+                    <div style="border-top: 1px solid #ccc; width: 200px; margin-top: 50px; margin-left: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

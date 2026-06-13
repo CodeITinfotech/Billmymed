@@ -107,7 +107,6 @@ class Product(db.Model):
     max_stock = db.Column(db.Integer, default=0)
     reorder_level = db.Column(db.Integer, default=0)
     hsn_code = db.Column(db.String(10))
-    barcode = db.Column(db.String(50))
     location = db.Column(db.String(50))  # Rack/shelf location
     is_active = db.Column(db.Boolean, default=True)
     is_banned = db.Column(db.Boolean, default=False)
@@ -116,6 +115,7 @@ class Product(db.Model):
     
     # Relationships
     batches = db.relationship('Batch', backref='product', lazy='dynamic', cascade='all, delete-orphan')
+    barcodes = db.relationship('ProductBarcode', backref='product', lazy='dynamic', cascade='all, delete-orphan')
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     category = db.relationship('Category', backref='products')
     
@@ -125,6 +125,21 @@ class Product(db.Model):
     @property
     def current_stock(self):
         return sum(b.available_qty for b in self.batches if b.available_qty > 0)
+
+class ProductBarcode(db.Model):
+    """Multiple barcodes can be linked to one product"""
+    __tablename__ = 'product_barcodes'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    barcode = db.Column(db.String(50), nullable=False, index=True)
+    is_primary = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    __table_args__ = (db.UniqueConstraint('barcode', name='uq_barcode'),)
+    
+    def __repr__(self):
+        return f'<ProductBarcode {self.barcode} -> {self.product_id}>'
 
 class Category(db.Model):
     __tablename__ = 'categories'
@@ -259,7 +274,7 @@ class Invoice(db.Model):
     prescription_no = db.Column(db.String(50))
     remarks = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', backref='invoices')
+    user = db.relationship('User', foreign_keys=[user_id], backref='invoices')
     is_cancelled = db.Column(db.Boolean, default=False)
     cancelled_by = db.Column(db.Integer, db.ForeignKey('users.id'))
     cancelled_at = db.Column(db.DateTime)
@@ -304,7 +319,7 @@ class Purchase(db.Model):
     purchase_no = db.Column(db.String(20), unique=True, nullable=False, index=True)
     purchase_date = db.Column(db.DateTime, default=datetime.utcnow, index=True)
     supplier_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'), nullable=False)
-    supplier = db.relationship('AccountMaster', backref='purchases')
+    supplier = db.relationship('AccountMaster', foreign_keys=[supplier_id], backref='purchases')
     invoice_no = db.Column(db.String(30))
     invoice_date = db.Column(db.Date)
     subtotal = db.Column(db.Numeric(12, 2), default=0)
@@ -359,7 +374,7 @@ class Payment(db.Model):
     payment_date = db.Column(db.DateTime, default=datetime.utcnow)
     invoice_id = db.Column(db.Integer, db.ForeignKey('invoices.id'))
     account_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'), nullable=False)
-    account = db.relationship('AccountMaster', backref='payments')
+    account = db.relationship('AccountMaster', foreign_keys=[account_id], backref='payments')
     amount = db.Column(db.Numeric(12, 2), nullable=False)
     payment_type = db.Column(db.String(20), nullable=False)  # receipt, payment
     payment_mode = db.Column(db.String(20))  # cash, card, cheque, online
@@ -413,6 +428,58 @@ class StockAdjustmentItem(db.Model):
     def __repr__(self):
         return f'<StockAdjItem {self.product_id}: {self.adj_qty}>'
 
+class PurchaseOrder(db.Model):
+    """Purchase Order - Pending orders sent to suppliers"""
+    __tablename__ = 'purchase_orders'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    order_no = db.Column(db.String(20), unique=True, nullable=False, index=True)
+    order_date = db.Column(db.DateTime, default=datetime.utcnow, index=True)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'), nullable=False)
+    supplier = db.relationship('AccountMaster', foreign_keys=[supplier_id], backref='purchase_orders')
+    expected_date = db.Column(db.Date)
+    status = db.Column(db.String(20), default='pending')  # pending, sent, approved, partial, received, cancelled
+    subtotal = db.Column(db.Numeric(12, 2), default=0)
+    discount_perc = db.Column(db.Numeric(5, 2), default=0)
+    discount_amt = db.Column(db.Numeric(12, 2), default=0)
+    tax_amt = db.Column(db.Numeric(12, 2), default=0)
+    total_amount = db.Column(db.Numeric(12, 2), default=0)
+    remarks = db.Column(db.Text)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    is_cancelled = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    items = db.relationship('PurchaseOrderItem', backref='order', lazy='dynamic', cascade='all, delete-orphan')
+    
+    def __repr__(self):
+        return f'<PurchaseOrder {self.order_no}>'
+
+class PurchaseOrderItem(db.Model):
+    """Items in a Purchase Order"""
+    __tablename__ = 'purchase_order_items'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('purchase_orders.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    product = db.relationship('Product')
+    quantity = db.Column(db.Integer, nullable=False)
+    received_qty = db.Column(db.Integer, default=0)  # quantity received so far
+    pending_qty = db.Column(db.Integer)  # calculated field
+    unit_rate = db.Column(db.Numeric(12, 2), nullable=False)
+    mrp = db.Column(db.Numeric(12, 2))
+    discount_perc = db.Column(db.Numeric(5, 2), default=0)
+    discount_amt = db.Column(db.Numeric(12, 2), default=0)
+    tax_perc = db.Column(db.Numeric(5, 2), default=0)
+    tax_amt = db.Column(db.Numeric(12, 2), default=0)
+    amount = db.Column(db.Numeric(12, 2), nullable=False)
+    remarks = db.Column(db.String(200))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<POItem {self.product_id} x {self.quantity}>'
+
 class Ledger(db.Model):
     __tablename__ = 'ledgers'
     
@@ -421,7 +488,7 @@ class Ledger(db.Model):
     voucher_no = db.Column(db.String(20), nullable=False)
     voucher_type = db.Column(db.String(20), nullable=False)  # sale, purchase, payment, receipt, contra, journal
     account_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'), nullable=False)
-    account = db.relationship('AccountMaster', backref='ledger_entries')
+    account = db.relationship('AccountMaster', foreign_keys=[account_id], backref='ledger_entries')
     debit = db.Column(db.Numeric(12, 2), default=0)
     credit = db.Column(db.Numeric(12, 2), default=0)
     narration = db.Column(db.Text)
@@ -440,7 +507,7 @@ class CardDetail(db.Model):
     card_no = db.Column(db.String(20), unique=True, nullable=False)
     card_type = db.Column(db.String(20), default='loyalty')  # loyalty, membership, gift
     customer_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'), nullable=False)
-    customer = db.relationship('AccountMaster', backref='cards')
+    customer = db.relationship('AccountMaster', foreign_keys=[customer_id], backref='cards')
     issue_date = db.Column(db.Date, default=datetime.utcnow)
     expiry_date = db.Column(db.Date)
     points = db.Column(db.Integer, default=0)
@@ -458,7 +525,7 @@ class Prescription(db.Model):
     prescription_no = db.Column(db.String(20), unique=True, nullable=False)
     prescription_date = db.Column(db.DateTime, default=datetime.utcnow)
     customer_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'))
-    customer = db.relationship('AccountMaster', backref='prescriptions')
+    customer = db.relationship('AccountMaster', foreign_keys=[customer_id], backref='prescriptions')
     doctor_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'))
     doctor = db.relationship('AccountMaster', foreign_keys=[doctor_id])
     doctor_name = db.Column(db.String(100))

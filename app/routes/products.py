@@ -54,6 +54,8 @@ def view(id):
 @products_bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
+    from app.models import ProductBarcode
+    
     if request.method == 'POST':
         product_code = request.form.get('product_code', '').strip()
         product_name = request.form.get('product_name', '').strip()
@@ -85,13 +87,33 @@ def add():
             max_stock=request.form.get('max_stock', 0, type=int),
             reorder_level=request.form.get('reorder_level', 0, type=int),
             hsn_code=request.form.get('hsn_code', ''),
-            barcode=request.form.get('barcode', ''),
             location=request.form.get('location', ''),
             category_id=request.form.get('category_id', type=int)
         )
         
         db.session.add(product)
         db.session.commit()
+        
+        # Add barcodes
+        barcodes_json = request.form.get('barcodes_json', '[]')
+        try:
+            import json
+            barcodes = json.loads(barcodes_json)
+            for i, barcode_str in enumerate(barcodes):
+                barcode_str = barcode_str.strip()
+                if barcode_str:
+                    # Check if barcode already exists
+                    existing = ProductBarcode.query.filter_by(barcode=barcode_str).first()
+                    if not existing:
+                        pb = ProductBarcode(
+                            barcode=barcode_str,
+                            product_id=product.id,
+                            is_primary=(i == 0)  # First one is primary
+                        )
+                        db.session.add(pb)
+            db.session.commit()
+        except:
+            pass
         
         flash(f'Product {product.product_name} added successfully.', 'success')
         return redirect(url_for('products.list'))

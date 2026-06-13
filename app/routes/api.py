@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from app import db
-from app.models import Product, Batch, AccountMaster, Invoice, InvoiceItem
+from app.models import Product, Batch, AccountMaster, AccountGroup, Invoice, InvoiceItem, ProductBarcode
 from sqlalchemy import or_
 
 api_bp = Blueprint('api', __name__)
@@ -356,3 +356,311 @@ def search():
             })
     
     return jsonify({'results': results})
+
+# ============ Autocomplete APIs for Product Form ============
+
+# Generic Name APIs
+@api_bp.route('/generic-names/search')
+@login_required
+def search_generic_names():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    generics = db.session.query(Product.generic_name).distinct().filter(
+        Product.generic_name.ilike(f'%{term}%'),
+        Product.generic_name != None,
+        Product.generic_name != ''
+    ).limit(20).all()
+    
+    return jsonify([g[0] for g in generics if g[0]])
+
+@api_bp.route('/generic-names', methods=['POST'])
+@login_required
+def add_generic_name():
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    return jsonify({'success': True, 'name': name})
+
+# Manufacturer APIs
+@api_bp.route('/manufacturers/search')
+@login_required
+def search_manufacturers():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    mans = db.session.query(Product.manufacturer).distinct().filter(
+        Product.manufacturer.ilike(f'%{term}%'),
+        Product.manufacturer != None,
+        Product.manufacturer != ''
+    ).limit(20).all()
+    
+    return jsonify([m[0] for m in mans if m[0]])
+
+@api_bp.route('/manufacturers', methods=['POST'])
+@login_required
+def add_manufacturer():
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    return jsonify({'success': True, 'name': name})
+
+# Product Type APIs
+@api_bp.route('/product-types/search')
+@login_required
+def search_product_types():
+    term = request.args.get('q', '').strip()
+    product_types = ['Tablet', 'Capsule', 'Syrup', 'Injection', 'Cream/Ointment', 
+                     'Drops', 'Inhaler', 'Granules', 'Powder', 'Other', 'Liquid',
+                     'Suspension', 'Gel', 'Solution', 'Pessary', 'Suppository', 'Patch']
+    
+    if term:
+        results = [pt for pt in product_types if term.lower() in pt.lower()]
+    else:
+        results = product_types
+    
+    return jsonify(results[:20])
+
+@api_bp.route('/product-types', methods=['POST'])
+@login_required
+def add_product_type():
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    return jsonify({'success': True, 'name': name})
+
+# Schedule APIs
+@api_bp.route('/schedules/search')
+@login_required
+def search_schedules():
+    term = request.args.get('q', '').strip()
+    schedules = ['OTC', 'H', 'Sch-H', 'Sch-H1', 'Sch-X', 'G', 'Sch-G']
+    
+    if term:
+        results = [s for s in schedules if term.lower() in s.lower()]
+    else:
+        results = schedules
+    
+    return jsonify(results[:20])
+
+@api_bp.route('/schedules', methods=['POST'])
+@login_required
+def add_schedule():
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    return jsonify({'success': True, 'name': name})
+
+# HSN Code APIs
+@api_bp.route('/hsn-codes/search')
+@login_required
+def search_hsn_codes():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    hsns = db.session.query(Product.hsn_code).distinct().filter(
+        Product.hsn_code.ilike(f'%{term}%'),
+        Product.hsn_code != None,
+        Product.hsn_code != ''
+    ).limit(20).all()
+    
+    return jsonify([h[0] for h in hsns if h[0]])
+
+@api_bp.route('/hsn-codes', methods=['POST'])
+@login_required
+def add_hsn_code():
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    return jsonify({'success': True, 'name': name})
+
+# Location/Rack APIs
+@api_bp.route('/locations/search')
+@login_required
+def search_locations():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    locations = db.session.query(Product.location).distinct().filter(
+        Product.location.ilike(f'%{term}%'),
+        Product.location != None,
+        Product.location != ''
+    ).limit(20).all()
+    
+    return jsonify([l[0] for l in locations if l[0]])
+
+@api_bp.route('/locations', methods=['POST'])
+@login_required
+def add_location():
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    return jsonify({'success': True, 'name': name})
+
+# Pack Type APIs
+@api_bp.route('/pack-types/search')
+@login_required
+def search_pack_types():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    packs = db.session.query(Product.pack_type).distinct().filter(
+        Product.pack_type.ilike(f'%{term}%'),
+        Product.pack_type != None,
+        Product.pack_type != ''
+    ).limit(20).all()
+    
+    return jsonify([p[0] for p in packs if p[0]])
+
+@api_bp.route('/pack-types', methods=['POST'])
+@login_required
+def add_pack_type():
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Name is required'}), 400
+    return jsonify({'success': True, 'name': name})
+
+# Low Stock & Near Expiry Alert
+@api_bp.route('/alerts/stock')
+@login_required
+def get_stock_alerts():
+    from datetime import datetime, timedelta
+    
+    alerts = []
+    
+    # Low stock products
+    low_stock_products = Product.query.filter_by(is_active=True).all()
+    for product in low_stock_products:
+        total_stock = product.current_stock
+        if total_stock <= product.min_stock:
+            alerts.append({
+                'type': 'low_stock',
+                'product_id': product.id,
+                'product_name': product.product_name,
+                'current_stock': total_stock,
+                'min_stock': product.min_stock,
+                'message': f'Low Stock: {product.product_name} ({total_stock} left)'
+            })
+    
+    # Near expiry products (within 30 days)
+    today = datetime.utcnow().date()
+    expiry_threshold = today + timedelta(days=30)
+    
+    near_expiry_batches = Batch.query.join(Product).filter(
+        Batch.expiry_date != None,
+        Batch.expiry_date <= expiry_threshold,
+        Batch.expiry_date >= today,
+        Batch.available_qty > 0,
+        Product.is_active == True
+    ).order_by(Batch.expiry_date).limit(20).all()
+    
+    for batch in near_expiry_batches:
+        days_left = (batch.expiry_date - today).days
+        alerts.append({
+            'type': 'near_expiry',
+            'product_id': batch.product_id,
+            'product_name': batch.product.product_name,
+            'batch_no': batch.batch_no,
+            'expiry_date': batch.expiry_date.strftime('%d-%m-%Y'),
+            'days_left': days_left,
+            'quantity': batch.available_qty,
+            'message': f'Near Expiry: {batch.product.product_name} ({batch.batch_no}) - {days_left} days'
+        })
+    
+    return jsonify(alerts)
+# ============ Barcode APIs ============
+
+@api_bp.route("/barcodes/search")
+@login_required
+def search_barcodes():
+    term = request.args.get("q", "").strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    barcodes = db.session.query(ProductBarcode.barcode, Product.product_name, Product.product_code).join(
+        Product, ProductBarcode.product_id == Product.id
+    ).filter(
+        ProductBarcode.barcode.ilike(f"%{term}%")
+    ).limit(20).all()
+    
+    return jsonify([{"barcode": b[0], "product_name": b[1], "product_code": b[2]} for b in barcodes])
+
+@api_bp.route("/barcodes/check")
+@login_required
+def check_barcode():
+    barcode = request.args.get("barcode", "").strip()
+    if not barcode:
+        return jsonify({"exists": False, "available": True})
+    
+    existing = ProductBarcode.query.filter_by(barcode=barcode).first()
+    if existing:
+        product = Product.query.get(existing.product_id)
+        return jsonify({
+            "exists": True, "available": False,
+            "product_id": existing.product_id,
+            "product_name": product.product_name if product else "Unknown",
+            "product_code": product.product_code if product else "Unknown"
+        })
+    return jsonify({"exists": False, "available": True})
+
+@api_bp.route("/barcodes/add", methods=["POST"])
+@login_required
+def add_barcode():
+    data = request.get_json()
+    barcode = data.get("barcode", "").strip()
+    product_id = data.get("product_id")
+    
+    if not barcode:
+        return jsonify({"success": False, "error": "Barcode is required"}), 400
+    if not product_id:
+        return jsonify({"success": False, "error": "Product is required"}), 400
+    
+    existing = ProductBarcode.query.filter_by(barcode=barcode).first()
+    if existing:
+        product = Product.query.get(existing.product_id)
+        return jsonify({"success": False, "error": f"This barcode is already linked to: {product.product_name} ({product.product_code})"}), 400
+    
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({"success": False, "error": "Product not found"}), 404
+    
+    is_primary = ProductBarcode.query.filter_by(product_id=product_id).count() == 0
+    new_barcode = ProductBarcode(barcode=barcode, product_id=product_id, is_primary=is_primary)
+    db.session.add(new_barcode)
+    db.session.commit()
+    
+    return jsonify({"success": True, "barcode": barcode, "product_id": product_id, "product_name": product.product_name, "is_primary": is_primary})
+
+@api_bp.route("/barcodes/delete/<int:id>", methods=["DELETE"])
+@login_required
+def delete_barcode(id):
+    barcode = ProductBarcode.query.get_or_404(id)
+    product_id = barcode.product_id
+    barcode_str = barcode.barcode
+    db.session.delete(barcode)
+    db.session.commit()
+    
+    if ProductBarcode.query.filter_by(product_id=product_id).count() > 0:
+        first_barcode = ProductBarcode.query.filter_by(product_id=product_id).first()
+        first_barcode.is_primary = True
+        db.session.commit()
+    
+    return jsonify({"success": True, "message": f"Barcode {barcode_str} deleted"})
+
+@api_bp.route("/barcodes/product/<int:product_id>")
+@login_required
+def get_product_barcodes(product_id):
+    barcodes = ProductBarcode.query.filter_by(product_id=product_id).order_by(ProductBarcode.is_primary.desc()).all()
+    return jsonify([{"id": b.id, "barcode": b.barcode, "is_primary": b.is_primary, "created_at": b.created_at.strftime("%d-%m-%Y")} for b in barcodes])

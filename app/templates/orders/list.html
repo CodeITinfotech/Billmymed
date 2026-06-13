@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Purchase Orders - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1"><i class="bi bi-cart3 me-2"></i>Purchase Orders</h4>
+            <p class="text-muted mb-0">Manage supplier purchase orders</p>
+        </div>
+        <div>
+            <a href="{{ url_for('orders.new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i> New Order
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search order no..." value="{{ search }}">
+                </div>
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        <option value="pending" {{ 'selected' if selected_status == 'pending' else '' }}>Pending</option>
+                        <option value="sent" {{ 'selected' if selected_status == 'sent' else '' }}>Sent</option>
+                        <option value="partial" {{ 'selected' if selected_status == 'partial' else '' }}>Partial</option>
+                        <option value="received" {{ 'selected' if selected_status == 'received' else '' }}>Received</option>
+                        <option value="cancelled" {{ 'selected' if selected_status == 'cancelled' else '' }}>Cancelled</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="supplier" class="form-select">
+                        <option value="">All Suppliers</option>
+                        {% for s in suppliers %}
+                        <option value="{{ s.id }}" {{ 'selected' if selected_supplier|int == s.id else '' }}>{{ s.account_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Orders Table -->
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Order No</th>
+                            <th>Date</th>
+                            <th>Supplier</th>
+                            <th>Items</th>
+                            <th>Expected Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders.items %}
+                        <tr>
+                            <td><strong>{{ order.order_no }}</strong></td>
+                            <td>{{ order.order_date.strftime('%d-%m-%Y') }}</td>
+                            <td>{{ order.supplier.account_name if order.supplier else 'N/A' }}</td>
+                            <td>{{ order.items.count() }}</td>
+                            <td>{{ order.expected_date.strftime('%d-%m-%Y') if order.expected_date else '-' }}</td>
+                            <td><strong>₹{{ "%.2f"|format(order.total_amount) }}</strong></td>
+                            <td>
+                                {% if order.status == 'pending' %}
+                                <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif order.status == 'sent' %}
+                                <span class="badge bg-info">Sent</span>
+                                {% elif order.status == 'partial' %}
+                                <span class="badge bg-primary">Partial</span>
+                                {% elif order.status == 'received' %}
+                                <span class="badge bg-success">Received</span>
+                                {% elif order.status == 'cancelled' %}
+                                <span class="badge bg-secondary">Cancelled</span>
+                                {% else %}
+                                <span class="badge bg-light text-dark">{{ order.status|upper }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('orders.view', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ url_for('orders.print_order', order_id=order.id) }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                    <i class="bi bi-printer"></i>
+                                </a>
+                                {% if order.status == 'pending' %}
+                                <a href="{{ url_for('orders.edit', order_id=order.id) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                {% endif %}
+                                {% if order.status in ['pending', 'sent', 'partial'] %}
+                                <form action="{{ url_for('orders.delete', order_id=order.id) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to cancel this order?')">
+                                        <i class="bi bi-x-circle"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                No purchase orders found
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if orders.pages > 1 %}
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    {% for p in orders.iter_pages() %}
+                    {% if p %}
+                    <li class="page-item {{ 'active' if p == orders.page else '' }}">
+                        <a class="page-link" href="{{ url_for('orders.list', page=p, search=search, status=selected_status, supplier=selected_supplier) }}">{{ p }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -7,7 +7,8 @@
     <title>{% block title %}{{ config.COMPANY_NAME }}{% endblock %}</title>
     
     <!-- Favicon -->
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logo.svg') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}" type="image/svg+xml">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,7 +34,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container-fluid px-2 px-lg-3">
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.dashboard') }}">
-                <i class="bi bi-capsule-pill me-2 fs-4"></i>
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" height="32" class="me-2">
                 <span class="d-none d-sm-inline fw-bold">BillMyMed</span>
             </a>
             
@@ -56,23 +57,6 @@
                         </a>
                     </li>
                     
-                    <!-- Transactions Dropdown -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if 'sales' in request.endpoint or 'purchase' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-arrow-left-right me-1"></i> Transactions
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('sales.new') }}"><i class="bi bi-receipt me-2"></i>New Sale</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('sales.list') }}"><i class="bi bi-file-text me-2"></i>Sales List</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('purchase.new') }}"><i class="bi bi-cart-plus me-2"></i>New Purchase</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('purchase.list') }}"><i class="bi bi-file-earmark-text me-2"></i>Purchase List</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ url_for('sales.returns') }}"><i class="bi bi-arrow-counterclockwise me-2"></i>Sales Returns</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('purchase.returns') }}"><i class="bi bi-box-seam me-2"></i>Purchase Returns</a></li>
-                        </ul>
-                    </li>
-                    
                     <!-- Masters Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {% if 'products' in request.endpoint or 'customers' in request.endpoint or 'suppliers' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
@@ -88,30 +72,39 @@
                         </ul>
                     </li>
                     
-                    <!-- Inventory Dropdown -->
+                    <!-- Transactions Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if 'inventory' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-box me-1"></i> Inventory
+                        <a class="nav-link dropdown-toggle {% if 'sales' in request.endpoint or 'purchase' in request.endpoint or 'orders' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-arrow-left-right me-1"></i> Transactions
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ url_for('inventory.stock') }}"><i class="bi bi-stack me-2"></i>Stock Report</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('inventory.adjustments') }}"><i class="bi bi-sliders me-2"></i>Stock Adjustment</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('inventory.expiry_report') }}"><i class="bi bi-hourglass-split me-2"></i>Expiry Report</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('inventory.racks') }}"><i class="bi bi-grid me-2"></i>Racks</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('sales.new') }}"><i class="bi bi-receipt me-2"></i>New Sale</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('sales.list') }}"><i class="bi bi-file-text me-2"></i>Sales List</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('purchase.new') }}"><i class="bi bi-cart-plus me-2"></i>New Purchase</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('purchase.list') }}"><i class="bi bi-file-earmark-text me-2"></i>Purchase List</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('orders.list') }}"><i class="bi bi-cart3 me-2"></i>Purchase Orders</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('sales.returns') }}"><i class="bi bi-arrow-counterclockwise me-2"></i>Sales Returns</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('purchase.returns') }}"><i class="bi bi-box-seam me-2"></i>Purchase Returns</a></li>
                         </ul>
                     </li>
                     
-                    <!-- Reports Dropdown -->
+                    <!-- Reports & Inventory Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if 'reports' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
-                            <i class="bi bi-graph-up me-1"></i> Reports
+                        <a class="nav-link dropdown-toggle {% if 'inventory' in request.endpoint or 'reports' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-graph-up me-1"></i> Reports & Inventory
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{{ url_for('reports.sales') }}"><i class="bi bi-receipt me-2"></i>Sales Reports</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('reports.purchase') }}"><i class="bi bi-cart-check me-2"></i>Purchase Reports</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('reports.stock') }}"><i class="bi bi-box-seam me-2"></i>Stock Report</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('reports.profit') }}"><i class="bi bi-currency-rupee me-2"></i>Profit Report</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('reports.gst') }}"><i class="bi bi-file-earmark-ruled me-2"></i>GST Report</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ url_for('inventory.stock') }}"><i class="bi bi-stack me-2"></i>Stock Report</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('inventory.expiry_report') }}"><i class="bi bi-hourglass-split me-2"></i>Expiry Report</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('inventory.adjustments') }}"><i class="bi bi-sliders me-2"></i>Stock Adjustment</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('inventory.racks') }}"><i class="bi bi-grid me-2"></i>Racks</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -291,5 +284,101 @@
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
     
     {% block extra_js %}{% endblock %}
+    
+    <!-- Stock Alerts Scrolling Strip -->
+    {% if current_user.is_authenticated %}
+    <div class="stock-alert-strip" id="stockAlertStrip">
+        <div class="stock-alert-content" id="stockAlertContent">
+            <span class="loading-text">Loading alerts...</span>
+        </div>
+    </div>
+    
+    <style>
+    .stock-alert-strip {
+        position: fixed;
+        bottom: 60px;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #dc3545, #c82333);
+        color: white;
+        padding: 8px 0;
+        z-index: 999;
+        overflow: hidden;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+    }
+    @media (min-width: 992px) {
+        .stock-alert-strip {
+            bottom: 0;
+        }
+    }
+    .stock-alert-content {
+        display: flex;
+        gap: 50px;
+        animation: scroll-alerts 30s linear infinite;
+        white-space: nowrap;
+    }
+    .stock-alert-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 20px;
+        font-size: 13px;
+    }
+    .stock-alert-item i {
+        font-size: 16px;
+    }
+    .stock-alert-item.low-stock {
+        color: #ffcccc;
+    }
+    .stock-alert-item.near-expiry {
+        color: #ffe0a0;
+    }
+    @keyframes scroll-alerts {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .stock-alert-strip:hover .stock-alert-content {
+        animation-play-state: paused;
+    }
+    .loading-text {
+        padding: 0 20px;
+        font-style: italic;
+    }
+    </style>
+    
+    <script>
+    function loadStockAlerts() {
+        fetch('/api/alerts/stock')
+            .then(res => res.json())
+            .then(alerts => {
+                const container = document.getElementById('stockAlertContent');
+                if (!alerts || alerts.length === 0) {
+                    container.innerHTML = '<span class="stock-alert-item"><i class="bi bi-check-circle"></i> All stock levels normal</span>';
+                    return;
+                }
+                
+                let html = '';
+                alerts.forEach(alert => {
+                    const icon = alert.type === 'low_stock' ? 'bi-exclamation-triangle' : 'bi-clock-history';
+                    const cssClass = alert.type === 'low_stock' ? 'low-stock' : 'near-expiry';
+                    html += '<span class="stock-alert-item ' + cssClass + '">' +
+                        '<i class="bi ' + icon + '"></i> ' +
+                        alert.product_name + ' - ' + (alert.type === 'low_stock' ? 'Stock: ' + alert.current_stock : 'Expires: ' + alert.days_left + ' days') +
+                        '</span>';
+                });
+                
+                // Duplicate for seamless loop
+                container.innerHTML = html + html;
+            })
+            .catch(err => {
+                document.getElementById('stockAlertContent').innerHTML = 
+                    '<span class="stock-alert-item"><i class="bi bi-info-circle"></i> Unable to load alerts</span>';
+            });
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadStockAlerts);
+    setInterval(loadStockAlerts, 300000);
+    </script>
+    {% endif %}
 </body>
 </html>

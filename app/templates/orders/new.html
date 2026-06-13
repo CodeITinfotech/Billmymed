@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}New Purchase Order - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1"><i class="bi bi-cart3 me-2"></i>New Purchase Order</h4>
+            <p class="text-muted mb-0">Create a new purchase order for supplier</p>
+        </div>
+        <div>
+            <a href="{{ url_for('orders.list') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <form method="POST" id="poForm">
+        <!-- Order Details -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Order Details</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Supplier <span class="text-danger">*</span></label>
+                        <select class="form-select" name="supplier_id" id="supplierSelect" required>
+                            <option value="">Select Supplier</option>
+                            {% for supplier in suppliers %}
+                            <option value="{{ supplier.id }}">{{ supplier.account_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Expected Delivery Date</label>
+                        <input type="date" class="form-control" name="expected_date" id="expectedDate">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Remarks</label>
+                        <input type="text" class="form-control" name="remarks" placeholder="Optional remarks">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Order Items -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-list-ul me-2"></i>Order Items</h6>
+                <button type="button" class="btn btn-sm btn-primary" onclick="addItemRow()">
+                    <i class="bi bi-plus-lg me-1"></i> Add Item
+                </button>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="itemsTable">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 35%">Product</th>
+                                <th style="width: 12%">Qty</th>
+                                <th style="width: 15%">Rate (₹)</th>
+                                <th style="width: 12%">MRP (₹)</th>
+                                <th style="width: 15%">Amount</th>
+                                <th style="width: 11%"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsBody">
+                            <tr class="item-row">
+                                <td>
+                                    <input type="hidden" name="product_id" class="product-id">
+                                    <input type="text" class="form-control product-search" placeholder="Search product..." autocomplete="off">
+                                    <div class="product-suggestions d-none"></div>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control quantity" name="quantity" min="1" value="1">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control rate" name="rate" step="0.01" min="0" value="0">
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control mrp" name="mrp" step="0.01" min="0" value="0">
+                                </td>
+                                <td class="text-end">
+                                    <span class="item-amount">₹0.00</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Subtotal:</strong></td>
+                                <td class="text-end"><strong id="subtotal">₹0.00</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-end"><strong>Tax:</strong></td>
+                                <td class="text-end"><strong id="taxAmount">₹0.00</strong></td>
+                                <td></td>
+                            </tr>
+                            <tr class="table-primary">
+                                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                <td class="text-end"><strong id="totalAmount">₹0.00</strong></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="d-flex justify-content-end gap-2">
+            <a href="{{ url_for('orders.list') }}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-1"></i> Create Order
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+let itemCount = 0;
+
+$(document).ready(function() {
+    // Product search
+    $(document).on('input', '.product-search', function() {
+        const $row = $(this).closest('tr');
+        const query = $(this).val();
+        
+        if (query.length < 2) {
+            $row.find('.product-suggestions').addClass('d-none').html('');
+            return;
+        }
+        
+        $.get('/orders/api/all-products?q=' + encodeURIComponent(query), function(products) {
+            let html = '<div class="list-group">';
+            products.forEach(p => {
+                html += `<a href="#" class="list-group-item list-group-item-action" data-id="${p.id}" data-name="${p.product_name}" data-mrp="${p.mrp}" data-rate="${p.rate}">
+                    <strong>${p.product_name}</strong><br>
+                    <small class="text-muted">${p.product_code} | MRP: ₹${p.mrp} | Stock: ${p.stock}</small>
+                </a>`;
+            });
+            html += '</div>';
+            $row.find('.product-suggestions').removeClass('d-none').html(html);
+        });
+    });
+    
+    // Select product
+    $(document).on('click', '.product-suggestions a', function(e) {
+        e.preventDefault();
+        const $row = $(this).closest('tr');
+        $row.find('.product-id').val($(this).data('id'));
+        $row.find('.product-search').val($(this).data('name'));
+        $row.find('.mrp').val($(this).data('mrp'));
+        $row.find('.rate').val($(this).data('rate'));
+        $row.find('.product-suggestions').addClass('d-none').html('');
+        calculateRowTotal($row);
+    });
+    
+    // Calculate on quantity/rate change
+    $(document).on('input', '.quantity, .rate', function() {
+        calculateRowTotal($(this).closest('tr'));
+    });
+    
+    // Close suggestions on click outside
+    $(document).click(function(e) {
+        if (!$(e.target).closest('.product-search, .product-suggestions').length) {
+            $('.product-suggestions').addClass('d-none');
+        }
+    });
+});
+
+function addItemRow() {
+    const $newRow = $(`
+        <tr class="item-row">
+            <td>
+                <input type="hidden" name="product_id" class="product-id">
+                <input type="text" class="form-control product-search" placeholder="Search product..." autocomplete="off">
+                <div class="product-suggestions d-none"></div>
+            </td>
+            <td>
+                <input type="number" class="form-control quantity" name="quantity" min="1" value="1">
+            </td>
+            <td>
+                <input type="number" class="form-control rate" name="rate" step="0.01" min="0" value="0">
+            </td>
+            <td>
+                <input type="number" class="form-control mrp" name="mrp" step="0.01" min="0" value="0">
+            </td>
+            <td class="text-end">
+                <span class="item-amount">₹0.00</span>
+            </td>
+            <td>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(this)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `);
+    $('#itemsBody').append($newRow);
+    itemCount++;
+}
+
+function removeItem(btn) {
+    if ($('.item-row').length > 1) {
+        $(btn).closest('tr').remove();
+        calculateTotal();
+    }
+}
+
+function calculateRowTotal($row) {
+    const qty = parseFloat($row.find('.quantity').val()) || 0;
+    const rate = parseFloat($row.find('.rate').val()) || 0;
+    const amount = qty * rate;
+    $row.find('.item-amount').text('₹' + amount.toFixed(2));
+    calculateTotal();
+}
+
+function calculateTotal() {
+    let subtotal = 0;
+    let tax = 0;
+    
+    $('.item-row').each(function() {
+        const qty = parseFloat($(this).find('.quantity').val()) || 0;
+        const rate = parseFloat($(this).find('.rate').val()) || 0;
+        subtotal += qty * rate;
+    });
+    
+    // Assuming 18% GST
+    tax = subtotal * 0.18;
+    
+    $('#subtotal').text('₹' + subtotal.toFixed(2));
+    $('#taxAmount').text('₹' + tax.toFixed(2));
+    $('#totalAmount').text('₹' + (subtotal + tax).toFixed(2));
+}
+
+$('#poForm').submit(function(e) {
+    let valid = true;
+    $('.product-id').each(function() {
+        if (!$(this).val()) {
+            valid = false;
+            return false;
+        }
+    });
+    
+    if (!valid) {
+        e.preventDefault();
+        alert('Please select a product for all rows');
+    }
+});
+</script>
+{% endblock %}

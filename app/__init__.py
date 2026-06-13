@@ -1,4 +1,5 @@
 from flask import Flask
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
@@ -22,6 +23,11 @@ login_manager.login_view = 'auth.login'
 login_manager.login_message = 'Please log in to access this page.'
 login_manager.login_message_category = 'info'
 
+@login_manager.user_loader
+def load_user(user_id):
+    from app.models import User
+    return User.query.get(int(user_id))
+
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
@@ -36,6 +42,11 @@ def create_app(config_name='default'):
     moment.init_app(app)
     socketio.init_app(app, cors_allowed_origins="*", async_mode='threading')
     
+    # Add template context processors
+    @app.context_processor
+    def inject_now():
+        return {'now': datetime.utcnow()}
+    
     # Register blueprints
     from app.routes.auth import auth_bp
     from app.routes.main import main_bp
@@ -48,6 +59,7 @@ def create_app(config_name='default'):
     from app.routes.reports import reports_bp
     from app.routes.settings import settings_bp
     from app.routes.api import api_bp
+    from app.routes.orders import orders_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(main_bp)
@@ -60,6 +72,7 @@ def create_app(config_name='default'):
     app.register_blueprint(reports_bp, url_prefix='/reports')
     app.register_blueprint(settings_bp, url_prefix='/settings')
     app.register_blueprint(api_bp, url_prefix='/api')
+    app.register_blueprint(orders_bp)
     
     # Create tables
     with app.app_context():
