@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Add Product - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Add Product</h4>
+            <p class="text-muted mb-0">Add a new product to inventory</p>
+        </div>
+        <div>
+            <a href="{{ url_for('products.list') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+    
+    <form method="POST">
+        <div class="row g-4">
+            <!-- Basic Information -->
+            <div class="col-12 col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Basic Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="product_code" class="form-label">Product Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="product_code" name="product_code" required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="barcode" class="form-label">Barcode</label>
+                                <input type="text" class="form-control" id="barcode" name="barcode">
+                            </div>
+                            <div class="col-12">
+                                <label for="product_name" class="form-label">Product Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="product_name" name="product_name" required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="generic_name" class="form-label">Generic Name</label>
+                                <input type="text" class="form-control" id="generic_name" name="generic_name">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="manufacturer" class="form-label">Manufacturer</label>
+                                <input type="text" class="form-control" id="manufacturer" name="manufacturer">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="product_type" class="form-label">Product Type</label>
+                                <select class="form-select" id="product_type" name="product_type">
+                                    <option value="">Select</option>
+                                    <option value="Tablet">Tablet</option>
+                                    <option value="Capsule">Capsule</option>
+                                    <option value="Syrup">Syrup</option>
+                                    <option value="Injection">Injection</option>
+                                    <option value="Cream">Cream/Ointment</option>
+                                    <option value="Drops">Drops</option>
+                                    <option value="Inhaler">Inhaler</option>
+                                    <option value="Granules">Granules</option>
+                                    <option value="Powder">Powder</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="schedule" class="form-label">Schedule</label>
+                                <select class="form-select" id="schedule" name="schedule">
+                                    <option value="">Select</option>
+                                    <option value="OTC">OTC</option>
+                                    <option value="H">Schedule H</option>
+                                    <option value="Sch-H">Schedule H1</option>
+                                    <option value="Sch-X">Schedule X</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="category_id" class="form-label">Category</label>
+                                <select class="form-select" id="category_id" name="category_id">
+                                    <option value="">Select Category</option>
+                                    {% for cat in categories %}
+                                    <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pricing -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Pricing</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6 col-md-3">
+                                <label for="mrp" class="form-label">MRP</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="mrp" name="mrp" step="0.01" min="0" value="0">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="rate" class="form-label">Rate</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="rate" name="rate" step="0.01" min="0" value="0">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="ptr" class="form-label">PTR</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="ptr" name="ptr" step="0.01" min="0" value="0">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label for="pts" class="form-label">PTS</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="pts" name="pts" step="0.01" min="0" value="0">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="discount_perc" class="form-label">Discount %</label>
+                                <input type="number" class="form-control" id="discount_perc" name="discount_perc" step="0.01" min="0" max="100" value="0">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <label for="tax_perc" class="form-label">Tax % (GST)</label>
+                                <select class="form-select" id="tax_perc" name="tax_perc">
+                                    <option value="0">0%</option>
+                                    <option value="5">5%</option>
+                                    <option value="12">12%</option>
+                                    <option value="18" selected>18%</option>
+                                    <option value="28">28%</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="hsn_code" class="form-label">HSN Code</label>
+                                <input type="text" class="form-control" id="hsn_code" name="hsn_code">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-12 col-lg-4">
+                <!-- Stock Settings -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Stock Settings</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="min_stock" class="form-label">Min Stock</label>
+                                <input type="number" class="form-control" id="min_stock" name="min_stock" value="0" min="0">
+                            </div>
+                            <div class="col-6">
+                                <label for="max_stock" class="form-label">Max Stock</label>
+                                <input type="number" class="form-control" id="max_stock" name="max_stock" value="0" min="0">
+                            </div>
+                            <div class="col-12">
+                                <label for="reorder_level" class="form-label">Reorder Level</label>
+                                <input type="number" class="form-control" id="reorder_level" name="reorder_level" value="0" min="0">
+                            </div>
+                            <div class="col-12">
+                                <label for="location" class="form-label">Location (Rack)</label>
+                                <input type="text" class="form-control" id="location" name="location" placeholder="e.g., A-12">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Packaging -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Packaging</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <label for="pack_type" class="form-label">Pack Type</label>
+                                <input type="text" class="form-control" id="pack_type" name="pack_type" placeholder="e.g., Strip, Bottle">
+                            </div>
+                            <div class="col-6">
+                                <label for="pack_qty" class="form-label">Pack Qty</label>
+                                <input type="number" class="form-control" id="pack_qty" name="pack_qty" value="1" min="1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit -->
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-check-lg me-2"></i>Save Product
+                    </button>
+                    <a href="{{ url_for('products.list') }}" class="btn btn-outline-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

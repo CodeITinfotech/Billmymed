@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Dashboard</h4>
+            <p class="text-muted mb-0">Welcome back, {{ current_user.full_name }}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('sales.new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>
+                <span class="d-none d-sm-inline">New Sale</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Stats Cards -->
+    <div class="row g-3 mb-4">
+        <!-- Today's Sales -->
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-success bg-opacity-10 rounded-3 p-3">
+                                <i class="bi bi-currency-rupee text-success fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3 overflow-hidden">
+                            <p class="text-muted small mb-1 text-truncate">Today's Sales</p>
+                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(today_sales) }}</h4>
+                            <small class="text-muted">{{ today_sales_count }} invoices</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monthly Sales -->
+        <div class="col-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                                <i class="bi bi-graph-up text-primary fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3 overflow-hidden">
+                            <p class="text-muted small mb-1 text-truncate">Monthly Sales</p>
+                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(monthly_sales) }}</h4>
+                            <small class="text-muted">This month</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products -->
+        <div class="col-6 col-lg-3">
+            <a href="{{ url_for('products.list') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="bg-info bg-opacity-10 rounded-3 p-3">
+                                    <i class="bi bi-box-seam text-info fs-4"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3 overflow-hidden">
+                                <p class="text-muted small mb-1 text-truncate">Products</p>
+                                <h4 class="mb-0 fw-bold">{{ total_products }}</h4>
+                                <small class="text-muted">Active items</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Customers -->
+        <div class="col-6 col-lg-3">
+            <a href="{{ url_for('customers.list') }}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="bg-warning bg-opacity-10 rounded-3 p-3">
+                                    <i class="bi bi-people text-warning fs-4"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3 overflow-hidden">
+                                <p class="text-muted small mb-1 text-truncate">Customers</p>
+                                <h4 class="mb-0 fw-bold">{{ total_customers }}</h4>
+                                <small class="text-muted">{{ total_suppliers }} suppliers</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Main Content Tabs -->
+    <div class="card border-0 shadow-sm">
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs border-bottom-0 px-3 pt-3" id="dashboardTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="alerts-tab" data-bs-toggle="tab" data-bs-target="#alerts" type="button" role="tab">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    <span class="d-none d-md-inline">Alerts</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="recent-tab" data-bs-toggle="tab" data-bs-target="#recent" type="button" role="tab">
+                    <i class="bi bi-clock-history me-1"></i>
+                    <span class="d-none d-md-inline">Recent Sales</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="credits-tab" data-bs-toggle="tab" data-bs-target="#credits" type="button" role="tab">
+                    <i class="bi bi-credit-card me-1"></i>
+                    <span class="d-none d-md-inline">Credit</span>
+                </button>
+            </li>
+        </ul>
+        
+        <div class="tab-content" id="dashboardTabsContent">
+            <!-- Alerts Tab -->
+            <div class="tab-pane fade show active" id="alerts" role="tabpanel">
+                <div class="card-body p-0">
+                    {% if low_stock or expiring_batches %}
+                    <div class="row g-0">
+                        <!-- Low Stock Alert -->
+                        {% if low_stock %}
+                        <div class="col-12 col-lg-6 border-end-lg">
+                            <div class="p-3">
+                                <h6 class="fw-bold text-danger mb-3">
+                                    <i class="bi bi-exclamation-circle me-2"></i>Low Stock Alert
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Code</th>
+                                                <th>Product</th>
+                                                <th class="text-end">Stock</th>
+                                                <th class="text-end">Reorder</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in low_stock[:10] %}
+                                            <tr>
+                                                <td><code>{{ item.code }}</code></td>
+                                                <td class="text-truncate" style="max-width: 150px;">{{ item.name }}</td>
+                                                <td class="text-end"><span class="badge bg-danger">{{ item.stock }}</span></td>
+                                                <td class="text-end text-muted">{{ item.reorder }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% if low_stock|length > 10 %}
+                                <a href="{{ url_for('inventory.stock', stock_filter='low') }}" class="btn btn-sm btn-outline-danger mt-2 w-100">
+                                    View All ({{ low_stock|length }})
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Expiring Batches -->
+                        {% if expiring_batches %}
+                        <div class="col-12 col-lg-6">
+                            <div class="p-3">
+                                <h6 class="fw-bold text-warning mb-3">
+                                    <i class="bi bi-hourglass-split me-2"></i>Expiring Soon
+                                </h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Batch</th>
+                                                <th class="text-end">Expiry</th>
+                                                <th class="text-end">Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for batch in expiring_batches[:10] %}
+                                            <tr>
+                                                <td class="text-truncate" style="max-width: 150px;">{{ batch.product.product_name if batch.product else 'N/A' }}</td>
+                                                <td><code>{{ batch.batch_no }}</code></td>
+                                                <td class="text-end">
+                                                    <span class="badge bg-{{ 'danger' if (batch.expiry_date - today).days <= 7 else 'warning' }}">
+                                                        {{ batch.expiry_date.strftime('%d/%m/%Y') }}
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">{{ batch.available_qty }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {% if expiring_batches|length > 10 %}
+                                <a href="{{ url_for('inventory.expiry_report') }}" class="btn btn-sm btn-outline-warning mt-2 w-100">
+                                    View All
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-check-circle text-success display-4"></i>
+                        <p class="text-muted mt-3 mb-0">All systems are running smoothly!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Recent Sales Tab -->
+            <div class="tab-pane fade" id="recent" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th class="text-end">Amount</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in recent_sales %}
+                            <tr>
+                                <td><code>{{ sale.invoice_no }}</code></td>
+                                <td>{{ sale.invoice_date.strftime('%d/%m/%Y %H:%M') }}</td>
+                                <td>{{ sale.customer.account_name if sale.customer else 'Walk-in' }}</td>
+                                <td class="text-end fw-bold">₹{{ "{:,.2f}".format(sale.total_amount) }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-{{ 'success' if sale.payment_status == 'paid' else 'warning' }}">
+                                        {{ sale.payment_status|title }}
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('sales.view', id=sale.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-muted">No recent sales</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Credits Tab -->
+            <div class="tab-pane fade" id="credits" role="tabpanel">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Code</th>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th class="text-end">Balance</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for customer in credit_customers %}
+                            <tr>
+                                <td><code>{{ customer.account_code }}</code></td>
+                                <td>{{ customer.account_name }}</td>
+                                <td>{{ customer.mobile or 'N/A' }}</td>
+                                <td class="text-end fw-bold text-danger">₹{{ "{:,.2f}".format(customer.balance|abs) }}</td>
+                                <td class="text-end">
+                                    <a href="{{ url_for('customers.view', id=customer.id) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-4 text-muted">No credit customers</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions (Mobile) -->
+    <div class="d-md-none mt-4">
+        <div class="row g-2">
+            <div class="col-6">
+                <a href="{{ url_for('purchase.new') }}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-cart-plus me-2"></i>Purchase
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="{{ url_for('inventory.stock') }}" class="btn btn-outline-info w-100">
+                    <i class="bi bi-stack me-2"></i>Stock
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="{{ url_for('reports.sales') }}" class="btn btn-outline-success w-100">
+                    <i class="bi bi-graph-up me-2"></i>Reports
+                </a>
+            </div>
+            <div class="col-6">
+                <a href="{{ url_for('inventory.adjustments') }}" class="btn btn-outline-warning w-100">
+                    <i class="bi bi-sliders me-2"></i>Adjustment
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

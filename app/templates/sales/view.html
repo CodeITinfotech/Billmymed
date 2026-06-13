@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Invoice {{ invoice.invoice_no }} - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">
+                Invoice <code>{{ invoice.invoice_no }}</code>
+                {% if invoice.is_cancelled %}
+                <span class="badge bg-danger ms-2">Cancelled</span>
+                {% endif %}
+            </h4>
+            <p class="text-muted mb-0">{{ invoice.invoice_date.strftime('%d %B %Y, %I:%M %p') }}</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('sales.print_invoice', id=invoice.id) }}" class="btn btn-outline-primary" target="_blank">
+                <i class="bi bi-printer me-1"></i> Print
+            </a>
+            {% if not invoice.is_cancelled %}
+            <a href="{{ url_for('sales.duplicate', id=invoice.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-copy me-1"></i> Duplicate
+            </a>
+            <a href="{{ url_for('sales.return_new', original_id=invoice.id) }}" class="btn btn-outline-warning">
+                <i class="bi bi-arrow-counterclockwise me-1"></i> Return
+            </a>
+            <form action="{{ url_for('sales.cancel', id=invoice.id) }}" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Cancel this invoice?')">
+                    <i class="bi bi-x-circle me-1"></i> Cancel
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row g-4">
+        <!-- Invoice Details -->
+        <div class="col-12 col-lg-8">
+            <!-- Customer Info -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <h6 class="text-muted small text-uppercase mb-2">Customer</h6>
+                            <p class="mb-1 fw-medium">{{ invoice.customer.account_name if invoice.customer else 'Walk-in Customer' }}</p>
+                            {% if invoice.customer %}
+                            <p class="mb-1 text-muted small">{{ invoice.customer.address or '' }}</p>
+                            <p class="mb-1 text-muted small">{{ invoice.customer.city or '' }}</p>
+                            <p class="mb-0 text-muted small">Phone: {{ invoice.customer.mobile or invoice.customer.phone or 'N/A' }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-6 text-md-end">
+                            <h6 class="text-muted small text-uppercase mb-2">Invoice Info</h6>
+                            <p class="mb-1">Type: <span class="badge bg-{{ 'info' if invoice.sales_type == 'cash' else ('warning' if invoice.sales_type == 'credit' else 'danger') }}">
+                                {{ invoice.sales_type|title }}
+                            </span></p>
+                            <p class="mb-1">Status: <span class="badge bg-{{ 'success' if invoice.payment_status == 'paid' else ('warning' if invoice.payment_status == 'partial' else 'secondary') }}">
+                                {{ invoice.payment_status|title }}
+                            </span></p>
+                            {% if invoice.doctor %}
+                            <p class="mb-0">Dr: {{ invoice.doctor.account_name }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Items Table -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product</th>
+                                    <th class="text-center">Batch</th>
+                                    <th class="text-center">Expiry</th>
+                                    <th class="text-end">MRP</th>
+                                    <th class="text-center">Qty</th>
+                                    <th class="text-end">Rate</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in invoice.items %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>
+                                        <strong>{{ item.product.product_name if item.product else 'N/A' }}</strong>
+                                        <br><small class="text-muted">{{ item.product.generic_name if item.product else '' }}</small>
+                                    </td>
+                                    <td class="text-center"><code>{{ item.batch_no or '-' }}</code></td>
+                                    <td class="text-center">{{ item.expiry_date.strftime('%m/%y') if item.expiry_date else '-' }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(item.mrp or 0) }}</td>
+                                    <td class="text-center">{{ item.quantity }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(item.unit_rate) }}</td>
+                                    <td class="text-end fw-bold">₹{{ "{:,.2f}".format(item.amount) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Summary -->
+        <div class="col-12 col-lg-4">
+            <!-- Amount Summary -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">Payment Summary</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Subtotal</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.subtotal) }}</span>
+                    </div>
+                    {% if invoice.discount_amt > 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Discount</span>
+                        <span class="text-danger">-₹{{ "{:,.2f}".format(invoice.discount_amt) }}</span>
+                    </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Tax (GST)</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.tax_amt or 0) }}</span>
+                    </div>
+                    {% if invoice.round_off != 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Round Off</span>
+                        <span>{{ '+' if invoice.round_off > 0 else '' }}₹{{ "{:,.2f}".format(invoice.round_off) }}</span>
+                    </div>
+                    {% endif %}
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Total</h5>
+                        <h4 class="mb-0 text-primary fw-bold">₹{{ "{:,.2f}".format(invoice.total_amount) }}</h4>
+                    </div>
+                    
+                    {% if invoice.payment_status != 'paid' %}
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Cash</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.cash_amount or 0) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Card</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.card_amount or 0) }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Credit</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.credit_amount or 0) }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Actions Card -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button onclick="window.print()" class="btn btn-primary">
+                            <i class="bi bi-printer me-2"></i>Print Invoice
+                        </button>
+                        {% if invoice.payment_status != 'paid' %}
+                        <a href="#" class="btn btn-success">
+                            <i class="bi bi-currency-rupee me-2"></i>Receive Payment
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Info -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-body py-3">
+                    <small class="text-muted d-block mb-1">Created by: {{ invoice.user.full_name if invoice.user else 'N/A' }}</small>
+                    {% if invoice.is_cancelled %}
+                    <small class="text-danger d-block">Cancelled</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

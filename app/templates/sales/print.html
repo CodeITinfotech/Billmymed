@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice {{ invoice.invoice_no }} - {{ config.COMPANY_NAME }}</title>
+    <style>
+        @page {
+            size: 80mm auto;
+            margin: 5mm;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #000;
+            width: 80mm;
+            margin: 0 auto;
+            padding: 5mm;
+        }
+        
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .fw-bold { font-weight: bold; }
+        .text-uppercase { text-transform: uppercase; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #000;
+        }
+        
+        .company-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .company-info {
+            font-size: 10px;
+        }
+        
+        .invoice-info {
+            margin: 10px 0;
+        }
+        
+        .invoice-info table {
+            width: 100%;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        
+        .items-table th,
+        .items-table td {
+            padding: 3px 0;
+            text-align: left;
+        }
+        
+        .items-table th {
+            border-bottom: 1px dashed #000;
+        }
+        
+        .items-table .text-right {
+            text-align: right;
+        }
+        
+        .totals {
+            margin-top: 10px;
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+        }
+        
+        .totals .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+        
+        .totals .grand-total {
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px dashed #000;
+        }
+        
+        .footer {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #000;
+            text-align: center;
+            font-size: 10px;
+        }
+        
+        .barcode {
+            margin: 10px 0;
+            text-align: center;
+        }
+        
+        .barcode img {
+            height: 40px;
+        }
+        
+        @media print {
+            body {
+                width: 80mm;
+                margin: 0;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="company-name">{{ config.COMPANY_NAME }}</div>
+        <div class="company-info">
+            {{ settings.get('company_address', 'Address') }}<br>
+            Phone: {{ settings.get('company_phone', '') }}<br>
+            GSTIN: {{ settings.get('company_gstin', '') }}<br>
+            DL: {{ settings.get('company_dl', '') }}
+        </div>
+    </div>
+    
+    <!-- Invoice Info -->
+    <div class="invoice-info">
+        <table>
+            <tr>
+                <td><strong>Invoice #:</strong></td>
+                <td class="text-right">{{ invoice.invoice_no }}</td>
+            </tr>
+            <tr>
+                <td><strong>Date:</strong></td>
+                <td class="text-right">{{ invoice.invoice_date.strftime('%d/%m/%Y %I:%M %p') }}</td>
+            </tr>
+            <tr>
+                <td><strong>Customer:</strong></td>
+                <td class="text-right">{{ invoice.customer.account_name if invoice.customer else 'Walk-in' }}</td>
+            </tr>
+            {% if invoice.customer and invoice.customer.gstin %}
+            <tr>
+                <td><strong>GSTIN:</strong></td>
+                <td class="text-right">{{ invoice.customer.gstin }}</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+    
+    <!-- Items -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th class="text-right">MRP</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Amt</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in invoice.items %}
+            <tr>
+                <td>
+                    {{ item.product.product_name[:25] if item.product else 'N/A' }}
+                    {% if item.batch_no %}
+                    <br><small>B: {{ item.batch_no }}</small>
+                    {% endif %}
+                </td>
+                <td class="text-right">₹{{ "%.2f"|format(item.mrp or 0) }}</td>
+                <td class="text-right">{{ item.quantity }}</td>
+                <td class="text-right">₹{{ "%.2f"|format(item.amount) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- Totals -->
+    <div class="totals">
+        <div class="row">
+            <span>Subtotal:</span>
+            <span>₹{{ "%.2f"|format(invoice.subtotal) }}</span>
+        </div>
+        {% if invoice.discount_amt > 0 %}
+        <div class="row">
+            <span>Discount:</span>
+            <span>-₹{{ "%.2f"|format(invoice.discount_amt) }}</span>
+        </div>
+        {% endif %}
+        <div class="row">
+            <span>GST:</span>
+            <span>₹{{ "%.2f"|format(invoice.tax_amt or 0) }}</span>
+        </div>
+        <div class="row grand-total">
+            <span>TOTAL:</span>
+            <span>₹{{ "%.2f"|format(invoice.total_amount) }}</span>
+        </div>
+    </div>
+    
+    <!-- Amount in Words -->
+    <div class="footer" style="margin-top: 10px; text-align: left;">
+        <strong>Amount in Words:</strong><br>
+        {{ numberToWords(invoice.total_amount|int) }} Rupees Only
+    </div>
+    
+    <!-- Payment Info -->
+    {% if invoice.payment_status != 'paid' %}
+    <div class="footer" style="margin-top: 10px;">
+        <strong>Payment Due:</strong> ₹{{ "%.2f"|format(invoice.credit_amount or 0) }}
+    </div>
+    {% endif %}
+    
+    <!-- Footer -->
+    <div class="footer">
+        <p>Thank you for your visit!</p>
+        <p>Please check goods before leaving</p>
+        <p class="text-uppercase">Drugs once sold will not be taken back</p>
+    </div>
+    
+    <script>
+        function numberToWords(num) {
+            const ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 
+                          'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+            const tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+            
+            if (num === 0) return 'Zero';
+            if (num < 20) return ones[num];
+            if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? ' ' + ones[num % 10] : '');
+            if (num < 1000) return ones[Math.floor(num / 100)] + ' Hundred' + (num % 100 ? ' ' + numberToWords(num % 100) : '');
+            if (num < 100000) return numberToWords(Math.floor(num / 1000)) + ' Thousand' + (num % 1000 ? ' ' + numberToWords(num % 1000) : '');
+            return numberToWords(Math.floor(num / 100000)) + ' Lakh' + (num % 100000 ? ' ' + numberToWords(num % 100000) : '');
+        }
+        
+        window.onload = function() {
+            window.print();
+        };
+    </script>
+</body>
+</html>

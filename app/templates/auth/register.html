@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Register - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center min-vh-100 align-items-center py-5">
+        <div class="col-12 col-sm-10 col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-circle mb-3" style="width: 70px; height: 70px;">
+                            <i class="bi bi-person-plus text-primary fs-1"></i>
+                        </div>
+                        <h4 class="fw-bold mb-1">Create Account</h4>
+                        <p class="text-muted small">Join {{ config.COMPANY_NAME }}</p>
+                    </div>
+                    
+                    <form method="POST" class="needs-validation" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required autofocus>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="full_name" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="full_name" name="full_name" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required minlength="6">
+                            <small class="text-muted">Minimum 6 characters</small>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 py-2">
+                            <i class="bi bi-person-plus me-2"></i>Create Account
+                        </button>
+                    </form>
+                    
+                    <p class="text-center mt-4 mb-0">
+                        Already have an account? <a href="{{ url_for('auth.login') }}">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
