@@ -11,6 +11,18 @@
 .product-list-item:hover {
     background-color: #f8f9fa;
 }
+.cart-item-row {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e9ecef;
+}
+.cart-item-row:last-child {
+    border-bottom: none;
+}
+.cart-item-row > div {
+    padding: 0 0.25rem;
+}
 </style>
 {% endblock %}
 
@@ -23,13 +35,16 @@
             <small class="text-muted">Purchase No: <code>{{ purchase_no }}</code></small>
         </div>
         <div class="d-flex gap-2">
+            <a href="{{ url_for('purchase.list') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-list me-1"></i> List
+            </a>
             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearCart()">
                 <i class="bi bi-trash me-1"></i> Clear
             </button>
         </div>
     </div>
     
-    <form id="purchaseForm" method="POST" action="{{ url_for('purchase.create') }}">
+    <form id="purchaseForm" method="POST">
         <div class="row g-3">
             <!-- Left Column - Product Selection -->
             <div class="col-12 col-lg-8">
@@ -87,13 +102,14 @@
                 <!-- Cart Items -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white py-2">
-                        <div class="row text-center small fw-bold">
-                            <div class="col-4">Product</div>
-                            <div class="col-2 text-center">Batch</div>
-                            <div class="col-2 text-center">Expiry</div>
-                            <div class="col-1 text-end">Qty</div>
-                            <div class="col-1 text-end">Free</div>
-                            <div class="col-2 text-end">Amount</div>
+                        <div class="row g-2 text-center fw-bold small">
+                            <div class="col-4 text-start">Product</div>
+                            <div class="col-2">Batch</div>
+                            <div class="col-2">Expiry</div>
+                            <div class="col-1">MRP</div>
+                            <div class="col-1">Qty</div>
+                            <div class="col-1">Free</div>
+                            <div class="col-1 text-end">Amount</div>
                         </div>
                     </div>
                     <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
@@ -224,18 +240,27 @@
 <script>
 let cart = [];
 let selectedSupplier = null;
+let searchTimeout = null;
 
 function formatCurrency(amount) {
     return '₹' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
 function searchProducts(query) {
-    if (query.length < 2) {
+    // Clear previous timeout
+    if (searchTimeout) {
+        clearTimeout(searchTimeout);
+    }
+    
+    // Hide if empty query
+    if (!query || query.trim() === '') {
         document.getElementById('searchResults').style.display = 'none';
         return;
     }
     
-    fetch('/api/all-products?q=' + encodeURIComponent(query))
+    // Debounce search - wait 150ms after typing stops
+    searchTimeout = setTimeout(function() {
+        fetch('/api/all-products?q=' + encodeURIComponent(query))
         .then(res => res.json())
         .then(products => {
             const container = document.getElementById('searchResults');
@@ -243,7 +268,7 @@ function searchProducts(query) {
                 container.innerHTML = '<div class="p-3 text-muted">No products found</div>';
             } else {
                 container.innerHTML = products.map(p => `
-                    <div class="product-list-item p-2 border-bottom" onclick="selectProduct(${p.id}, '${p.product_code}')">
+                    <div class="product-list-item p-2 border-bottom" onclick="selectProduct(${p.id}, '${p.product_code}', '${p.product_name.replace(/'/g, "\\'")}')">
                         <div class="d-flex justify-content-between">
                             <div>
                                 <strong>${p.product_name}</strong>
@@ -258,100 +283,247 @@ function searchProducts(query) {
                 `).join('');
             }
             container.style.display = 'block';
+        })
+        .catch(err => {
+            console.error('Search error:', err);
         });
+    }, 150);
 }
 
-function selectProduct(productId, productCode) {
+function selectProduct(productId, productCode, productName) {
     document.getElementById('searchResults').style.display = 'none';
     document.getElementById('productSearch').value = '';
     
+    console.log('selectProduct called:', productId, productCode, productName);
+    
     // Show batch selection modal
     fetch('/api/products/' + productId + '/batches')
-        .then(res => res.json())
-        .then(batches => {
-            showBatchModal(productId, productCode, batches);
+        .then(res => {
+            console.log('Batches API response:', res.status);
+            if (!res.ok) throw new Error('No batches');
+            return res.json();
         })
-        .catch(() => {
-            // If no batch API, add directly with default values
-            addToCart(productId, {
-                product_id: productId,
-                product_code: productCode,
-                batch_no: '',
-                expiry_date: '',
-                quantity: 1,
-                mrp: 0,
-                rate: 0,
-                amount: 0
-            });
+        .then(batches => {
+            console.log('Batches data:', batches);
+            showBatchModal(productId, productCode, productName, batches);
+        })
+        .catch(err => {
+            console.log('Batches API error:', err);
+            // If no batch API, show modal with empty batches
+            showBatchModal(productId, productCode, productName, []);
         });
 }
 
-function showBatchModal(productId, productCode, batches) {
-    let batchOptions = '<option value="">New Batch</option>';
-    batches.forEach(b => {
-        batchOptions += `<option value="${b.batch_no}|${b.expiry_date}|${b.mrp}|${b.rate}|${b.available_qty}">
-            ${b.batch_no} - Exp: ${b.expiry_date || 'N/A'} - Qty: ${b.available_qty}
+function showBatchModal(productId, productCode, productName, batches) {
+    console.log('showBatchModal called:', productId, productCode, productName, batches);
+    
+    let batchOptions = '<option value="">-- Create New Batch --</option>';
+    
+    // Check if batches is an array
+    const batchList = Array.isArray(batches) ? batches : [];
+    
+    batchList.forEach(b => {
+        const expDate = b.expiry_date ? b.expiry_date.substring(0, 7) : '';
+        batchOptions += `<option value="${b.batch_no || ''}|${expDate}|${b.mrp || 0}|${b.rate || 0}|${b.available_qty || 0}">
+            ${b.batch_no || 'N/A'} - Exp: ${expDate || 'N/A'} - Qty: ${b.available_qty || 0}
         </option>`;
     });
     
-    const modalHtml = `
-    <div class="modal fade" id="batchModal" tabindex="-1">
-        <div class="modal-dialog">
+    // Remove existing modal if any
+    const existingModal = document.getElementById('batchModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Create modal container
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal fade';
+    modalDiv.id = 'batchModal';
+    modalDiv.tabIndex = '-1';
+    modalDiv.innerHTML = `
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Product - ${productCode}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Add Product - ${productCode}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-2">
-                        <label class="form-label">Batch</label>
-                        <select class="form-select" id="modalBatch" onchange="fillBatchDetails()">
+                    <div class="alert alert-info py-2 mb-3">
+                        <i class="bi bi-info-circle me-2"></i><strong>${productName}</strong>
+                    </div>
+                    
+                    <!-- Batch Selection -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary">
+                            <i class="bi bi-box me-1"></i>Batch Selection
+                        </label>
+                        <select class="form-select form-select-lg" id="modalBatch" onchange="fillBatchDetails()">
                             ${batchOptions}
                         </select>
                     </div>
-                    <div class="row">
-                        <div class="col-6 mb-2">
-                            <label class="form-label">Batch No</label>
-                            <input type="text" class="form-control" id="modalBatchNo">
+                    
+                    <hr class="my-3">
+                    
+                    <!-- Batch Details Section -->
+                    <h6 class="text-secondary mb-3"><i class="bi bi-list-ul me-1"></i>Batch Details</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Batch No <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-upc"></i></span>
+                                <input type="text" class="form-control" id="modalBatchNo" placeholder="Enter batch number" required>
+                            </div>
                         </div>
-                        <div class="col-6 mb-2">
-                            <label class="form-label">Expiry</label>
-                            <input type="month" class="form-control" id="modalExpiry">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4 mb-2">
-                            <label class="form-label">MRP</label>
-                            <input type="number" class="form-control" id="modalMrp" step="0.01">
-                        </div>
-                        <div class="col-4 mb-2">
-                            <label class="form-label">Rate</label>
-                            <input type="number" class="form-control" id="modalRate" step="0.01">
-                        </div>
-                        <div class="col-4 mb-2">
-                            <label class="form-label">Qty</label>
-                            <input type="number" class="form-control" id="modalQty" value="1" min="1">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">Expiry Date</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                <input type="month" class="form-control" id="modalExpiry">
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label">Free Qty</label>
-                        <input type="number" class="form-control" id="modalFreeQty" value="0" min="0">
+                    
+                    <!-- Pricing Section -->
+                    <h6 class="text-secondary mb-3"><i class="bi bi-currency-dollar me-1"></i>Pricing Information</h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">MRP (Max Retail Price)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">₹</span>
+                                <input type="number" class="form-control" id="modalMrp" step="0.01" value="0" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold text-danger">Rate (Cost) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">₹</span>
+                                <input type="number" class="form-control" id="modalRate" step="0.01" value="0" placeholder="0.00" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Sale Rate</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">₹</span>
+                                <input type="number" class="form-control" id="modalSaleRate" step="0.01" value="0" placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Tax (GST %)</label>
+                            <select class="form-select" id="modalTaxPerc">
+                                <option value="0">0% - No Tax</option>
+                                <option value="5">5% - Reduced</option>
+                                <option value="12">12% - Standard</option>
+                                <option value="18" selected>18% - GST</option>
+                                <option value="28">28% - Cess</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Quantity Section -->
+                    <h6 class="text-secondary mb-3"><i class="bi bi-stack me-1"></i>Quantity & Packaging</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Quantity <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                <input type="number" class="form-control" id="modalQty" value="1" min="1" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Free Quantity</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-gift"></i></span>
+                                <input type="number" class="form-control" id="modalFreeQty" value="0" min="0" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-semibold">Pack Type</label>
+                            <select class="form-select" id="modalPackType">
+                                <option value="Strip">💊 Strip</option>
+                                <option value="Bottle">🧴 Bottle</option>
+                                <option value="TAB">💊 Tablet</option>
+                                <option value="Capsule">💉 Capsule</option>
+                                <option value="Unit">📦 Unit</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Amount Preview -->
+                    <div class="alert alert-secondary mt-4 mb-0">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <small class="text-muted">Base Amount</small>
+                                <h5 class="mb-0" id="previewBase">₹0.00</h5>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted">Tax Amount</small>
+                                <h5 class="mb-0" id="previewTax">₹0.00</h5>
+                            </div>
+                            <div class="col-4">
+                                <small class="text-muted fw-bold">Total Amount</small>
+                                <h5 class="mb-0 fw-bold text-success" id="previewTotal">₹0.00</h5>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="addProductToCart(${productId}, '${productCode}')">Add</button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary" id="addToPurchaseBtn">
+                        <i class="bi bi-cart-plus me-1"></i>Add to Purchase
+                    </button>
                 </div>
             </div>
         </div>
-    </div>`;
+    `;
     
-    // Remove existing modal if any
-    const existingModal = document.getElementById('batchModal');
-    if (existingModal) existingModal.remove();
+    // Add modal to body
+    document.body.appendChild(modalDiv);
     
-    document.body.insertAdjacentHTML('beforeend', modalHtml);
-    new bootstrap.Modal(document.getElementById('batchModal')).show();
+    // Store product info in global variables for the onclick handler
+    window._currentProductId = productId;
+    window._currentProductCode = productCode;
+    window._currentProductName = productName;
+    
+    // Show modal using Bootstrap
+    const modalInstance = new bootstrap.Modal(modalDiv);
+    modalInstance.show();
+    
+    // Store modal instance for closing later
+    window._batchModalInstance = modalInstance;
+    
+    // Add click handler for the button
+    document.getElementById('addToPurchaseBtn').addEventListener('click', function() {
+        handleAddToPurchase();
+    });
+    
+    // Add real-time amount preview
+    function updatePreview() {
+        const rate = parseFloat(document.getElementById('modalRate').value) || 0;
+        const qty = parseInt(document.getElementById('modalQty').value) || 0;
+        const taxPerc = parseFloat(document.getElementById('modalTaxPerc').value) || 0;
+        
+        const baseAmount = rate * qty;
+        const taxAmount = baseAmount * (taxPerc / 100);
+        const totalAmount = baseAmount + taxAmount;
+        
+        document.getElementById('previewBase').textContent = '₹' + baseAmount.toFixed(2);
+        document.getElementById('previewTax').textContent = '₹' + taxAmount.toFixed(2);
+        document.getElementById('previewTotal').textContent = '₹' + totalAmount.toFixed(2);
+    }
+    
+    document.getElementById('modalRate').addEventListener('input', updatePreview);
+    document.getElementById('modalQty').addEventListener('input', updatePreview);
+    document.getElementById('modalTaxPerc').addEventListener('change', updatePreview);
+    
+    // Listen for modal close events
+    modalDiv.addEventListener('hidden.bs.modal', function() {
+        // Clean up if needed
+    });
+    
+    // Fill defaults if new batch
+    document.getElementById('modalBatchNo').value = '';
 }
 
 function fillBatchDetails() {
@@ -360,35 +532,86 @@ function fillBatchDetails() {
     if (value) {
         const [batchNo, expiry, mrp, rate, qty] = value.split('|');
         document.getElementById('modalBatchNo').value = batchNo;
+        document.getElementById('modalExpiry').value = expiry;
         document.getElementById('modalMrp').value = mrp;
         document.getElementById('modalRate').value = rate;
     }
 }
 
-function addProductToCart(productId, productCode) {
-    const batchNo = document.getElementById('modalBatchNo').value;
-    const expiry = document.getElementById('modalExpiry').value;
-    const mrp = parseFloat(document.getElementById('modalMrp').value) || 0;
-    const rate = parseFloat(document.getElementById('modalRate').value) || 0;
-    const qty = parseInt(document.getElementById('modalQty').value) || 1;
-    const freeQty = parseInt(document.getElementById('modalFreeQty').value) || 0;
-    
-    const amount = qty * rate;
-    
-    cart.push({
-        product_id: productId,
-        batch_no: batchNo,
-        expiry_date: expiry,
-        mrp: mrp,
-        rate: rate,
-        quantity: qty,
-        free_qty: freeQty,
-        amount: amount
-    });
-    
-    bootstrap.Modal.getInstance(document.getElementById('batchModal')).hide();
-    renderCart();
-    calculateTotal();
+function handleAddToPurchase() {
+    const pid = window._currentProductId;
+    const pcode = window._currentProductCode;
+    const pname = window._currentProductName;
+    if (pid) {
+        addProductToCart(pid, pcode, pname);
+    }
+}
+
+function addProductToCart(productId, productCode, productName) {
+    try {
+        // Get values from modal fields
+        const batchNo = document.getElementById('modalBatchNo') ? document.getElementById('modalBatchNo').value : '';
+        const expiry = document.getElementById('modalExpiry') ? document.getElementById('modalExpiry').value : '';
+        const mrp = parseFloat(document.getElementById('modalMrp') ? document.getElementById('modalMrp').value : '0') || 0;
+        const rate = parseFloat(document.getElementById('modalRate') ? document.getElementById('modalRate').value : '0') || 0;
+        const saleRate = parseFloat(document.getElementById('modalSaleRate') ? document.getElementById('modalSaleRate').value : '0') || 0;
+        const taxPerc = parseFloat(document.getElementById('modalTaxPerc') ? document.getElementById('modalTaxPerc').value : '18') || 18;
+        const qty = parseInt(document.getElementById('modalQty') ? document.getElementById('modalQty').value : '1') || 1;
+        const freeQty = parseInt(document.getElementById('modalFreeQty') ? document.getElementById('modalFreeQty').value : '0') || 0;
+        const packType = document.getElementById('modalPackType') ? document.getElementById('modalPackType').value : 'Unit';
+        
+        if (!batchNo) {
+            alert('Please enter batch number');
+            return;
+        }
+        
+        if (!rate || rate <= 0) {
+            alert('Please enter rate');
+            return;
+        }
+        
+        // Calculate amount with tax
+        const taxableAmount = qty * rate;
+        const taxAmount = taxableAmount * (taxPerc / 100);
+        const amount = taxableAmount + taxAmount;
+        
+        const newItem = {
+            product_id: productId,
+            product_code: productCode,
+            product_name: productName,
+            batch_no: batchNo,
+            expiry_date: expiry,
+            mrp: mrp,
+            rate: rate,
+            sale_rate: saleRate,
+            tax_perc: taxPerc,
+            quantity: qty,
+            free_qty: freeQty,
+            pack_type: packType,
+            amount: amount
+        };
+        
+        cart.push(newItem);
+        
+        // Hide modal using stored instance
+        if (window._batchModalInstance) {
+            window._batchModalInstance.hide();
+        }
+        
+        // Remove modal from DOM after hide
+        const modalEl = document.getElementById('batchModal');
+        if (modalEl) {
+            modalEl.addEventListener('hidden.bs.modal', function() {
+                modalEl.remove();
+            });
+        }
+        
+        renderCart();
+        calculateTotal();
+    } catch (err) {
+        alert('Error adding product: ' + err.message);
+        console.error(err);
+    }
 }
 
 function renderCart() {
@@ -406,24 +629,206 @@ function renderCart() {
     
     container.innerHTML = cart.map((item, index) => `
         <div class="border-bottom p-2">
-            <div class="row text-center small align-items-center">
+            <div class="row g-2 text-center small align-items-center">
                 <div class="col-4 text-start">
-                    <strong>${item.batch_no || 'N/A'}</strong>
-                    <br><small class="text-muted">${item.product_id}</small>
+                    <strong>${item.product_name || item.product_code || 'N/A'}</strong>
+                    <br><small class="text-muted">Batch: ${item.batch_no || 'N/A'}</small>
                 </div>
-                <div class="col-2">${item.expiry_date || 'N/A'}</div>
-                <div class="col-1">${item.mrp.toFixed(2)}</div>
+                <div class="col-2">${item.expiry_date || '-'}</div>
+                <div class="col-1">${item.mrp ? item.mrp.toFixed(2) : '0.00'}</div>
                 <div class="col-1">${item.quantity}</div>
-                <div class="col-1">${item.free_qty}</div>
-                <div class="col-2 text-end fw-bold">₹${item.amount.toFixed(2)}</div>
-                <div class="col-1">
-                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFromCart(${index})">
+                <div class="col-1">${item.free_qty || 0}</div>
+                <div class="col-1 text-end fw-bold">₹${item.amount ? item.amount.toFixed(2) : '0.00'}</div>
+                <div class="col-2 text-end">
+                    <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFromCart(${index})" title="Remove">
                         <i class="bi bi-x"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="editCartItem(${index})" title="Edit">
+                        <i class="bi bi-pencil"></i>
                     </button>
                 </div>
             </div>
         </div>
     `).join('');
+}
+
+function editCartItem(index) {
+    const item = cart[index];
+    if (item) {
+        // Store current edit index
+        window._editingCartIndex = index;
+        window._currentProductId = item.product_id;
+        window._currentProductCode = item.product_code;
+        window._currentProductName = item.product_name;
+        
+        // Show modal with existing values
+        showEditModal(item);
+    }
+}
+
+function showEditModal(item) {
+    // Remove existing modal if any
+    const existingModal = document.getElementById('batchModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const modalDiv = document.createElement('div');
+    modalDiv.className = 'modal fade';
+    modalDiv.id = 'batchModal';
+    modalDiv.tabIndex = '-1';
+    modalDiv.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Item - ${item.product_code}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">${item.product_name}</p>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="form-label small">Batch No <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" id="modalBatchNo" value="${item.batch_no || ''}" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small">Expiry</label>
+                            <input type="month" class="form-control form-control-sm" id="modalExpiry" value="${item.expiry_date || ''}">
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-1">
+                        <div class="col-3">
+                            <label class="form-label small">MRP</label>
+                            <input type="number" class="form-control form-control-sm" id="modalMrp" step="0.01" value="${item.mrp || 0}">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small">Rate (Cost) <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm" id="modalRate" step="0.01" value="${item.rate || 0}" required>
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small">Sale Rate</label>
+                            <input type="number" class="form-control form-control-sm" id="modalSaleRate" step="0.01" value="${item.sale_rate || 0}">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label small">Tax (GST %)</label>
+                            <select class="form-select form-select-sm" id="modalTaxPerc">
+                                <option value="0" ${item.tax_perc == 0 ? 'selected' : ''}>0%</option>
+                                <option value="5" ${item.tax_perc == 5 ? 'selected' : ''}>5%</option>
+                                <option value="12" ${item.tax_perc == 12 ? 'selected' : ''}>12%</option>
+                                <option value="18" ${item.tax_perc == 18 ? 'selected' : ''}>18%</option>
+                                <option value="28" ${item.tax_perc == 28 ? 'selected' : ''}>28%</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row g-2 mt-1">
+                        <div class="col-4">
+                            <label class="form-label small">Qty <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-sm" id="modalQty" value="${item.quantity}" min="1" required>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small">Free Qty</label>
+                            <input type="number" class="form-control form-control-sm" id="modalFreeQty" value="${item.free_qty || 0}" min="0">
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label small">Pack Type</label>
+                            <select class="form-select form-select-sm" id="modalPackType">
+                                <option value="Strip" ${item.pack_type == 'Strip' ? 'selected' : ''}>Strip</option>
+                                <option value="Bottle" ${item.pack_type == 'Bottle' ? 'selected' : ''}>Bottle</option>
+                                <option value="TAB" ${item.pack_type == 'TAB' ? 'selected' : ''}>TAB</option>
+                                <option value="Capsule" ${item.pack_type == 'Capsule' ? 'selected' : ''}>Capsule</option>
+                                <option value="Unit" ${item.pack_type == 'Unit' ? 'selected' : ''}>Unit</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="deleteItemBtn">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="updateItemBtn">Update</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modalDiv);
+    
+    const modalInstance = new bootstrap.Modal(modalDiv);
+    modalInstance.show();
+    window._batchModalInstance = modalInstance;
+    
+    // Update button handler
+    document.getElementById('updateItemBtn').addEventListener('click', function() {
+        updateCartItem();
+    });
+    
+    // Delete button handler
+    document.getElementById('deleteItemBtn').addEventListener('click', function() {
+        if (confirm('Delete this item?')) {
+            cart.splice(window._editingCartIndex, 1);
+            modalInstance.hide();
+            modalDiv.addEventListener('hidden.bs.modal', function() {
+                modalDiv.remove();
+            });
+            renderCart();
+            calculateTotal();
+        }
+    });
+}
+
+function updateCartItem() {
+    const index = window._editingCartIndex;
+    if (index === undefined || index < 0 || index >= cart.length) return;
+    
+    const batchNo = document.getElementById('modalBatchNo').value;
+    const expiry = document.getElementById('modalExpiry').value;
+    const mrp = parseFloat(document.getElementById('modalMrp').value) || 0;
+    const rate = parseFloat(document.getElementById('modalRate').value) || 0;
+    const saleRate = parseFloat(document.getElementById('modalSaleRate').value) || 0;
+    const taxPerc = parseFloat(document.getElementById('modalTaxPerc').value) || 18;
+    const qty = parseInt(document.getElementById('modalQty').value) || 1;
+    const freeQty = parseInt(document.getElementById('modalFreeQty').value) || 0;
+    const packType = document.getElementById('modalPackType').value;
+    
+    if (!batchNo) {
+        alert('Please enter batch number');
+        return;
+    }
+    
+    if (!rate || rate <= 0) {
+        alert('Please enter rate');
+        return;
+    }
+    
+    const taxableAmount = qty * rate;
+    const taxAmount = taxableAmount * (taxPerc / 100);
+    const amount = taxableAmount + taxAmount;
+    
+    cart[index] = {
+        ...cart[index],
+        batch_no: batchNo,
+        expiry_date: expiry,
+        mrp: mrp,
+        rate: rate,
+        sale_rate: saleRate,
+        tax_perc: taxPerc,
+        quantity: qty,
+        free_qty: freeQty,
+        pack_type: packType,
+        amount: amount
+    };
+    
+    if (window._batchModalInstance) {
+        window._batchModalInstance.hide();
+    }
+    const modalEl = document.getElementById('batchModal');
+    if (modalEl) {
+        modalEl.addEventListener('hidden.bs.modal', function() {
+            modalEl.remove();
+        });
+    }
+    
+    renderCart();
+    calculateTotal();
 }
 
 function removeFromCart(index) {
@@ -437,8 +842,10 @@ function calculateTotal() {
     let totalTax = 0;
     
     cart.forEach(item => {
+        const taxableAmount = item.quantity * item.rate;
+        const itemTax = taxableAmount * ((item.tax_perc || 18) / 100);
         subtotal += item.amount;
-        totalTax += item.amount * 0.18; // Assuming 18% GST
+        totalTax += itemTax;
     });
     
     const discountPerc = parseFloat(document.getElementById('discountPerc').value) || 0;
@@ -446,7 +853,7 @@ function calculateTotal() {
     
     let discountAmount = subtotal * (discountPerc / 100) + discountAmtInput;
     let taxableAmount = subtotal - discountAmount;
-    let taxAmount = taxableAmount * 0.18;
+    let taxAmount = totalTax * (1 - discountPerc / 100);
     let total = taxableAmount + taxAmount;
     let roundOff = Math.round(total) - total;
     
@@ -513,9 +920,12 @@ function completePurchase() {
         formData.append('batch_no', item.batch_no);
         formData.append('expiry_date', item.expiry_date);
         formData.append('quantity', item.quantity);
-        formData.append('free_qty', item.free_qty);
-        formData.append('mrp', item.mrp);
-        formData.append('rate', item.rate);
+        formData.append('free_qty', item.free_qty || 0);
+        formData.append('mrp', item.mrp || 0);
+        formData.append('purchase_rate', item.rate);
+        formData.append('sale_rate', item.sale_rate || 0);
+        formData.append('tax_perc', item.tax_perc || 18);
+        formData.append('pack_type', item.pack_type || 'Unit');
         formData.append('amount', item.amount);
     });
     
@@ -523,16 +933,51 @@ function completePurchase() {
         method: 'POST',
         body: formData
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            alert('Purchase completed successfully!');
-            window.location.href = '/purchase/' + data.purchase_id;
+    .then(res => {
+        // Check content type
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            return res.json().then(data => ({ ok: res.ok, data }));
+        }
+        // If not JSON, it might be a redirect or HTML error page
+        if (!res.ok) {
+            return res.text().then(text => {
+                throw new Error('Server error: ' + (text.substring(0, 200) || 'Unknown error'));
+            });
+        }
+        // Check if it's a redirect
+        if (res.redirected) {
+            window.location.href = res.url;
+            return { ok: true, data: { success: true } };
+        }
+        return res.text().then(text => {
+            // Try to parse as JSON anyway
+            try {
+                return { ok: true, data: JSON.parse(text) };
+            } catch {
+                // If URL contains purchase ID, assume success
+                if (res.url && res.url.includes('/purchase/')) {
+                    return { ok: true, data: { success: true, redirect: res.url } };
+                }
+                throw new Error('Invalid response format');
+            }
+        });
+    })
+    .then(result => {
+        if (result.ok && result.data.success) {
+            if (result.data.redirect) {
+                window.location.href = result.data.redirect;
+            } else if (result.data.purchase_id) {
+                window.location.href = '/purchase/' + result.data.purchase_id;
+            } else {
+                window.location.href = '{{ url_for("purchase.list") }}';
+            }
         } else {
-            alert('Error: ' + data.error);
+            alert('Error: ' + (result.data.error || 'Unknown error'));
         }
     })
     .catch(err => {
+        console.error('Purchase error:', err);
         alert('Error: ' + err.message);
     });
 }

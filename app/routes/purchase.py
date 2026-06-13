@@ -17,12 +17,12 @@ def generate_purchase_no():
     ).order_by(Purchase.id.desc()).first()
     
     if last_purchase:
-        last_num = int(last_purchase.purchase_no[-4:])
+        last_num = int(last_purchase.purchase_no[-6:])
         new_num = last_num + 1
     else:
         new_num = 1
     
-    return f'PUR{date_str}{str(new_num).zfill(4)}'
+    return f'PUR{date_str}{str(new_num).zfill(6)}'
 
 @purchase_bp.route('/')
 @login_required

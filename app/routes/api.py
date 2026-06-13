@@ -269,6 +269,24 @@ def get_product_batches(product_id):
         'purchase_rate': float(b.purchase_rate) if b.purchase_rate else 0
     } for b in batches])
 
+@api_bp.route('/products/<int:product_id>/batches')
+@login_required
+def get_product_batches_by_product(product_id):
+    """Alias for getting batches by product ID - used by purchase UI"""
+    batches = Batch.query.filter_by(product_id=product_id).filter(
+        Batch.available_qty >= 0  # Allow all batches for purchase
+    ).order_by(Batch.expiry_date).all()
+    
+    return jsonify([{
+        'id': b.id,
+        'batch_no': b.batch_no,
+        'expiry_date': b.expiry_date.isoformat() if b.expiry_date else None,
+        'available_qty': b.available_qty,
+        'sale_rate': float(b.sale_rate) if b.sale_rate else 0,
+        'mrp': float(b.mrp) if b.mrp else 0,
+        'rate': float(b.purchase_rate) if b.purchase_rate else 0
+    } for b in batches])
+
 # Dashboard stats
 @api_bp.route('/dashboard/stats')
 @login_required

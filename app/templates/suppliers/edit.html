@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Supplier - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Edit Supplier</h4>
+            <p class="text-muted mb-0">Update supplier information</p>
+        </div>
+        <div>
+            <a href="{{ url_for('suppliers.list') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+    
+    <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="row g-4">
+            <!-- Basic Information -->
+            <div class="col-12 col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Basic Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="account_code" class="form-label">Supplier Code <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="account_code" name="account_code" value="{{ supplier.account_code }}" required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="account_name" class="form-label">Supplier Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="account_name" name="account_name" value="{{ supplier.account_name }}" required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="contact_person" class="form-label">Contact Person</label>
+                                <input type="text" class="form-control" id="contact_person" name="contact_person" value="{{ supplier.contact_person or '' }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="mobile" class="form-label">Mobile</label>
+                                <input type="text" class="form-control" id="mobile" name="mobile" value="{{ supplier.mobile or '' }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="phone" name="phone" value="{{ supplier.phone or '' }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ supplier.email or '' }}">
+                            </div>
+                            <div class="col-12">
+                                <label for="address" class="form-label">Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="2">{{ supplier.address or '' }}</textarea>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" id="city" name="city" value="{{ supplier.city or '' }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" class="form-control" id="state" name="state" value="{{ supplier.state or '' }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="pincode" class="form-label">Pincode</label>
+                                <input type="text" class="form-control" id="pincode" name="pincode" value="{{ supplier.pincode or '' }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="gstin" class="form-label">GST No</label>
+                                <input type="text" class="form-control" id="gstin" name="gstin" value="{{ supplier.gstin or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Credit Information -->
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Credit Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="credit_limit" class="form-label">Credit Limit</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="credit_limit" name="credit_limit" step="0.01" value="{{ supplier.credit_limit or 0 }}">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="credit_period" class="form-label">Credit Period (Days)</label>
+                                <input type="number" class="form-control" id="credit_period" name="credit_period" value="{{ supplier.credit_period or 0 }}">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="opening_balance" class="form-label">Opening Balance</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">₹</span>
+                                    <input type="number" class="form-control" id="opening_balance" name="opening_balance" step="0.01" value="{{ supplier.opening_balance or 0 }}">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="discount_perc" class="form-label">Default Discount %</label>
+                                <input type="number" class="form-control" id="discount_perc" name="discount_perc" step="0.01" value="{{ supplier.discount_perc or 0 }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="col-12 col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Other Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="4">{{ supplier.notes or '' }}</textarea>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if supplier.is_active %}checked{% endif %}>
+                            <label class="form-check-label" for="is_active">Active</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-lg me-1"></i> Update Supplier
+            </button>
+            <a href="{{ url_for('suppliers.list') }}" class="btn btn-outline-secondary ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

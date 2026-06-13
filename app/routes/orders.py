@@ -228,20 +228,19 @@ def receive(order_id):
         # Create purchase from order
         from app.models import Purchase, PurchaseItem
         from flask import current_app
-        
-        purchase_no = f"PO{order.order_no}"
+        from app.routes.purchase import generate_purchase_no
         
         purchase = Purchase(
-            purchase_no=purchase_no,
+            purchase_no=generate_purchase_no(),
             supplier_id=order.supplier_id,
             invoice_no=order.order_no,
             invoice_date=order.order_date.date(),
             subtotal=order.subtotal,
-            discount_amt=order.discount_amt,
-            tax_amt=order.tax_amt,
+            discount_amount=order.discount_amt,
+            tax_amount=order.tax_amt,
             total_amount=order.total_amount,
-            remarks=f"Created from PO {order.order_no}",
-            user_id=current_user.id
+            notes=f"Created from PO {order.order_no}",
+            created_by=current_user.id
         )
         db.session.add(purchase)
         db.session.flush()
@@ -255,19 +254,14 @@ def receive(order_id):
                 purchase_id=purchase.id,
                 product_id=item.product_id,
                 quantity=item.quantity,
-                purchase_rate=item.unit_rate,
+                rate=item.unit_rate,
                 mrp=item.mrp,
-                discount_perc=item.discount_perc,
-                discount_amt=item.discount_amt,
-                tax_perc=item.tax_perc,
-                tax_amt=item.tax_amt,
                 amount=item.amount
             )
             db.session.add(purchase_item)
             
             # Update stock
             product.current_stock += item.quantity
-            product.save()
             
             # Create/update batch
             batch = Batch.query.filter_by(
@@ -283,7 +277,7 @@ def receive(order_id):
                     mrp=item.mrp,
                     sale_rate=product.rate if product.rate else 0,
                     available_qty=item.quantity,
-                    purchase_id=purchase.id
+                    expiry_date=order.expected_date
                 )
                 db.session.add(batch)
         
@@ -295,6 +289,57 @@ def receive(order_id):
         return redirect(url_for('orders.view', order_id=order.id))
     
     return render_template('orders/receive.html', order=order)
+
+@orders_bp.route('/<int:order_id>/generate-purchase', methods=['GET', 'POST'])
+@login_required
+def generate_purchase(order_id):
+    """Generate purchase from order and redirect to purchase page"""
+    order = PurchaseOrder.query.get_or_404(order_id)
+    
+    if order.status == 'received':
+        flash('Order already converted to purchase.', 'error')
+        return redirect(url_for('orders.view', order_id=order.id))
+    
+    from app.models import Purchase, PurchaseItem
+    from app.routes.purchase import generate_purchase_no
+    
+    purchase = Purchase(
+        purchase_no=generate_purchase_no(),
+        supplier_id=order.supplier_id,
+        purchase_date=datetime.utcnow(),
+        invoice_no=order.order_no,
+        bill_type='GST Bill',
+        subtotal=order.subtotal,
+        discount_perc=0,
+        discount_amount=order.discount_amt,
+        tax_amount=order.tax_amt,
+        round_off=0,
+        total_amount=order.total_amount,
+        payment_mode='cash',
+        created_by=current_user.id,
+        notes=f"Created from PO {order.order_no}"
+    )
+    db.session.add(purchase)
+    db.session.flush()
+    
+    # Add items from order
+    for item in order.items:
+        purchase_item = PurchaseItem(
+            purchase_id=purchase.id,
+            product_id=item.product_id,
+            quantity=item.quantity,
+            rate=item.unit_rate,
+            mrp=item.mrp or 0,
+            amount=item.amount
+        )
+        db.session.add(purchase_item)
+    
+    # Update order status
+    order.status = 'sent'
+    db.session.commit()
+    
+    flash(f'Purchase {purchase.purchase_no} generated from order {order.order_no}.', 'success')
+    return redirect(url_for('purchase.edit', id=purchase.id))
 
 @orders_bp.route('/<int:order_id>/print')
 @login_required

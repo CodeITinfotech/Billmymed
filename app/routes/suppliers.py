@@ -109,22 +109,23 @@ def edit(id):
     supplier = AccountMaster.query.get_or_404(id)
     
     if request.method == 'POST':
+        supplier.account_code = request.form.get('account_code', '').strip()
         supplier.account_name = request.form.get('account_name', '').strip()
-        supplier.group_id = request.form.get('group_id', type=int)
         supplier.contact_person = request.form.get('contact_person', '').strip()
+        supplier.mobile = request.form.get('mobile', '').strip()
+        supplier.phone = request.form.get('phone', '').strip()
+        supplier.email = request.form.get('email', '').strip()
         supplier.address = request.form.get('address', '').strip()
         supplier.city = request.form.get('city', '').strip()
         supplier.state = request.form.get('state', '').strip()
         supplier.pincode = request.form.get('pincode', '').strip()
-        supplier.phone = request.form.get('phone', '').strip()
-        supplier.mobile = request.form.get('mobile', '').strip()
-        supplier.email = request.form.get('email', '').strip()
         supplier.gstin = request.form.get('gstin', '').strip()
-        supplier.pan = request.form.get('pan', '').strip()
         supplier.credit_limit = request.form.get('credit_limit', 0, type=float)
         supplier.credit_period = request.form.get('credit_period', 0, type=int)
+        supplier.opening_balance = request.form.get('opening_balance', 0, type=float)
         supplier.discount_perc = request.form.get('discount_perc', 0, type=float)
         supplier.notes = request.form.get('notes', '').strip()
+        supplier.is_active = request.form.get('is_active') == 'on'
         supplier.updated_at = datetime.utcnow()
         
         db.session.commit()
