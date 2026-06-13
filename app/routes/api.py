@@ -43,6 +43,34 @@ def get_products():
         'current_page': products.page
     })
 
+@api_bp.route('/all-products')
+@login_required
+def get_all_products():
+    """Get all products for autocomplete (purchase/sales)"""
+    search = request.args.get('q', '')
+    query = Product.query.filter_by(is_active=True)
+    
+    if search:
+        query = query.filter(
+            or_(
+                Product.product_code.ilike(f'%{search}%'),
+                Product.product_name.ilike(f'%{search}%'),
+                Product.generic_name.ilike(f'%{search}%')
+            )
+        )
+    
+    products = query.order_by(Product.product_name).limit(50).all()
+    
+    return jsonify([{
+        'id': p.id,
+        'product_code': p.product_code,
+        'product_name': p.product_name,
+        'generic_name': p.generic_name,
+        'mrp': float(p.mrp) if p.mrp else 0,
+        'rate': float(p.rate) if p.rate else 0,
+        'stock': p.current_stock
+    } for p in products])
+
 @api_bp.route('/products/<int:id>')
 @login_required
 def get_product(id):

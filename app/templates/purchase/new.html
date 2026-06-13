@@ -235,7 +235,7 @@ function searchProducts(query) {
         return;
     }
     
-    fetch('/api/products/search?search=' + encodeURIComponent(query))
+    fetch('/api/all-products?q=' + encodeURIComponent(query))
         .then(res => res.json())
         .then(products => {
             const container = document.getElementById('searchResults');
@@ -251,7 +251,7 @@ function searchProducts(query) {
                             </div>
                             <div class="text-end">
                                 <small>MRP: ₹${parseFloat(p.mrp || 0).toFixed(2)}</small>
-                                <br><small class="text-muted">Stock: ${p.current_stock || 0}</small>
+                                <br><small class="text-muted">Stock: ${p.stock || 0}</small>
                             </div>
                         </div>
                     </div>
