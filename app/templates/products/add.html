@@ -95,20 +95,20 @@
                             <div class="col-12 col-md-4">
                                 <label for="schedule" class="form-label">Schedule</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="schedule" name="schedule" list="schedule_list" autocomplete="off">
+                                    <select class="form-select" id="schedule" name="schedule">
+                                        <option value="">Select Schedule</option>
+                                        <option value="OTC">OTC</option>
+                                        <option value="H">H</option>
+                                        <option value="Sch-H">Sch-H</option>
+                                        <option value="Sch-H1">Sch-H1</option>
+                                        <option value="Sch-X">Sch-X</option>
+                                        <option value="G">G</option>
+                                        <option value="Sch-G">Sch-G</option>
+                                    </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('schedule', 'Schedule')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
-                                <datalist id="schedule_list">
-                                    <option value="OTC">
-                                    <option value="H">
-                                    <option value="Sch-H">
-                                    <option value="Sch-H1">
-                                    <option value="Sch-X">
-                                    <option value="G">
-                                    <option value="Sch-G">
-                                </datalist>
                             </div>
                             <div class="col-12 col-md-4">
                                 <label for="category_id" class="form-label">Category</label>
