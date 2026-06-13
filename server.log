@@ -15,3 +15,193 @@ nohup: ignoring input
 10.2.41.130 - - [13/Jun/2026 08:31:58] "GET /api/alerts/stock HTTP/1.1" 200 -
 10.2.41.130 - - [13/Jun/2026 08:32:08] "GET /suppliers/add HTTP/1.1" 200 -
 10.2.41.130 - - [13/Jun/2026 08:32:09] "GET /api/alerts/stock HTTP/1.1" 200 -
+[2026-06-13 08:32:58,135] ERROR in app: Exception on /inventory/racks [GET]
+Traceback (most recent call last):
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/routes/inventory.py", line 226, in racks
+    return render_template('inventory/racks.html', racks=racks)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 133, in _render
+    rv = template.render(context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/racks.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/workspace/project/Billmymed-Web/app/templates/base.html", line 186, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/racks.html", line 76, in block 'content'
+    <h4 class="mb-0 fw-bold">{{ summary.total }}</h4>
+    
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'summary' is undefined
+10.2.41.130 - - [13/Jun/2026 08:32:58] "[35m[1mGET /inventory/racks HTTP/1.1[0m" 500 -
+[2026-06-13 08:33:01,061] ERROR in app: Exception on /inventory/adjustments [GET]
+Traceback (most recent call last):
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/routes/inventory.py", line 77, in adjustments
+    return render_template('inventory/adjustments.html', adjustments=adjustments)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 133, in _render
+    rv = template.render(context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/adjustments.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/workspace/project/Billmymed-Web/app/templates/base.html", line 186, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/adjustments.html", line 14, in block 'content'
+    <a href="{{ url_for('inventory.adjustment_new') }}" class="btn btn-primary">
+    ^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1071, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1060, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "/home/openhands/.local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'inventory.adjustment_new'. Did you mean 'inventory.adjustments' instead?
+10.2.41.130 - - [13/Jun/2026 08:33:01] "[35m[1mGET /inventory/adjustments HTTP/1.1[0m" 500 -
+[2026-06-13 08:33:03,787] ERROR in app: Exception on /inventory/expiry-report [GET]
+Traceback (most recent call last):
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/routes/inventory.py", line 166, in expiry_report
+    return render_template('inventory/expiry_report.html', batches=batches, days=days)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 133, in _render
+    rv = template.render(context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/expiry_report.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/workspace/project/Billmymed-Web/app/templates/base.html", line 186, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/expiry_report.html", line 17, in block 'content'
+    <a href="{{ url_for('reports.export_expiry') }}" class="btn btn-outline-primary">
+    ^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1071, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1060, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "/home/openhands/.local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'reports.export_expiry'. Did you mean 'reports.expiry' instead?
+10.2.41.130 - - [13/Jun/2026 08:33:03] "[35m[1mGET /inventory/expiry-report HTTP/1.1[0m" 500 -
+10.2.41.130 - - [13/Jun/2026 08:33:06] "GET /reports/purchase HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:33:06] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:33:06] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:33:06] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:33:07] "GET /api/alerts/stock HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:33:09] "GET /inventory/stock HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:33:09] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:33:09] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:33:10] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:33:10] "GET /api/alerts/stock HTTP/1.1" 200 -
+[2026-06-13 08:33:11,926] ERROR in app: Exception on /inventory/expiry-report [GET]
+Traceback (most recent call last):
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/routes/inventory.py", line 166, in expiry_report
+    return render_template('inventory/expiry_report.html', batches=batches, days=days)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/templating.py", line 133, in _render
+    rv = template.render(context)
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/expiry_report.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/workspace/project/Billmymed-Web/app/templates/base.html", line 186, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+  File "/workspace/project/Billmymed-Web/app/templates/inventory/expiry_report.html", line 17, in block 'content'
+    <a href="{{ url_for('reports.export_expiry') }}" class="btn btn-outline-primary">
+    ^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1071, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/openhands/.local/lib/python3.13/site-packages/flask/app.py", line 1060, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "/home/openhands/.local/lib/python3.13/site-packages/werkzeug/routing/map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'reports.export_expiry'. Did you mean 'reports.expiry' instead?
+10.2.41.130 - - [13/Jun/2026 08:33:11] "[35m[1mGET /inventory/expiry-report HTTP/1.1[0m" 500 -
+10.2.41.130 - - [13/Jun/2026 08:34:06] "GET /suppliers/ HTTP/1.1" 200 -
+10.2.41.130 - - [13/Jun/2026 08:34:06] "[36mGET /static/images/logo.svg HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:34:06] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:34:06] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+10.2.41.130 - - [13/Jun/2026 08:34:06] "GET /api/alerts/stock HTTP/1.1" 200 -
