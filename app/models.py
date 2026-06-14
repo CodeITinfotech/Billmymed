@@ -265,7 +265,10 @@ class Invoice(db.Model):
     total_amount = db.Column(db.Numeric(12, 2), default=0)
     cash_amount = db.Column(db.Numeric(12, 2), default=0)
     card_amount = db.Column(db.Numeric(12, 2), default=0)
+    gpay_amount = db.Column(db.Numeric(12, 2), default=0)
+    online_amount = db.Column(db.Numeric(12, 2), default=0)
     credit_amount = db.Column(db.Numeric(12, 2), default=0)
+    return_amount = db.Column(db.Numeric(12, 2), default=0)
     payment_status = db.Column(db.String(20), default='paid')  # paid, partial, credit
     due_date = db.Column(db.Date)
     sales_type = db.Column(db.String(10), default='cash')  # cash, credit, emergency

@@ -19,6 +19,30 @@
     background-color: #e7f1ff;
     border-left: 3px solid #0d6efd;
 }
+.batch-selector {
+    border: 2px solid #0d6efd;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.batch-item {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+}
+.batch-item:hover {
+    background-color: #f0f7ff;
+}
+.batch-item.selected {
+    background-color: #e7f1ff;
+}
+.batch-item .batch-info {
+    display: flex;
+    justify-content: space-between;
+}
+.search-highlight {
+    background-color: #fff3cd;
+    font-weight: bold;
+}
 </style>
 {% endblock %}
 
@@ -41,6 +65,7 @@
     </div>
     
     <form id="saleForm" method="POST" action="{{ url_for('sales.create') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="row g-3">
             <!-- Left Column - Product Selection -->
             <div class="col-12 col-lg-8">
@@ -87,7 +112,8 @@
                                 <i class="bi bi-search text-muted"></i>
                             </span>
                             <input type="text" class="form-control border-start-0 ps-0" id="productSearch" 
-                                   placeholder="Search by name, code, or scan barcode..." autofocus>
+                                   placeholder="Search by name, code, or scan barcode..." autofocus
+                                   autocomplete="off">
                             <button class="btn btn-outline-secondary" type="button" onclick="openBarcodeScanner()">
                                 <i class="bi bi-upc-scan"></i>
                             </button>
@@ -97,6 +123,14 @@
                         <div class="position-relative">
                             <div id="searchResults" class="position-absolute w-100 shadow-sm bg-white rounded-bottom overflow-hidden" style="z-index: 1000; max-height: 300px; overflow-y: auto; display: none;">
                             </div>
+                        </div>
+                        
+                        <!-- Batch Selection Dropdown -->
+                        <div id="batchSelector" class="batch-selector position-absolute w-100 shadow bg-white rounded mt-1" style="z-index: 1001; display: none;">
+                            <div class="p-2 bg-light border-bottom">
+                                <strong>Select Batch (Use ↑↓ keys or click)</strong>
+                            </div>
+                            <div id="batchList"></div>
                         </div>
                     </div>
                 </div>
@@ -181,30 +215,57 @@
                         
                         <!-- Payment Mode -->
                         <hr>
-                        <div class="row g-2 mb-3">
-                            <div class="col-4">
-                                <label class="form-label small">Cash</label>
-                                <input type="number" class="form-control form-control-sm text-end" id="cashAmount" 
-                                       value="0" min="0" step="1" onchange="calculatePayment()">
+                        <div id="cashPaymentSection">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted fw-bold">Cash Payment</span>
                             </div>
-                            <div class="col-4">
-                                <label class="form-label small">Card</label>
-                                <input type="number" class="form-control form-control-sm text-end" id="cardAmount" 
-                                       value="0" min="0" step="1" onchange="calculatePayment()">
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label small">Cash</label>
+                                    <input type="number" class="form-control form-control-sm text-end" id="cashAmount" 
+                                           value="0" min="0" step="1" onchange="calculatePayment()">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">Card</label>
+                                    <input type="number" class="form-control form-control-sm text-end" id="cardAmount" 
+                                           value="0" min="0" step="1" onchange="calculatePayment()">
+                                </div>
                             </div>
-                            <div class="col-4">
-                                <label class="form-label small">Credit</label>
-                                <input type="number" class="form-control form-control-sm text-end" id="creditAmount" 
-                                       value="0" min="0" step="1" onchange="calculatePayment()">
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label small">GPay / UPI</label>
+                                    <input type="number" class="form-control form-control-sm text-end" id="gpayAmount" 
+                                           value="0" min="0" step="1" onchange="calculatePayment()">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small">Online</label>
+                                    <input type="number" class="form-control form-control-sm text-end" id="onlineAmount" 
+                                           value="0" min="0" step="1" onchange="calculatePayment()">
+                                </div>
+                            </div>
+                            <!-- GPay QR Button -->
+                            <div id="gpaySection" class="mb-2" style="display: none;">
+                                <button type="button" class="btn btn-outline-primary btn-sm w-100" onclick="generateGPayQR()">
+                                    <i class="bi bi-qr-code me-1"></i> Generate GPay QR
+                                </button>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-muted">Received</span>
-                            <span id="receivedAmount">₹0.00</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Balance</span>
-                            <span id="balanceAmount" class="text-success fw-bold">₹0.00</span>
+                        
+                        <!-- Cash Payment Info -->
+                        <div id="cashPaymentInfo" style="display: none;">
+                            <hr>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Amount Given</span>
+                                <span id="amountGiven" class="fw-bold">₹0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Total Amount</span>
+                                <span id="totalAmountDisplay">₹0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between text-success fw-bold">
+                                <span>Return to Customer</span>
+                                <span id="returnAmount">₹0.00</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -240,7 +301,10 @@
         <input type="hidden" name="total_amount" id="totalAmountHidden" value="0">
         <input type="hidden" name="cash_amount" id="cashAmountHidden" value="0">
         <input type="hidden" name="card_amount" id="cardAmountHidden" value="0">
+        <input type="hidden" name="gpay_amount" id="gpayAmountHidden" value="0">
+        <input type="hidden" name="online_amount" id="onlineAmountHidden" value="0">
         <input type="hidden" name="credit_amount" id="creditAmountHidden" value="0">
+        <input type="hidden" name="return_amount" id="returnAmountHidden" value="0">
         <input type="hidden" name="payment_status" id="paymentStatus" value="paid">
         <input type="hidden" name="remarks" id="remarks" value="">
     </form>
@@ -293,6 +357,9 @@
 // Cart state
 let cart = [];
 let selectedCustomer = null;
+let selectedBatchIndex = -1;
+let pendingProductId = null;
+let pendingProductData = null;
 
 // Format currency
 function formatCurrency(amount) {
@@ -312,73 +379,86 @@ function debounce(func, wait) {
     };
 }
 
-// Search products
+// Search products with highlighting
 const searchProducts = debounce(function(query) {
     if (query.length < 2) {
         document.getElementById('searchResults').style.display = 'none';
+        document.getElementById('batchSelector').style.display = 'none';
         return;
     }
     
-    fetch(`/api/products?search=${encodeURIComponent(query)}`)
+    // First try barcode search
+    fetch(`/api/products/barcode/${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
-            const resultsDiv = document.getElementById('searchResults');
-            if (data.items && data.items.length > 0) {
-                resultsDiv.innerHTML = data.items.slice(0, 10).map(p => `
-                    <div class="product-list-item p-2 border-bottom" onclick="addToCart(${p.id}, '${p.product_code}')">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <strong>${p.product_name}</strong>
-                                <small class="text-muted d-block">${p.product_code}</small>
-                            </div>
-                            <div class="text-end">
-                                <div class="fw-bold">₹${p.mrp.toFixed(2)}</div>
-                                <small class="${p.stock < 10 ? 'text-danger' : 'text-success'}">Stock: ${p.stock}</small>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                resultsDiv.style.display = 'block';
-            } else {
-                resultsDiv.innerHTML = '<div class="p-3 text-muted text-center">No products found</div>';
-                resultsDiv.style.display = 'block';
+            if (!data.error && data.id) {
+                // Found by barcode - directly add to cart
+                addToCart(data.id, data.product_code);
+                return;
             }
+        })
+        .catch(() => {})
+        .finally(() => {
+            // Then try name/code search
+            fetch(`/api/all-products?q=${encodeURIComponent(query)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('searchResults');
+                    if (data.length > 0) {
+                        resultsDiv.innerHTML = data.slice(0, 10).map(p => {
+                            const highlightedName = highlightMatch(p.product_name, query);
+                            const highlightedCode = highlightMatch(p.product_code, query);
+                            return `
+                                <div class="product-list-item p-2 border-bottom" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>${highlightedName}</strong>
+                                            <small class="text-muted d-block">${highlightedCode}</small>
+                                        </div>
+                                        <div class="text-end">
+                                            <div class="fw-bold">₹${p.mrp.toFixed(2)}</div>
+                                            <small class="${p.stock < 10 ? 'text-danger' : 'text-success'}">Stock: ${p.stock}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                        resultsDiv.style.display = 'block';
+                    } else {
+                        resultsDiv.innerHTML = '<div class="p-3 text-muted text-center">No products found</div>';
+                        resultsDiv.style.display = 'block';
+                    }
+                });
         });
 }, 300);
 
-// Add to cart
-function addToCart(productId, productCode) {
+// Highlight matching text
+function highlightMatch(text, query) {
+    if (!query) return text;
+    const regex = new RegExp('(' + query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    return text.replace(regex, '<span class="search-highlight">$1</span>');
+}
+
+// Select product - show batch selector if multiple batches
+function selectProduct(productId, productCode) {
     document.getElementById('searchResults').style.display = 'none';
     document.getElementById('productSearch').value = '';
     
-    // Check if already in cart
-    const existing = cart.find(item => item.product_id === productId);
-    if (existing) {
-        updateQty(existing.id, 1);
-        return;
-    }
+    pendingProductId = productId;
     
     fetch(`/api/products/${productId}`)
         .then(res => res.json())
         .then(product => {
-            if (product.batches && product.batches.length > 0) {
-                const batch = product.batches[0];
-                addItemToCart({
-                    id: Date.now(),
-                    product_id: product.id,
-                    product_code: product.product_code,
-                    product_name: product.product_name,
-                    batch_id: batch.id,
-                    batch_no: batch.batch_no,
-                    expiry_date: batch.expiry_date,
-                    mrp: batch.mrp || product.mrp,
-                    unit_rate: batch.sale_rate || product.rate,
-                    quantity: 1,
-                    max_qty: batch.available_qty,
-                    discount_perc: product.discount_perc || 0,
-                    tax_perc: product.tax_perc || 0
-                });
+            pendingProductData = product;
+            
+            if (product.batches && product.batches.length > 1) {
+                // Multiple batches - show selector
+                showBatchSelector(product);
+            } else if (product.batches && product.batches.length === 1) {
+                // Single batch - add directly
+                addToCartWithBatch(product, product.batches[0]);
             } else {
+                // No batch - add without batch
                 addItemToCart({
                     id: Date.now(),
                     product_id: product.id,
@@ -396,6 +476,82 @@ function addToCart(productId, productCode) {
                 });
             }
         });
+}
+
+// Show batch selector with keyboard navigation
+function showBatchSelector(product) {
+    const batchList = document.getElementById('batchList');
+    const batchSelector = document.getElementById('batchSelector');
+    
+    batchList.innerHTML = product.batches.map((batch, index) => `
+        <div class="batch-item" data-index="${index}" onclick="selectBatch(${index})">
+            <div class="batch-info">
+                <div>
+                    <strong>${batch.batch_no}</strong>
+                    <small class="text-muted"> | Exp: ${batch.expiry_date ? new Date(batch.expiry_date).toLocaleDateString('en-GB') : 'N/A'}</small>
+                </div>
+                <div class="text-end">
+                    <span class="fw-bold">₹${batch.sale_rate.toFixed(2)}</span>
+                    <small class="text-muted d-block">Qty: ${batch.available_qty}</small>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    selectedBatchIndex = 0;
+    updateBatchSelection();
+    batchSelector.style.display = 'block';
+    
+    // Focus product search for keyboard nav
+    document.getElementById('productSearch').focus();
+}
+
+// Update batch selection visual
+function updateBatchSelection() {
+    const items = document.querySelectorAll('.batch-item');
+    items.forEach((item, index) => {
+        item.classList.toggle('selected', index === selectedBatchIndex);
+    });
+}
+
+// Select batch from list
+function selectBatch(index) {
+    if (pendingProductData && pendingProductData.batches && pendingProductData.batches[index]) {
+        addToCartWithBatch(pendingProductData, pendingProductData.batches[index]);
+    }
+    hideBatchSelector();
+}
+
+// Add to cart with specific batch
+function addToCartWithBatch(product, batch) {
+    addItemToCart({
+        id: Date.now(),
+        product_id: product.id,
+        product_code: product.product_code,
+        product_name: product.product_name,
+        batch_id: batch.id,
+        batch_no: batch.batch_no,
+        expiry_date: batch.expiry_date,
+        mrp: batch.mrp || product.mrp,
+        unit_rate: batch.sale_rate || product.rate,
+        quantity: 1,
+        max_qty: batch.available_qty,
+        discount_perc: product.discount_perc || 0,
+        tax_perc: product.tax_perc || 0
+    });
+}
+
+// Hide batch selector
+function hideBatchSelector() {
+    document.getElementById('batchSelector').style.display = 'none';
+    selectedBatchIndex = -1;
+    pendingProductId = null;
+    pendingProductData = null;
+}
+
+// Legacy function for backward compatibility
+function addToCart(productId, productCode) {
+    selectProduct(productId, productCode);
 }
 
 // Add item to cart
@@ -525,10 +681,20 @@ function calculateTotal() {
     document.getElementById('roundOffHidden').value = roundOff.toFixed(2);
     document.getElementById('totalAmountHidden').value = Math.round(total).toFixed(2);
     
-    // Set cash amount as total initially
-    if (document.getElementById('cashAmount').value === '0' && 
-        document.getElementById('cardAmount').value === '0') {
-        document.getElementById('cashAmount').value = Math.round(total).toFixed(0);
+    // Update total display
+    document.getElementById('totalAmountDisplay').textContent = formatCurrency(Math.round(total));
+    
+    // Initialize cash amount as total if zero
+    const salesType = document.getElementById('salesType').value;
+    if (salesType === 'cash' && cart.length > 0) {
+        const cash = parseFloat(document.getElementById('cashAmount').value) || 0;
+        const card = parseFloat(document.getElementById('cardAmount').value) || 0;
+        const gpay = parseFloat(document.getElementById('gpayAmount').value) || 0;
+        const online = parseFloat(document.getElementById('onlineAmount').value) || 0;
+        
+        if (cash === 0 && card === 0 && gpay === 0 && online === 0) {
+            document.getElementById('cashAmount').value = Math.round(total).toFixed(0);
+        }
         calculatePayment();
     }
 }
@@ -538,28 +704,82 @@ function calculatePayment() {
     const total = parseFloat(document.getElementById('totalAmountHidden').value) || 0;
     const cash = parseFloat(document.getElementById('cashAmount').value) || 0;
     const card = parseFloat(document.getElementById('cardAmount').value) || 0;
-    const credit = parseFloat(document.getElementById('creditAmount').value) || 0;
+    const gpay = parseFloat(document.getElementById('gpayAmount').value) || 0;
+    const online = parseFloat(document.getElementById('onlineAmount').value) || 0;
+    const salesType = document.getElementById('salesType').value;
     
-    const received = cash + card;
+    const received = cash + card + gpay + online;
     const balance = total - received;
-    
-    document.getElementById('receivedAmount').textContent = formatCurrency(received);
-    document.getElementById('balanceAmount').textContent = formatCurrency(Math.abs(balance));
-    document.getElementById('balanceAmount').className = balance >= 0 ? 'text-success fw-bold' : 'text-danger fw-bold';
     
     // Update hidden fields
     document.getElementById('cashAmountHidden').value = cash.toFixed(2);
     document.getElementById('cardAmountHidden').value = card.toFixed(2);
-    document.getElementById('creditAmountHidden').value = credit.toFixed(2);
+    document.getElementById('gpayAmountHidden').value = gpay.toFixed(2);
+    document.getElementById('onlineAmountHidden').value = online.toFixed(2);
+    document.getElementById('creditAmountHidden').value = salesType === 'credit' ? total.toFixed(2) : '0';
+    
+    // Show/hide cash payment section based on sales type
+    const cashSection = document.getElementById('cashPaymentSection');
+    const cashInfo = document.getElementById('cashPaymentInfo');
+    const gpaySection = document.getElementById('gpaySection');
+    
+    if (salesType === 'credit') {
+        cashSection.style.display = 'none';
+        cashInfo.style.display = 'none';
+    } else {
+        cashSection.style.display = 'block';
+        gpaySection.style.display = gpay > 0 ? 'block' : 'none';
+        
+        // Show return calculation
+        if (received > total) {
+            cashInfo.style.display = 'block';
+            document.getElementById('amountGiven').textContent = formatCurrency(received);
+            document.getElementById('returnAmount').textContent = formatCurrency(received - total);
+            document.getElementById('returnAmountHidden').value = (received - total).toFixed(2);
+        } else if (received > 0) {
+            cashInfo.style.display = 'block';
+            document.getElementById('amountGiven').textContent = formatCurrency(received);
+            document.getElementById('returnAmount').textContent = '₹0.00';
+            document.getElementById('returnAmountHidden').value = '0';
+        } else {
+            cashInfo.style.display = 'none';
+        }
+    }
     
     // Set payment status
-    if (credit > 0 && received === 0) {
+    if (salesType === 'credit') {
         document.getElementById('paymentStatus').value = 'credit';
-    } else if (credit > 0 || received < total) {
+    } else if (received >= total) {
+        document.getElementById('paymentStatus').value = 'paid';
+    } else if (received > 0) {
         document.getElementById('paymentStatus').value = 'partial';
     } else {
         document.getElementById('paymentStatus').value = 'paid';
     }
+}
+
+// Generate GPay QR Code
+function generateGPayQR() {
+    const total = parseFloat(document.getElementById('totalAmountHidden').value) || 0;
+    const amount = parseFloat(document.getElementById('gpayAmount').value) || total;
+    
+    alert('GPay QR Code for ₹' + amount.toFixed(2) + '\n\nPlease show this QR code to the customer for scanning.');
+    // In a real implementation, this would generate a QR code using UPI payment APIs
+}
+
+// Handle sales type change
+function handleSalesTypeChange() {
+    const salesType = document.getElementById('salesType').value;
+    const customerSelect = document.getElementById('customerSelect');
+    const customerCard = document.getElementById('customerInfoCard');
+    
+    if (salesType === 'credit') {
+        // For credit sales, focus on customer selection
+        customerSelect.focus();
+    }
+    
+    // Recalculate payment display
+    calculatePayment();
 }
 
 // Complete sale
@@ -649,15 +869,45 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('productSearch');
     searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
     
-    // Close search results when clicking outside
+    // Sales type change handler - does not clear cart
+    document.getElementById('salesType').addEventListener('change', handleSalesTypeChange);
+    
+    // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('#productSearch') && !e.target.closest('#searchResults')) {
+        if (!e.target.closest('#productSearch') && !e.target.closest('#searchResults') && !e.target.closest('#batchSelector')) {
             document.getElementById('searchResults').style.display = 'none';
+            hideBatchSelector();
         }
     });
     
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
+        // Batch selector navigation
+        if (document.getElementById('batchSelector').style.display === 'block') {
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const batchCount = pendingProductData?.batches?.length || 0;
+                if (batchCount > 0) {
+                    selectedBatchIndex = (selectedBatchIndex + 1) % batchCount;
+                    updateBatchSelection();
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const batchCount = pendingProductData?.batches?.length || 0;
+                if (batchCount > 0) {
+                    selectedBatchIndex = (selectedBatchIndex - 1 + batchCount) % batchCount;
+                    updateBatchSelection();
+                }
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                selectBatch(selectedBatchIndex);
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                hideBatchSelector();
+            }
+            return;
+        }
+        
         if (e.key === 'F1') {
             e.preventDefault();
             document.getElementById('productSearch').focus();

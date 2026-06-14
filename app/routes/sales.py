@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import Invoice, InvoiceItem, Product, Batch, AccountMaster, Ledger, Doctor, Prescription
+from app.models import Invoice, InvoiceItem, Product, Batch, AccountMaster, Ledger, Doctor, Prescription, Tax
 from sqlalchemy import func, and_
 from datetime import datetime, timedelta
 import uuid
@@ -115,7 +115,10 @@ def create():
             total_amount=request.form.get('total_amount', 0, type=float),
             cash_amount=request.form.get('cash_amount', 0, type=float),
             card_amount=request.form.get('card_amount', 0, type=float),
+            gpay_amount=request.form.get('gpay_amount', 0, type=float),
+            online_amount=request.form.get('online_amount', 0, type=float),
             credit_amount=request.form.get('credit_amount', 0, type=float),
+            return_amount=request.form.get('return_amount', 0, type=float),
             payment_status=request.form.get('payment_status', 'paid'),
             remarks=request.form.get('remarks', ''),
             user_id=current_user.id
@@ -294,6 +297,79 @@ def return_new(original_id):
     
     return render_template('sales/return_new.html', original=original)
 
+# Edit duplicate invoice
+@sales_bp.route('/<int:id>/edit-duplicate', methods=['GET', 'POST'])
+@login_required
+def edit_duplicate(id):
+    invoice = Invoice.query.get_or_404(id)
+    doctors = Doctor.query.filter_by(is_active=True).order_by(Doctor.doctor_name).all()
+    
+    if request.method == 'POST':
+        # Update invoice
+        invoice.customer_id = request.form.get('customer_id', type=int) or None
+        invoice.sales_type = request.form.get('sales_type', 'cash')
+        invoice.prescription_no = request.form.get('prescription_no', '')
+        invoice.doctor_id = request.form.get('doctor_id', type=int) or None
+        
+        # Get form data
+        product_ids = request.form.getlist('product_id', type=int)
+        batch_ids = request.form.getlist('batch_id', type=int)
+        quantities = request.form.getlist('quantity', type=int)
+        unit_rates = request.form.getlist('unit_rate', type=float)
+        mrp_values = request.form.getlist('mrp', type=float)
+        discount_percs = request.form.getlist('discount_perc', type=float)
+        tax_percs = request.form.getlist('tax_perc', type=float)
+        amounts = request.form.getlist('amount', type=float)
+        
+        # Delete old items
+        InvoiceItem.query.filter_by(invoice_id=invoice.id).delete()
+        
+        # Add new items
+        subtotal = 0
+        for i, product_id in enumerate(product_ids):
+            if product_id and quantities[i] > 0:
+                batch = Batch.query.get(batch_ids[i]) if batch_ids[i] else None
+                
+                # Get batch info if available
+                batch_no = request.form.getlist('batch_no')[i] if i < len(request.form.getlist('batch_no')) else ''
+                expiry_str = request.form.getlist('expiry_date')[i] if i < len(request.form.getlist('expiry_date')) else ''
+                expiry_date = datetime.strptime(expiry_str, '%Y-%m-%d').date() if expiry_str else None
+                
+                item = InvoiceItem(
+                    invoice_id=invoice.id,
+                    product_id=product_id,
+                    batch_id=batch_ids[i] or None,
+                    batch_no=batch_no,
+                    expiry_date=expiry_date,
+                    quantity=quantities[i],
+                    free_qty=0,
+                    unit_rate=unit_rates[i] if i < len(unit_rates) else 0,
+                    mrp=mrp_values[i] if i < len(mrp_values) else 0,
+                    discount_perc=discount_percs[i] if i < len(discount_percs) else 0,
+                    tax_perc=tax_percs[i] if i < len(tax_percs) else 0,
+                    amount=amounts[i] if i < len(amounts) else 0
+                )
+                db.session.add(item)
+                subtotal += amounts[i] if i < len(amounts) else 0
+                
+                # Update batch stock
+                if batch:
+                    batch.available_qty -= quantities[i]
+        
+        invoice.subtotal = subtotal
+        invoice.total_amount = subtotal
+        invoice.payment_status = 'paid'
+        
+        db.session.commit()
+        
+        flash(f'Invoice {invoice.invoice_no} updated successfully.', 'success')
+        return redirect(url_for('sales.view', id=invoice.id))
+    
+    # Get tax rates for dropdown
+    taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
+    
+    return render_template('sales/edit_duplicate.html', invoice=invoice, taxes=taxes, doctors=doctors)
+
 # Duplicate bill
 @sales_bp.route('/<int:id>/duplicate')
 @login_required
@@ -321,6 +397,8 @@ def duplicate(id):
     db.session.add(new_invoice)
     db.session.flush()
     
+    # Copy items with initial zero amounts (will be recalculated)
+    items_data = []
     for item in original.items:
         new_item = InvoiceItem(
             invoice_id=new_invoice.id,
@@ -337,11 +415,23 @@ def duplicate(id):
             amount=item.amount
         )
         db.session.add(new_item)
+        items_data.append({
+            'product_id': item.product_id,
+            'product_name': item.product.product_name if item.product else 'Unknown',
+            'batch_id': item.batch_id,
+            'batch_no': item.batch_no,
+            'quantity': item.quantity,
+            'unit_rate': float(item.unit_rate),
+            'mrp': float(item.mrp) if item.mrp else 0,
+            'discount_perc': float(item.discount_perc) if item.discount_perc else 0,
+            'tax_perc': float(item.tax_perc) if item.tax_perc else 0,
+            'amount': float(item.amount)
+        })
     
     db.session.commit()
     
-    flash(f'Duplicate invoice {invoice_no} created.', 'success')
-    return redirect(url_for('sales.view', id=new_invoice.id))
+    flash(f'Duplicate invoice {invoice_no} created. Edit below.', 'success')
+    return redirect(url_for('sales.edit_duplicate', id=new_invoice.id))
 # View return
 @sales_bp.route("/return/<int:id>")
 @login_required

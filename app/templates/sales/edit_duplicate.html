@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Invoice {{ invoice.invoice_no }} - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Edit Invoice <code>{{ invoice.invoice_no }}</code></h4>
+            <p class="text-muted mb-0">Duplicate invoice - modify items as needed</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('sales.view', id=invoice.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-x-lg me-1"></i> Cancel
+            </a>
+            <button type="submit" form="editInvoiceForm" class="btn btn-success">
+                <i class="bi bi-check-lg me-1"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <form id="editInvoiceForm" method="POST" action="{{ url_for('sales.edit_duplicate', id=invoice.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        
+        <div class="row g-4">
+            <!-- Left Column -->
+            <div class="col-12 col-lg-8">
+                <!-- Customer Selection -->
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body py-2">
+                        <div class="row g-2 align-items-center">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label small mb-0">Customer</label>
+                                <select class="form-select form-select-sm" name="customer_id" id="customerSelect">
+                                    <option value="">Walk-in Customer</option>
+                                    {% for customer in customers %}
+                                    <option value="{{ customer.id }}" {% if invoice.customer_id == customer.id %}selected{% endif %}>
+                                        {{ customer.account_name }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label small mb-0">Sales Type</label>
+                                <select class="form-select form-select-sm" name="sales_type">
+                                    <option value="cash" {% if invoice.sales_type == 'cash' %}selected{% endif %}>Cash</option>
+                                    <option value="credit" {% if invoice.sales_type == 'credit' %}selected{% endif %}>Credit</option>
+                                    <option value="emergency" {% if invoice.sales_type == 'emergency' %}selected{% endif %}>Emergency</option>
+                                </select>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label small mb-0">Doctor</label>
+                                <select class="form-select form-select-sm" name="doctor_id">
+                                    <option value="">None</option>
+                                    {% for doctor in doctors %}
+                                    <option value="{{ doctor.id }}" {% if invoice.doctor_id == doctor.id %}selected{% endif %}>{{ doctor.doctor_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-2">
+                                <label class="form-label small mb-0">Rx No.</label>
+                                <input type="text" class="form-control form-control-sm" name="prescription_no" value="{{ invoice.prescription_no or '' }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Items -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white py-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0 fw-bold">Items</h6>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addItem()">
+                                <i class="bi bi-plus-lg me-1"></i> Add Item
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0" id="itemsTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 35%">Product</th>
+                                        <th class="text-center">Batch</th>
+                                        <th class="text-center">Expiry</th>
+                                        <th class="text-center" style="width: 8%">Qty</th>
+                                        <th class="text-end" style="width: 10%">Rate</th>
+                                        <th class="text-center" style="width: 8%">Disc %</th>
+                                        <th class="text-center" style="width: 10%">Tax %</th>
+                                        <th class="text-end" style="width: 12%">Amount</th>
+                                        <th style="width: 5%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itemsBody">
+                                    {% for item in invoice.items %}
+                                    <tr class="item-row" data-item-index="{{ loop.index0 }}">
+                                        <td>
+                                            <select class="form-select form-select-sm product-select" name="product_id" onchange="updateItemBatch(this)">
+                                                <option value="">Select Product</option>
+                                            </select>
+                                            <input type="hidden" name="product_id" value="{{ item.product_id }}">
+                                        </td>
+                                        <td>
+                                            <select class="form-select form-select-sm batch-select" name="batch_id" onchange="updateItemPrice(this)">
+                                                <option value="">Select Batch</option>
+                                            </select>
+                                            <input type="hidden" name="batch_id" value="{{ item.batch_id }}">
+                                            <input type="hidden" name="batch_no" value="{{ item.batch_no }}">
+                                        </td>
+                                        <td>
+                                            <input type="date" class="form-control form-control-sm expiry-input" name="expiry_date" value="{{ item.expiry_date.strftime('%Y-%m-%d') if item.expiry_date else '' }}">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm text-center qty-input" name="quantity" value="{{ item.quantity }}" min="1" onchange="calculateItemAmount(this)">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm text-end rate-input" name="unit_rate" value="{{ item.unit_rate }}" step="0.01" onchange="calculateItemAmount(this)">
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm text-center" name="discount_perc" value="{{ item.discount_perc or 0 }}" step="0.1" min="0" max="100" onchange="calculateItemAmount(this)">
+                                        </td>
+                                        <td>
+                                            <select class="form-select form-select-sm" name="tax_perc" onchange="calculateItemAmount(this)">
+                                                <option value="0">0%</option>
+                                                <option value="5" {% if item.tax_perc == 5 %}selected{% endif %}>5%</option>
+                                                <option value="12" {% if item.tax_perc == 12 %}selected{% endif %}>12%</option>
+                                                <option value="18" {% if item.tax_perc == 18 %}selected{% endif %}>18%</option>
+                                                <option value="28" {% if item.tax_perc == 28 %}selected{% endif %}>28%</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="number" class="form-control form-control-sm text-end amount-input" name="amount" value="{{ item.amount }}" step="0.01" readonly>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(this)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if not invoice.items %}
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            No items. Click "Add Item" to add products.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Summary -->
+            <div class="col-12 col-lg-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Invoice Summary</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal</span>
+                            <span id="subtotal">₹{{ "{:,.2f}".format(invoice.subtotal) }}</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">Total</span>
+                            <span class="fw-bold text-primary fs-5" id="totalAmount">₹{{ "{:,.2f}".format(invoice.total_amount) }}</span>
+                        </div>
+                        <input type="hidden" name="total_amount" id="totalAmountInput" value="{{ invoice.total_amount }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+let itemIndex = {{ invoice.items.count() }};
+
+// Initialize product selects
+document.querySelectorAll('.product-select').forEach(select => {
+    initProductSelect(select);
+});
+
+function initProductSelect(select) {
+    $(select).select2({
+        ajax: {
+            url: '/api/all-products',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return { q: params.term };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.map(p => ({
+                        id: p.id,
+                        text: p.product_name + ' (' + p.product_code + ')'
+                    }))
+                };
+            }
+        },
+        placeholder: 'Search product...',
+        minimumInputLength: 2
+    });
+}
+
+function addItem() {
+    const tbody = document.getElementById('itemsBody');
+    const newRow = document.createElement('tr');
+    newRow.className = 'item-row';
+    newRow.dataset.itemIndex = itemIndex;
+    newRow.innerHTML = `
+        <td>
+            <select class="form-select form-select-sm product-select" onchange="updateItemBatch(this)">
+                <option value="">Select Product</option>
+            </select>
+        </td>
+        <td>
+            <select class="form-select form-select-sm batch-select" onchange="updateItemPrice(this)">
+                <option value="">Select Batch</option>
+            </select>
+        </td>
+        <td>
+            <input type="date" class="form-control form-control-sm expiry-input" name="expiry_date">
+        </td>
+        <td>
+            <input type="number" class="form-control form-control-sm text-center qty-input" name="quantity" value="1" min="1" onchange="calculateItemAmount(this)">
+        </td>
+        <td>
+            <input type="number" class="form-control form-control-sm text-end rate-input" name="unit_rate" value="0" step="0.01" onchange="calculateItemAmount(this)">
+        </td>
+        <td>
+            <input type="number" class="form-control form-control-sm text-center" name="discount_perc" value="0" step="0.1" min="0" max="100" onchange="calculateItemAmount(this)">
+        </td>
+        <td>
+            <select class="form-select form-select-sm" name="tax_perc" onchange="calculateItemAmount(this)">
+                <option value="0">0%</option>
+                <option value="5">5%</option>
+                <option value="12">12%</option>
+                <option value="18" selected>18%</option>
+                <option value="28">28%</option>
+            </select>
+        </td>
+        <td>
+            <input type="number" class="form-control form-control-sm text-end amount-input" name="amount" value="0" step="0.01" readonly>
+        </td>
+        <td>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(this)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </td>
+    `;
+    tbody.appendChild(newRow);
+    initProductSelect(newRow.querySelector('.product-select'));
+    itemIndex++;
+}
+
+function removeItem(btn) {
+    const row = btn.closest('tr');
+    row.remove();
+    calculateTotals();
+}
+
+function updateItemBatch(select) {
+    const productId = select.value;
+    const row = select.closest('tr');
+    const batchSelect = row.querySelector('.batch-select');
+    
+    if (!productId) return;
+    
+    // Update hidden input
+    row.querySelector('input[name="product_id"]').value = productId;
+    
+    // Fetch batches
+    fetch(`/api/products/${productId}/batches`)
+        .then(res => res.json())
+        .then(data => {
+            batchSelect.innerHTML = '<option value="">Select Batch</option>';
+            if (data.batches && data.batches.length > 0) {
+                data.batches.forEach(batch => {
+                    const option = document.createElement('option');
+                    option.value = batch.id;
+                    option.textContent = `${batch.batch_no} - ${batch.available_qty} qty - ₹${batch.sale_rate}`;
+                    option.dataset.saleRate = batch.sale_rate;
+                    option.dataset.mrp = batch.mrp;
+                    option.dataset.expiry = batch.expiry_date || '';
+                    batchSelect.appendChild(option);
+                });
+            }
+        });
+}
+
+function updateItemPrice(select) {
+    const row = select.closest('tr');
+    const selectedOption = select.options[select.selectedIndex];
+    
+    if (selectedOption.value) {
+        row.querySelector('input[name="batch_id"]').value = selectedOption.value;
+        row.querySelector('input[name="batch_no"]').value = selectedOption.textContent.split(' - ')[0];
+        row.querySelector('input[name="unit_rate"]').value = selectedOption.dataset.saleRate || 0;
+        row.querySelector('input[name="expiry_date"]').value = selectedOption.dataset.expiry || '';
+        row.querySelector('input[name="mrp"]').value = selectedOption.dataset.mrp || 0;
+        calculateItemAmount(select);
+    }
+}
+
+function calculateItemAmount(element) {
+    const row = element.closest('tr');
+    const qty = parseFloat(row.querySelector('input[name="quantity"]').value) || 0;
+    const rate = parseFloat(row.querySelector('input[name="unit_rate"]').value) || 0;
+    const disc = parseFloat(row.querySelector('input[name="discount_perc"]').value) || 0;
+    
+    let amount = qty * rate;
+    amount = amount - (amount * disc / 100);
+    
+    row.querySelector('input[name="amount"]').value = amount.toFixed(2);
+    calculateTotals();
+}
+
+function calculateTotals() {
+    let subtotal = 0;
+    document.querySelectorAll('.amount-input').forEach(input => {
+        subtotal += parseFloat(input.value) || 0;
+    });
+    
+    document.getElementById('subtotal').textContent = '₹' + subtotal.toFixed(2);
+    document.getElementById('totalAmount').textContent = '₹' + subtotal.toFixed(2);
+    document.getElementById('totalAmountInput').value = subtotal.toFixed(2);
+}
+
+// Form validation
+document.getElementById('editInvoiceForm').addEventListener('submit', function(e) {
+    const rows = document.querySelectorAll('.item-row');
+    if (rows.length === 0) {
+        e.preventDefault();
+        alert('Please add at least one item to the invoice.');
+        return;
+    }
+});
+</script>
+{% endblock %}

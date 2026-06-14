@@ -20,13 +20,11 @@
                 <i class="bi bi-printer me-1"></i> Print
             </a>
             {% if not invoice.is_cancelled %}
-            <a href="{{ url_for('sales.duplicate', id=invoice.id) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-copy me-1"></i> Duplicate
-            </a>
             <a href="{{ url_for('sales.return_new', original_id=invoice.id) }}" class="btn btn-outline-warning">
                 <i class="bi bi-arrow-counterclockwise me-1"></i> Return
             </a>
             <form action="{{ url_for('sales.cancel', id=invoice.id) }}" method="POST" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Cancel this invoice?')">
                     <i class="bi bi-x-circle me-1"></i> Cancel
                 </button>
@@ -141,8 +139,9 @@
                         <h4 class="mb-0 text-primary fw-bold">₹{{ "{:,.2f}".format(invoice.total_amount) }}</h4>
                     </div>
                     
-                    {% if invoice.payment_status != 'paid' %}
+                    {% if invoice.payment_status != 'paid' or invoice.sales_type == 'cash' %}
                     <hr>
+                    <h6 class="text-muted mb-2">Payment Details</h6>
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Cash</span>
                         <span>₹{{ "{:,.2f}".format(invoice.cash_amount or 0) }}</span>
@@ -151,9 +150,31 @@
                         <span class="text-muted">Card</span>
                         <span>₹{{ "{:,.2f}".format(invoice.card_amount or 0) }}</span>
                     </div>
+                    {% if invoice.gpay_amount and invoice.gpay_amount > 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">GPay / UPI</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.gpay_amount or 0) }}</span>
+                    </div>
+                    {% endif %}
+                    {% if invoice.online_amount and invoice.online_amount > 0 %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Online</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.online_amount or 0) }}</span>
+                    </div>
+                    {% endif %}
+                    {% if invoice.payment_status != 'paid' %}
                     <div class="d-flex justify-content-between">
                         <span class="text-muted">Credit</span>
                         <span>₹{{ "{:,.2f}".format(invoice.credit_amount or 0) }}</span>
+                    </div>
+                    {% endif %}
+                    {% endif %}
+                    
+                    {% if invoice.return_amount and invoice.return_amount > 0 %}
+                    <hr>
+                    <div class="d-flex justify-content-between text-success fw-bold">
+                        <span>Return to Customer</span>
+                        <span>₹{{ "{:,.2f}".format(invoice.return_amount) }}</span>
                     </div>
                     {% endif %}
                 </div>

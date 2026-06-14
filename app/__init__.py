@@ -47,6 +47,30 @@ def create_app(config_name='default'):
     def inject_now():
         return {'now': datetime.utcnow()}
     
+    # Number to words converter
+    def number_to_words(num):
+        ones = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+                'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen']
+        tens = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety']
+        
+        if num == 0:
+            return 'Zero'
+        if num < 20:
+            return ones[num]
+        if num < 100:
+            return tens[num // 10] + (' ' + ones[num % 10] if num % 10 else '')
+        if num < 1000:
+            return ones[num // 100] + ' Hundred' + (' ' + number_to_words(num % 100) if num % 100 else '')
+        if num < 100000:
+            return number_to_words(num // 1000) + ' Thousand' + (' ' + number_to_words(num % 1000) if num % 1000 else '')
+        if num < 10000000:
+            return number_to_words(num // 100000) + ' Lakh' + (' ' + number_to_words(num % 100000) if num % 100000 else '')
+        return number_to_words(num // 10000000) + ' Crore' + (' ' + number_to_words(num % 10000000) if num % 10000000 else '')
+    
+    @app.context_processor
+    def inject_utils():
+        return {'numberToWords': number_to_words}
+    
     # Register blueprints
     from app.routes.auth import auth_bp
     from app.routes.main import main_bp
