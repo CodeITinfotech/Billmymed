@@ -4,8 +4,13 @@
 
 {% block extra_css %}
 <style>
+    body {
+        overflow-x: hidden;
+    }
     .login-wrapper {
         min-height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     }
     .login-card {
@@ -13,14 +18,17 @@
         border-radius: 20px;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        max-height: 100vh;
     }
     .login-form-col {
         background: #ffffff;
-        padding: 3rem;
+        padding: 2rem;
+        max-height: 100vh;
+        overflow-y: auto;
     }
     .calendar-col {
         background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #084298 100%);
-        padding: 3rem 2rem;
+        padding: 2rem 1.5rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -28,6 +36,7 @@
         color: white;
         position: relative;
         overflow: hidden;
+        max-height: 100vh;
     }
     .calendar-col::before {
         content: '';
