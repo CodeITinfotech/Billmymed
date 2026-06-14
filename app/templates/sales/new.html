@@ -562,6 +562,10 @@ function selectBatch(index) {
         addToCartWithBatch(pendingProductData, pendingProductData.batches[index]);
     }
     hideBatchSelector();
+    
+    // Focus back on product search for next item
+    document.getElementById('productSearch').value = '';
+    document.getElementById('productSearch').focus();
 }
 
 // Add to cart with specific batch
@@ -639,7 +643,7 @@ function setQty(id, value) {
     }
 }
 
-// Render cart
+// Render cart with editable rate and tax
 function renderCart() {
     const container = document.getElementById('cartItems');
     const emptyCart = document.getElementById('emptyCart');
@@ -652,53 +656,89 @@ function renderCart() {
     
     container.innerHTML = cart.map(item => `
         <div class="cart-item border-bottom p-2" data-item-id="${item.id}">
-            <div class="row align-items-center g-2">
+            <div class="row align-items-start g-2">
                 <div class="col-5">
-                    <div class="fw-medium small">${item.product_name}</div>
-                    <small class="text-muted">${item.batch_no} | MRP: ₹${item.mrp.toFixed(2)}</small>
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="fw-medium small">${item.product_name}</div>
+                            <small class="text-muted">${item.batch_no} | MRP: ₹${item.mrp.toFixed(2)}</small>
+                        </div>
+                        <button class="btn btn-link text-danger btn-sm p-0 ms-1" onclick="removeItem(${item.id})" title="Remove item">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-2 text-end">
-                    <span class="fw-bold">₹${item.unit_rate.toFixed(2)}</span>
+                <div class="col-3">
+                    <label class="form-label small text-muted mb-1">Rate (₹)</label>
+                    <input type="number" class="form-control form-control-sm" value="${item.unit_rate.toFixed(2)}" 
+                           step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)">
+                </div>
+                <div class="col-2">
+                    <label class="form-label small text-muted mb-1">Tax (%)</label>
+                    <input type="number" class="form-control form-control-sm" value="${item.tax_perc}" 
+                           step="0.01" min="0" max="100" onchange="updateItemTax(${item.id}, this.value)">
                 </div>
                 <div class="col-2 text-center">
+                    <label class="form-label small text-muted mb-1">Qty</label>
                     <div class="input-group input-group-sm justify-content-center">
                         <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQty(${item.id}, -1)">-</button>
                         <input type="number" class="form-control form-control-sm text-center qty-input" 
                                value="${item.quantity}" min="1" max="${item.max_qty}" 
-                               style="width: 40px;" onchange="setQty(${item.id}, this.value)">
+                               style="width: 50px;" onchange="setQty(${item.id}, this.value)">
                         <button class="btn btn-outline-secondary btn-sm" type="button" onclick="updateQty(${item.id}, 1)">+</button>
                     </div>
                 </div>
-                <div class="col-3 text-end position-relative">
-                    <span class="fw-bold">₹${item.amount.toFixed(2)}</span>
-                    <button class="btn btn-link text-danger btn-sm position-absolute end-0 top-0 p-0" onclick="removeItem(${item.id})">
-                        <i class="bi bi-x-lg"></i>
-                    </button>
-                    <input type="hidden" name="product_id" value="${item.product_id}">
-                    <input type="hidden" name="batch_id" value="${item.batch_id || ''}">
-                    <input type="hidden" name="batch_no" value="${item.batch_no}">
-                    <input type="hidden" name="expiry_date" value="${item.expiry_date || ''}">
-                    <input type="hidden" name="quantity" value="${item.quantity}">
-                    <input type="hidden" name="free_qty" value="0">
-                    <input type="hidden" name="rate" value="${item.unit_rate}">
-                    <input type="hidden" name="mrp" value="${item.mrp}">
-                    <input type="hidden" name="item_discount_perc" value="${item.discount_perc}">
-                    <input type="hidden" name="item_tax_perc" value="${item.tax_perc}">
-                    <input type="hidden" name="amount" value="${item.amount}">
-                </div>
             </div>
+            <input type="hidden" name="product_id" value="${item.product_id}">
+            <input type="hidden" name="batch_id" value="${item.batch_id || ''}">
+            <input type="hidden" name="batch_no" value="${item.batch_no}">
+            <input type="hidden" name="expiry_date" value="${item.expiry_date || ''}">
+            <input type="hidden" name="quantity" value="${item.quantity}">
+            <input type="hidden" name="free_qty" value="0">
+            <input type="hidden" name="rate" value="${item.unit_rate}">
+            <input type="hidden" name="mrp" value="${item.mrp}">
+            <input type="hidden" name="item_discount_perc" value="${item.discount_perc}">
+            <input type="hidden" name="item_tax_perc" value="${item.tax_perc}">
+            <input type="hidden" name="amount" value="${item.amount}">
         </div>
     `).join('');
 }
 
-// Calculate totals
+// Update item rate
+function updateItemRate(id, value) {
+    const item = cart.find(i => i.id === id);
+    if (item) {
+        item.unit_rate = parseFloat(value) || 0;
+        item.amount = item.unit_rate * item.quantity;
+        renderCart();
+        calculateTotal();
+    }
+}
+
+// Update item tax
+function updateItemTax(id, value) {
+    const item = cart.find(i => i.id === id);
+    if (item) {
+        item.tax_perc = parseFloat(value) || 0;
+        renderCart();
+        calculateTotal();
+    }
+}
+
+// Calculate totals with per-item tax
 function calculateTotal() {
     let subtotal = 0;
     let totalTax = 0;
     
     cart.forEach(item => {
-        subtotal += item.amount;
-        totalTax += item.amount * (item.tax_perc / 100);
+        const itemBase = item.unit_rate * item.quantity;
+        const itemDiscount = itemBase * (item.discount_perc / 100);
+        const taxableAmount = itemBase - itemDiscount;
+        const itemTax = taxableAmount * (item.tax_perc / 100);
+        
+        subtotal += itemBase;
+        totalTax += itemTax;
+        item.amount = taxableAmount + itemTax;
     });
     
     const discountPerc = parseFloat(document.getElementById('discountPerc').value) || 0;
@@ -706,7 +746,7 @@ function calculateTotal() {
     
     let discountAmount = subtotal * (discountPerc / 100) + discountAmtInput;
     let taxableAmount = subtotal - discountAmount;
-    let taxAmount = taxableAmount * 0.18; // Assuming 18% GST
+    let taxAmount = totalTax - (discountAmount * (totalTax / subtotal)); // Proportional tax reduction
     let total = taxableAmount + taxAmount;
     let roundOff = Math.round(total) - total;
     
@@ -725,6 +765,14 @@ function calculateTotal() {
     
     // Update total display
     document.getElementById('totalAmountDisplay').textContent = formatCurrency(Math.round(total));
+    
+    // Update amount displays in cart
+    document.querySelectorAll('.cart-item').forEach((el, idx) => {
+        if (cart[idx]) {
+            const amountEl = el.querySelector('.fw-bold:last-child');
+            if (amountEl) amountEl.textContent = '₹' + cart[idx].amount.toFixed(2);
+        }
+    });
     
     // Initialize cash amount as total if zero
     const salesType = document.getElementById('salesType').value;

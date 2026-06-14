@@ -134,7 +134,9 @@ def create():
         
         # Process items
         product_ids = request.form.getlist('product_id', type=int)
-        batch_ids = request.form.getlist('batch_id', type=int)
+        batch_ids_raw = request.form.getlist('batch_id')
+        batch_nos = request.form.getlist('batch_no')
+        expiry_dates = request.form.getlist('expiry_date')
         quantities = request.form.getlist('quantity', type=int)
         free_qtys = request.form.getlist('free_qty', type=int)
         rates = request.form.getlist('rate', type=float)
@@ -145,29 +147,44 @@ def create():
         
         subtotal = 0
         for i, product_id in enumerate(product_ids):
-            batch = Batch.query.get(batch_ids[i]) if batch_ids[i] else None
+            # Handle batch_id properly - empty string means no batch
+            batch_id_val = batch_ids_raw[i] if i < len(batch_ids_raw) else ''
+            try:
+                batch_id_int = int(batch_id_val) if batch_id_val and batch_id_val.strip() else None
+            except (ValueError, TypeError):
+                batch_id_int = None
+            
+            batch = Batch.query.get(batch_id_int) if batch_id_int else None
+            
+            # Parse expiry date safely
+            expiry = None
+            try:
+                if i < len(expiry_dates) and expiry_dates[i]:
+                    expiry = datetime.strptime(expiry_dates[i], '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                expiry = None
             
             item = InvoiceItem(
                 invoice_id=invoice.id,
                 product_id=product_id,
-                batch_id=batch_ids[i] if batch_ids[i] else None,
-                batch_no=request.form.getlist('batch_no')[i] if i < len(request.form.getlist('batch_no')) else '',
-                expiry_date=datetime.strptime(request.form.getlist('expiry_date')[i], '%Y-%m-%d').date() if i < len(request.form.getlist('expiry_date')) and request.form.getlist('expiry_date')[i] else None,
-                quantity=quantities[i],
+                batch_id=batch_id_int,
+                batch_no=batch_nos[i] if i < len(batch_nos) else '',
+                expiry_date=expiry,
+                quantity=quantities[i] if i < len(quantities) else 1,
                 free_qty=free_qtys[i] if i < len(free_qtys) else 0,
-                unit_rate=rates[i],
+                unit_rate=rates[i] if i < len(rates) else 0,
                 mrp=mrp_list[i] if i < len(mrp_list) else None,
                 discount_perc=discount_percs[i] if i < len(discount_percs) else 0,
                 tax_perc=tax_percs[i] if i < len(tax_percs) else 0,
-                amount=amounts[i]
+                amount=amounts[i] if i < len(amounts) else 0
             )
             
             db.session.add(item)
-            subtotal += amounts[i]
+            subtotal += amounts[i] if i < len(amounts) else 0
             
             # Update batch quantity
             if batch:
-                batch.available_qty -= quantities[i]
+                batch.available_qty -= quantities[i] if i < len(quantities) else 1
         
         invoice.subtotal = subtotal
         db.session.commit()
