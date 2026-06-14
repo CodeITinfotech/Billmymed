@@ -272,8 +272,15 @@ class Invoice(db.Model):
     payment_status = db.Column(db.String(20), default='paid')  # paid, partial, credit
     due_date = db.Column(db.Date)
     sales_type = db.Column(db.String(10), default='cash')  # cash, credit, emergency
+    # Patient Information
+    patient_name = db.Column(db.String(200))
+    patient_phone = db.Column(db.String(20))
+    patient_address = db.Column(db.Text)
+    # Doctor Information
     doctor_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'))
     doctor = db.relationship('AccountMaster', foreign_keys=[doctor_id])
+    doctor_name = db.Column(db.String(200))  # Store doctor name directly
+    doctor_address = db.Column(db.Text)
     prescription_no = db.Column(db.String(50))
     remarks = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

@@ -19,13 +19,7 @@
             <a href="{{ url_for('purchase.print_purchase', id=purchase.id) }}" class="btn btn-outline-primary" target="_blank">
                 <i class="bi bi-printer me-1"></i> Print
             </a>
-            <a href="{{ url_for('purchase.duplicate', id=purchase.id) }}" class="btn btn-outline-secondary">
-                <i class="bi bi-copy me-1"></i> Duplicate
-            </a>
             {% if not purchase.is_cancelled %}
-            <a href="{{ url_for('purchase.return_new', original_id=purchase.id) }}" class="btn btn-outline-warning">
-                <i class="bi bi-arrow-counterclockwise me-1"></i> Return
-            </a>
             <form action="{{ url_for('purchase.cancel', id=purchase.id) }}" method="POST" class="d-inline">
                 <button type="submit" class="btn btn-outline-danger" onclick="return confirm('Cancel this purchase?')">
                     <i class="bi bi-x-circle me-1"></i> Cancel
@@ -96,7 +90,7 @@
                                     <td class="text-center">{{ item.quantity }}</td>
                                     <td class="text-center">{{ item.free_qty or 0 }}</td>
                                     <td class="text-end">₹{{ "{:,.2f}".format(item.mrp or 0) }}</td>
-                                    <td class="text-end">₹{{ "{:,.2f}".format(item.rate) }}</td>
+                                    <td class="text-end">₹{{ "{:,.2f}".format(item.purchase_rate) }}</td>
                                     <td class="text-end fw-bold">₹{{ "{:,.2f}".format(item.amount) }}</td>
                                 </tr>
                                 {% endfor %}

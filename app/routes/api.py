@@ -20,8 +20,7 @@ def get_products():
         query = query.filter(
             or_(
                 Product.product_code.ilike(f'%{search}%'),
-                Product.product_name.ilike(f'%{search}%'),
-                Product.barcode.ilike(f'%{search}%')
+                Product.product_name.ilike(f'%{search}%')
             )
         )
     
@@ -51,11 +50,19 @@ def get_all_products():
     query = Product.query.filter_by(is_active=True)
     
     if search:
+        # Check if user is using wildcards
+        if '%' in search:
+            # Use the pattern as-is (user specified wildcards)
+            pattern = search
+        else:
+            # Add wildcards for partial matching
+            pattern = f'%{search}%'
+        
         query = query.filter(
             or_(
-                Product.product_code.ilike(f'%{search}%'),
-                Product.product_name.ilike(f'%{search}%'),
-                Product.generic_name.ilike(f'%{search}%')
+                Product.product_code.ilike(pattern),
+                Product.product_name.ilike(pattern),
+                Product.generic_name.ilike(pattern)
             )
         )
     
@@ -362,8 +369,7 @@ def search():
             Product.is_active == True,
             or_(
                 Product.product_code.ilike(f'%{query}%'),
-                Product.product_name.ilike(f'%{query}%'),
-                Product.barcode.ilike(f'%{query}%')
+                Product.product_name.ilike(f'%{query}%')
             )
         ).limit(10).all()
         

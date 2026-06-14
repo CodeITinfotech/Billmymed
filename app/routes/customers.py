@@ -194,6 +194,59 @@ def statement(id):
     
     return render_template('customers/statement.html', customer=customer, invoices=invoices)
 
+# Quick create customer (for sales page)
+@customers_bp.route('/create_quick', methods=['POST'])
+@login_required
+def create_quick():
+    """Quick create a customer from sales page"""
+    try:
+        data = request.get_json()
+        account_name = data.get('account_name', '').strip()
+        account_type = data.get('account_type', 'customer')
+        phone = data.get('phone', '').strip()
+        address = data.get('address', '').strip()
+        
+        if not account_name:
+            return jsonify({'success': False, 'error': 'Name is required'}), 400
+        
+        # Generate account code
+        prefix = 'CUST'
+        if account_type == 'supplier':
+            prefix = 'SUPP'
+        
+        last_customer = AccountMaster.query.filter(
+            AccountMaster.account_code.like(f'{prefix}%')
+        ).order_by(AccountMaster.id.desc()).first()
+        
+        if last_customer:
+            num = int(last_customer.account_code.replace(prefix, '')) + 1
+        else:
+            num = 1
+        
+        account_code = f'{prefix}{str(num).zfill(5)}'
+        
+        customer = AccountMaster(
+            account_code=account_code,
+            account_name=account_name,
+            account_type=account_type,
+            phone=phone,
+            address=address,
+            is_active=True
+        )
+        
+        db.session.add(customer)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'id': customer.id,
+            'account_code': customer.account_code,
+            'account_name': customer.account_name
+        })
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 # Customer groups
 @customers_bp.route('/groups')
 @login_required

@@ -69,17 +69,33 @@
         <div class="row g-3">
             <!-- Left Column - Product Selection -->
             <div class="col-12 col-lg-8">
-                <!-- Customer Selection -->
+                <!-- Customer/Patient Selection -->
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body py-2">
-                        <div class="row g-2 align-items-center">
-                            <div class="col-12 col-md-4">
-                                <label class="form-label small mb-0">Customer</label>
-                                <select class="form-select form-select-sm" id="customerSelect" name="customer_id">
-                                    <option value="">Walk-in Customer</option>
-                                </select>
+                        <div class="row g-2 align-items-end">
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small mb-0">Patient Name *</label>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control form-control-sm" id="patientName" 
+                                           placeholder="Enter patient name" autocomplete="off"
+                                           onkeyup="searchPatient(this.value)">
+                                    <div id="patientDropdown" class="position-absolute w-100 shadow-sm bg-white rounded mt-1" 
+                                         style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;">
+                                    </div>
+                                </div>
+                                <input type="hidden" id="patientId" name="patient_id" value="">
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <label class="form-label small mb-0">Phone</label>
+                                <input type="text" class="form-control form-control-sm" id="patientPhone" 
+                                       name="patient_phone" placeholder="Phone number">
                             </div>
                             <div class="col-6 col-md-3">
+                                <label class="form-label small mb-0">Place / Address</label>
+                                <input type="text" class="form-control form-control-sm" id="patientPlace" 
+                                       name="patient_place" placeholder="Place or address">
+                            </div>
+                            <div class="col-6 col-md-2">
                                 <label class="form-label small mb-0">Sales Type</label>
                                 <select class="form-select form-select-sm" name="sales_type" id="salesType">
                                     <option value="cash">Cash</option>
@@ -87,18 +103,32 @@
                                     <option value="emergency">Emergency</option>
                                 </select>
                             </div>
-                            <div class="col-6 col-md-3">
-                                <label class="form-label small mb-0">Doctor</label>
-                                <select class="form-select form-select-sm" name="doctor_id">
+                            <div class="col-6 col-md-2">
+                                <label class="form-label small mb-0">Rx No.</label>
+                                <input type="text" class="form-control form-control-sm" name="prescription_no" placeholder="Rx #">
+                            </div>
+                        </div>
+                        <!-- Doctor Info Row -->
+                        <div class="row g-2 align-items-end mt-2">
+                            <div class="col-6 col-md-4">
+                                <label class="form-label small mb-0">Doctor (Prescribed By)</label>
+                                <select class="form-select form-select-sm" name="doctor_id" id="doctorSelect">
                                     <option value="">None</option>
                                     {% for doctor in doctors %}
                                     <option value="{{ doctor.id }}">{{ doctor.doctor_name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="col-12 col-md-2">
-                                <label class="form-label small mb-0">Rx No.</label>
-                                <input type="text" class="form-control form-control-sm" name="prescription_no" placeholder="Rx #">
+                            <div class="col-6 col-md-4">
+                                <label class="form-label small mb-0">Doctor Address</label>
+                                <input type="text" class="form-control form-control-sm" id="doctorAddress" 
+                                       placeholder="Doctor's address">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label small mb-0">Customer (for Credit)</label>
+                                <select class="form-select form-select-sm" id="customerSelect" name="customer_id">
+                                    <option value="">Walk-in / No Customer</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -379,58 +409,70 @@ function debounce(func, wait) {
     };
 }
 
-// Search products with highlighting
+// Search products with highlighting (supports single letter, partial match, and wildcards)
 const searchProducts = debounce(function(query) {
-    if (query.length < 2) {
+    if (query.length < 1) {
         document.getElementById('searchResults').style.display = 'none';
         document.getElementById('batchSelector').style.display = 'none';
         return;
     }
     
-    // First try barcode search
-    fetch(`/api/products/barcode/${encodeURIComponent(query)}`)
+    // Check if it's a barcode (no special chars)
+    const isBarcode = /^[A-Za-z0-9\-]+$/.test(query) && !query.includes('%');
+    
+    // If it looks like a barcode, try barcode API first
+    if (isBarcode && query.length >= 3) {
+        fetch(`/api/products/barcode/${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (!data.error && data.id) {
+                    // Found by barcode - directly add to cart
+                    addToCart(data.id, data.product_code);
+                    document.getElementById('searchResults').style.display = 'none';
+                    return;
+                }
+            })
+            .catch(() => {})
+            .finally(() => {
+                // Then try name/code search
+                doProductSearch(query);
+            });
+    } else {
+        doProductSearch(query);
+    }
+});
+
+function doProductSearch(query) {
+    fetch(`/api/all-products?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
-            if (!data.error && data.id) {
-                // Found by barcode - directly add to cart
-                addToCart(data.id, data.product_code);
-                return;
-            }
-        })
-        .catch(() => {})
-        .finally(() => {
-            // Then try name/code search
-            fetch(`/api/all-products?q=${encodeURIComponent(query)}`)
-                .then(res => res.json())
-                .then(data => {
-                    const resultsDiv = document.getElementById('searchResults');
-                    if (data.length > 0) {
-                        resultsDiv.innerHTML = data.slice(0, 10).map(p => {
-                            const highlightedName = highlightMatch(p.product_name, query);
-                            const highlightedCode = highlightMatch(p.product_code, query);
-                            return `
-                                <div class="product-list-item p-2 border-bottom" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
-                                    <div class="d-flex justify-content-between">
-                                        <div>
-                                            <strong>${highlightedName}</strong>
-                                            <small class="text-muted d-block">${highlightedCode}</small>
-                                        </div>
-                                        <div class="text-end">
-                                            <div class="fw-bold">₹${p.mrp.toFixed(2)}</div>
-                                            <small class="${p.stock < 10 ? 'text-danger' : 'text-success'}">Stock: ${p.stock}</small>
-                                        </div>
-                                    </div>
+            const resultsDiv = document.getElementById('searchResults');
+            if (data.length > 0) {
+                resultsDiv.innerHTML = data.slice(0, 15).map(p => {
+                    const highlightedName = highlightMatch(p.product_name, query);
+                    const highlightedCode = highlightMatch(p.product_code, query);
+                    return `
+                        <div class="product-list-item p-2 border-bottom" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <strong>${highlightedName}</strong>
+                                    <small class="text-muted d-block">${highlightedCode}</small>
                                 </div>
-                            `;
-                        }).join('');
-                        resultsDiv.style.display = 'block';
-                    } else {
-                        resultsDiv.innerHTML = '<div class="p-3 text-muted text-center">No products found</div>';
-                        resultsDiv.style.display = 'block';
-                    }
-                });
+                                <div class="text-end">
+                                    <div class="fw-bold">₹${p.mrp.toFixed(2)}</div>
+                                    <small class="${p.stock < 10 ? 'text-danger' : 'text-success'}">Stock: ${p.stock}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                resultsDiv.style.display = 'block';
+            } else {
+                resultsDiv.innerHTML = '<div class="p-3 text-muted text-center">No products found. Try different search terms.</div>';
+                resultsDiv.style.display = 'block';
+            }
         });
-}, 300);
+}
 
 // Highlight matching text
 function highlightMatch(text, query) {
@@ -846,6 +888,118 @@ function holdBill() {
 // Print bill
 function printBill() {
     window.print();
+}
+
+// Search patient (customers with typeahead)
+function searchPatient(query) {
+    const dropdown = document.getElementById('patientDropdown');
+    
+    if (query.length < 1) {
+        dropdown.style.display = 'none';
+        return;
+    }
+    
+    fetch(`/api/customers?search=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.length > 0) {
+                dropdown.innerHTML = data.slice(0, 10).map(c => `
+                    <div class="patient-item p-2 border-bottom" style="cursor: pointer;" 
+                         onclick="selectPatient(${c.id}, '${c.account_name.replace(/'/g, "\\'")}', '${c.phone || ''}', '${c.address || ''}')">
+                        <strong>${c.account_name}</strong>
+                        <small class="text-muted d-block">${c.phone || 'No phone'} | ${c.city || 'No city'}</small>
+                    </div>
+                `).join('');
+                
+                // Add "Create New" option
+                dropdown.innerHTML += `
+                    <div class="patient-item p-2 border-bottom text-primary" style="cursor: pointer; background: #f8f9fa;" 
+                         onclick="createNewPatient('${query.replace(/'/g, "\\'")}')">
+                        <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
+                    </div>
+                `;
+            } else {
+                dropdown.innerHTML = `
+                    <div class="p-3 text-muted text-center">
+                        No patients found
+                    </div>
+                    <div class="patient-item p-2 border-bottom text-primary" style="cursor: pointer; background: #f8f9fa;" 
+                         onclick="createNewPatient('${query.replace(/'/g, "\\'")}')">
+                        <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
+                    </div>
+                `;
+            }
+            dropdown.style.display = 'block';
+        });
+}
+
+// Select patient from dropdown
+function selectPatient(id, name, phone, address) {
+    document.getElementById('patientId').value = id;
+    document.getElementById('patientName').value = name;
+    document.getElementById('patientPhone').value = phone || '';
+    document.getElementById('patientPlace').value = address || '';
+    document.getElementById('patientDropdown').style.display = 'none';
+    
+    // If credit sale, select this customer
+    const salesType = document.getElementById('salesType').value;
+    if (salesType === 'credit') {
+        // Set customer ID from patient selection
+        const customerSelect = document.getElementById('customerSelect');
+        for (let option of customerSelect.options) {
+            if (option.value == id) {
+                option.selected = true;
+                break;
+            }
+        }
+    }
+    
+    // Focus back on product search
+    document.getElementById('productSearch').focus();
+}
+
+// Create new patient
+function createNewPatient(name) {
+    const phone = prompt('Enter phone number (optional):', document.getElementById('patientPhone').value);
+    const address = prompt('Enter address (optional):', document.getElementById('patientPlace').value);
+    
+    if (name && name.trim()) {
+        // Create patient via API
+        fetch('/customers/create_quick', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            },
+            body: JSON.stringify({
+                account_name: name,
+                account_type: 'customer',
+                phone: phone || '',
+                address: address || ''
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                selectPatient(data.id, name, phone || '', address || '');
+                alert('Patient created successfully!');
+            } else {
+                alert('Error creating patient: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(err => {
+            // Fallback: just set the values locally
+            document.getElementById('patientId').value = '';
+            document.getElementById('patientName').value = name;
+            document.getElementById('patientPhone').value = phone || '';
+            document.getElementById('patientPlace').value = address || '';
+            document.getElementById('patientDropdown').style.display = 'none';
+            alert('Patient saved locally. Will be created when sale is completed.');
+        });
+    }
+    
+    document.getElementById('patientDropdown').style.display = 'none';
+    document.getElementById('productSearch').focus();
 }
 
 // Open barcode scanner

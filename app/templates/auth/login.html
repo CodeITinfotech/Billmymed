@@ -2,84 +2,346 @@
 
 {% block title %}Login - {{ config.COMPANY_NAME }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .login-wrapper {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    .login-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    .login-form-col {
+        background: #ffffff;
+        padding: 3rem;
+    }
+    .calendar-col {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #084298 100%);
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .calendar-col::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .calendar-col::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -30%;
+        width: 80%;
+        height: 80%;
+        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+        border-radius: 50%;
+    }
+    .calendar-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        width: 100%;
+        max-width: 320px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        z-index: 1;
+    }
+    .calendar-header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    .calendar-month {
+        font-size: 1.5rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+    .calendar-year {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+    .calendar-day-names {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+    .calendar-day-name {
+        text-align: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+        opacity: 0.7;
+        text-transform: uppercase;
+    }
+    .calendar-days {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+    }
+    .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .calendar-day.empty {
+        background: transparent;
+    }
+    .calendar-day.today {
+        background: #ffffff;
+        color: #0d6efd;
+        font-weight: 700;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        transform: scale(1.1);
+    }
+    .calendar-day:hover:not(.empty):not(.today) {
+        background: rgba(255, 255, 255, 0.2);
+    }
+    .time-display {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .time-display .time {
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        font-variant-numeric: tabular-nums;
+    }
+    .time-display .date {
+        font-size: 0.95rem;
+        opacity: 0.9;
+        margin-top: 0.25rem;
+    }
+    .medicine-icon {
+        position: absolute;
+        font-size: 6rem;
+        opacity: 0.05;
+        z-index: 0;
+    }
+    .medicine-icon.top-right {
+        top: 10%;
+        right: 5%;
+    }
+    .medicine-icon.bottom-left {
+        bottom: 15%;
+        left: 5%;
+        transform: rotate(-20deg);
+    }
+    .logo-icon {
+        width: 70px;
+        height: 70px;
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+    }
+    .pharmacy-tagline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 0.85rem;
+    }
+    .pharmacy-tagline i {
+        font-size: 1.2rem;
+    }
+    @media (max-width: 991px) {
+        .calendar-col {
+            padding: 2rem;
+            min-height: auto;
+        }
+        .login-form-col {
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center min-vh-100 align-items-center py-5">
-        <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
-            <!-- Login Card -->
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body p-4 p-md-5">
-                    <!-- Logo & Title -->
-                    <div class="text-center mb-4">
-                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 rounded-circle mb-3" style="width: 80px; height: 80px;">
-                            <i class="bi bi-capsule-pill text-primary fs-1"></i>
-                        </div>
-                        <h4 class="fw-bold text-primary mb-1">{{ config.COMPANY_NAME }}</h4>
-                        <p class="text-muted small mb-0">Pharmacy Billing System</p>
-                    </div>
-                    
-                    <!-- Login Form -->
-                    <form method="POST" action="{{ url_for('auth.login') }}" class="needs-validation" novalidate>
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-person text-muted"></i>
-                                </span>
-                                <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" 
-                                       placeholder="Enter username" required autofocus>
+<div class="login-wrapper d-flex align-items-center py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="card login-card">
+                    <div class="row g-0">
+                        <!-- Left Side - Login Form -->
+                        <div class="col-lg-6 login-form-col">
+                            <div class="text-center text-lg-start mb-4">
+                                <div class="logo-icon mx-auto mx-lg-0">
+                                    <i class="bi bi-capsule-pill text-white fs-2"></i>
+                                </div>
+                                <h3 class="fw-bold text-dark mb-1">{{ config.COMPANY_NAME }}</h3>
+                                <p class="text-muted small mb-0">Pharmacy Billing System</p>
                             </div>
+                            
+                            <h5 class="fw-semibold mb-4">Welcome Back</h5>
+                            
+                            {% with messages = get_flashed_messages(with_categories=true) %}
+                                {% if messages %}
+                                    {% for category, message in messages %}
+                                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                            {{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endwith %}
+                            
+                            <form method="POST" action="{{ url_for('auth.login') }}" class="needs-validation" novalidate>
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                
+                                <div class="mb-3">
+                                    <label for="username" class="form-label fw-medium">Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="bi bi-person text-muted"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" 
+                                               placeholder="Enter your username" required autofocus>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label fw-medium">Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-end-0">
+                                            <i class="bi bi-lock text-muted"></i>
+                                        </span>
+                                        <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" 
+                                               placeholder="Enter your password" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="remember" name="remember">
+                                        <label class="form-check-label" for="remember">
+                                            Keep me signed in
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100 py-2 fw-medium">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                                </button>
+                            </form>
+                            
+                            <p class="text-center text-muted mt-4 mb-0 small">
+                                &copy; {{ now.year }} {{ config.COMPANY_NAME }}. All rights reserved.
+                            </p>
                         </div>
                         
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-lock text-muted"></i>
-                                </span>
-                                <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" 
-                                       placeholder="Enter password" required>
+                        <!-- Right Side - Calendar with Medicine Theme -->
+                        <div class="col-lg-6 calendar-col">
+                            <i class="bi bi-prescription2 medicine-icon top-right"></i>
+                            <i class="bi bi-heart-pulse medicine-icon bottom-left"></i>
+                            
+                            <div class="calendar-card">
+                                <div class="calendar-header">
+                                    <div class="calendar-month" id="calendarMonth"></div>
+                                    <div class="calendar-year" id="calendarYear"></div>
+                                </div>
+                                
+                                <div class="calendar-day-names">
+                                    <div class="calendar-day-name">Sun</div>
+                                    <div class="calendar-day-name">Mon</div>
+                                    <div class="calendar-day-name">Tue</div>
+                                    <div class="calendar-day-name">Wed</div>
+                                    <div class="calendar-day-name">Thu</div>
+                                    <div class="calendar-day-name">Fri</div>
+                                    <div class="calendar-day-name">Sat</div>
+                                </div>
+                                
+                                <div class="calendar-days" id="calendarDays"></div>
+                                
+                                <div class="time-display">
+                                    <div class="time" id="currentTime">00:00:00</div>
+                                    <div class="date" id="currentDate"></div>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="mb-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="remember" name="remember">
-                                <label class="form-check-label" for="remember">
-                                    Keep me signed in
-                                </label>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-medium">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
-                        </button>
-                    </form>
-                    
-                    <!-- Demo Credentials -->
-                    <div class="mt-4 p-3 bg-light rounded-3">
-                        <p class="text-muted small mb-2 text-center">Demo Credentials</p>
-                        <div class="row text-center small">
-                            <div class="col-6">
-                                <strong>Admin:</strong><br>
-                                <code>admin</code> / <code>admin123</code>
-                            </div>
-                            <div class="col-6">
-                                <strong>Staff:</strong><br>
-                                <code>staff</code> / <code>staff123</code>
+                            
+                            <div class="pharmacy-tagline mt-3">
+                                <i class="bi bi-shield-check"></i>
+                                <span>Your Trusted Pharmacy Partner</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Footer -->
-            <p class="text-center text-muted mt-4 mb-0">
-                &copy; {{ now.year }} {{ config.COMPANY_NAME }}. All rights reserved.
-            </p>
         </div>
     </div>
 </div>
+
+<script>
+function updateCalendar() {
+    const now = new Date();
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                        'July', 'August', 'September', 'October', 'November', 'December'];
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    
+    const month = now.getMonth();
+    const year = now.getFullYear();
+    const date = now.getDate();
+    const day = now.getDay();
+    
+    document.getElementById('calendarMonth').textContent = monthNames[month];
+    document.getElementById('calendarYear').textContent = year;
+    
+    // Time
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('currentTime').textContent = `${hours}:${minutes}:${seconds}`;
+    document.getElementById('currentDate').textContent = dayNames[day] + ', ' + date + ' ' + monthNames[month];
+    
+    // Calendar days
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    let calendarHTML = '';
+    
+    // Empty cells before first day
+    for (let i = 0; i < firstDay; i++) {
+        calendarHTML += '<div class="calendar-day empty"></div>';
+    }
+    
+    // Days of month
+    for (let d = 1; d <= daysInMonth; d++) {
+        const isToday = d === date;
+        calendarHTML += `<div class="calendar-day${isToday ? ' today' : ''}">${d}</div>`;
+    }
+    
+    document.getElementById('calendarDays').innerHTML = calendarHTML;
+}
+
+// Update immediately and then every second
+updateCalendar();
+setInterval(updateCalendar, 1000);
+</script>
 {% endblock %}

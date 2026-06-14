@@ -121,9 +121,9 @@
     <div class="header">
         <div class="company-name">{{ config.COMPANY_NAME }}</div>
         <div class="company-info">
-            {{ settings.get('company_address', 'Address') }}<br>
-            Phone: {{ settings.get('company_phone', '') }} | Email: {{ settings.get('company_email', '') }}<br>
-            GSTIN: {{ settings.get('company_gstin', '') }} | DL: {{ settings.get('company_dl', '') }}
+            Your Trusted Pharmacy Partner<br>
+            Phone: +91-9876543210 | Email: info@billmymed.com<br>
+            GSTIN: 27AAACP1234C1ZX | DL: MH/20B/123456
         </div>
     </div>
     
@@ -180,7 +180,7 @@
                 <td class="text-right">{{ item.expiry_date.strftime('%m/%y') if item.expiry_date else '-' }}</td>
                 <td class="text-right">{{ item.quantity }}{% if item.free_qty %} + {{ item.free_qty }}{% endif %}</td>
                 <td class="text-right">₹{{ "%.2f"|format(item.mrp or 0) }}</td>
-                <td class="text-right">₹{{ "%.2f"|format(item.rate) }}</td>
+                <td class="text-right">₹{{ "%.2f"|format(item.purchase_rate) }}</td>
                 <td class="text-right">₹{{ "%.2f"|format(item.amount) }}</td>
             </tr>
             {% endfor %}
@@ -218,7 +218,7 @@
     <!-- Amount in Words -->
     <div style="margin-top: 20px;">
         <strong>Amount in Words:</strong><br>
-        {{ numberToWords(purchase.total_amount|int) }} Rupees Only
+        <span id="amountInWords">Rupees Only</span>
     </div>
     
     <!-- Payment Info -->
@@ -253,6 +253,10 @@
         }
         
         window.onload = function() {
+            // Populate amount in words
+            const amount = Math.floor({{ purchase.total_amount }});
+            document.getElementById('amountInWords').textContent = numberToWords(amount) + ' Rupees Only';
+            // Auto print
             window.print();
         };
     </script>
