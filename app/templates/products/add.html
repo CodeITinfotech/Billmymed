@@ -496,6 +496,39 @@ function addNewItem() {
         return;
     }
     
+    // For HSN Code, save to database
+    if (fieldId === 'hsn_code') {
+        fetch('/masters/api/hsn-codes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            },
+            body: JSON.stringify({ hsn_code: name, gst_rate: 0 })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Add new option to dropdown
+                const select = document.getElementById('hsn_code');
+                const option = document.createElement('option');
+                option.value = name;
+                option.text = name + ' (0%)';
+                option.selected = true;
+                select.appendChild(option);
+                bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
+                showToast('success', `HSN Code added: ${name}`);
+            } else {
+                showToast('danger', data.error || 'Failed to add HSN Code');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast('danger', 'Error adding HSN Code');
+        });
+        return;
+    }
+    
     document.getElementById(fieldId).value = name;
     bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
     

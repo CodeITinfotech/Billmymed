@@ -193,7 +193,7 @@
                                     <td>{{ batch.supplier.account_name if batch.supplier else '-' }}</td>
                                     <td class="text-end">{{ batch.quantity - batch.available_qty if batch.quantity and batch.available_qty else 0 }}</td>
                                     <td class="text-end {{ 'text-danger' if batch.available_qty <= 0 else '' }}">{{ batch.available_qty }}</td>
-                                    <td>{{ batch.purchase.purchase_no if batch.purchase else '-' }}</td>
+                                    <td>{{ batch.purchase.purchase_no if batch.purchase_id else '-' }}</td>
                                     <td class="text-end">₹{{ "{:,.2f}".format(batch.purchase_rate or 0) }}</td>
                                     <td class="text-end">₹{{ "{:,.2f}".format(batch.sale_rate or 0) }}</td>
                                     <td class="text-end">₹{{ "{:,.2f}".format(batch.mrp or 0) }}</td>

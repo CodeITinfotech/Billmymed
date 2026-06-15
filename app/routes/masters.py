@@ -275,6 +275,27 @@ def search_product_types():
     
     return jsonify([{'id': i.id, 'name': i.type_name} for i in items])
 
+@masters_bp.route('/api/hsn-codes', methods=['POST'])
+@login_required
+def create_hsn_code_api():
+    data = request.get_json()
+    hsn_code = data.get('hsn_code', '').strip()
+    gst_rate = data.get('gst_rate', 0)
+    
+    if not hsn_code:
+        return jsonify({'success': False, 'error': 'HSN Code is required'})
+    
+    # Check if already exists
+    existing = HSNCodeMaster.query.filter_by(hsn_code=hsn_code).first()
+    if existing:
+        return jsonify({'success': False, 'error': 'HSN Code already exists'})
+    
+    item = HSNCodeMaster(hsn_code=hsn_code, gst_rate=gst_rate)
+    db.session.add(item)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'id': item.id, 'hsn_code': item.hsn_code, 'gst_rate': float(item.gst_rate)})
+
 @masters_bp.route('/api/hsn-codes/search')
 @login_required
 def search_hsn_codes():

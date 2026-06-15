@@ -229,8 +229,7 @@ class Batch(db.Model):
     purchase_id = db.Column(db.Integer, db.ForeignKey('purchases.id'))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
-    supplier = db.relationship('AccountMaster', foreign_keys=[supplier_id], backref='batches')
-    purchase = db.relationship('Purchase', foreign_keys=[purchase_id], backref='batches')
+    supplier = db.relationship('AccountMaster', foreign_keys=[supplier_id])
     
     def __repr__(self):
         return f'<Batch {self.batch_no} of {self.product_id}>'
