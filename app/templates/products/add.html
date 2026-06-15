@@ -177,6 +177,9 @@
                                 <div class="input-group">
                                     <select class="form-select" id="hsn_code" name="hsn_code">
                                         <option value="">Select HSN Code</option>
+                                        {% for hsn in hsn_codes %}
+                                        <option value="{{ hsn.hsn_code }}" {% if is_edit and hsn.hsn_code == product.hsn_code %}selected{% endif %}>{{ hsn.hsn_code }}</option>
+                                        {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')">
                                         <i class="bi bi-plus"></i>
