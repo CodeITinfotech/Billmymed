@@ -47,6 +47,36 @@
 .payment-summary strong {
     text-decoration: none !important;
 }
+/* Toast notification styles */
+.toast-notification {
+    position: fixed;
+    top: 20px;
+    right: -400px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    z-index: 9999;
+    transition: right 0.3s ease-in-out;
+}
+.toast-notification.show {
+    right: 20px;
+}
+.toast-notification.toast-error {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+.toast-notification.toast-info {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+.toast-notification i {
+    font-size: 20px;
+}
 </style>
 {% endblock %}
 
@@ -406,6 +436,26 @@ let selectedCustomer = null;
 let selectedBatchIndex = -1;
 let pendingProductId = null;
 let pendingProductData = null;
+
+// Toast notification function
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast-notification toast-${type}`;
+    toast.innerHTML = `
+        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'error' ? 'x-circle' : 'info-circle'}-fill"></i>
+        <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+    
+    // Trigger animation
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Remove after animation
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 1200);
+}
 
 // Format currency
 function formatCurrency(amount) {
@@ -1150,14 +1200,16 @@ function completeSale() {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            alert('Sale completed successfully!');
-            window.location.href = '/sales/' + data.invoice_id;
+            showToast('Sale completed successfully!');
+            setTimeout(() => {
+                window.location.href = '/sales/' + data.invoice_id;
+            }, 1200);
         } else {
-            alert('Error: ' + data.error);
+            showToast('Error: ' + data.error, 'error');
         }
     })
     .catch(err => {
-        alert('Error: ' + err.message);
+        showToast('Error: ' + err.message, 'error');
     });
 }
 
