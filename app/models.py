@@ -725,7 +725,6 @@ class HSNCodeMaster(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     hsn_code = db.Column(db.String(20), unique=True, nullable=False)
     description = db.Column(db.Text)
-    gst_rate = db.Column(db.Numeric(5, 2), default=0)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
