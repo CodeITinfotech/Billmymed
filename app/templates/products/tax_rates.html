@@ -30,8 +30,6 @@
                             <th>Rate (%)</th>
                             <th>CGST (%)</th>
                             <th>SGST (%)</th>
-                            <th>Description</th>
-                            <th class="text-center">Products</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -41,19 +39,13 @@
                         <tr>
                             <td class="ps-3">{{ loop.index }}</td>
                             <td>
-                                <a href="#" class="text-decoration-none fw-medium">
-                                    {{ tax.tax_name }}
-                                </a>
+                                <span class="fw-medium">{{ tax.tax_name }}</span>
                             </td>
                             <td>
-                                <span class="badge bg-primary">{{ tax.tax_percentage }}%</span>
+                                <span class="badge bg-primary">{{ tax.tax_perc|float }}%</span>
                             </td>
-                            <td>{{ (tax.tax_percentage / 2)|round(1) }}%</td>
-                            <td>{{ (tax.tax_percentage / 2)|round(1) }}%</td>
-                            <td class="text-muted">{{ tax.description or '-' }}</td>
-                            <td class="text-center">
-                                <span class="badge bg-secondary">{{ tax.products.count() if tax.products else 0 }}</span>
-                            </td>
+                            <td>{{ ((tax.tax_perc|float) / 2)|round(1) }}%</td>
+                            <td>{{ ((tax.tax_perc|float) / 2)|round(1) }}%</td>
                             <td class="text-center">
                                 {% if tax.is_active %}
                                 <span class="badge bg-success">Active</span>
@@ -64,7 +56,7 @@
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm">
                                     <button type="button" class="btn btn-outline-primary" title="Edit" 
-                                            onclick="editTaxRate({{ tax.id }}, '{{ tax.tax_name }}', {{ tax.tax_percentage }}, '{{ tax.description or '' }}', {{ tax.is_active|int }})">
+                                            onclick="editTaxRate({{ tax.id }}, '{{ tax.tax_name }}', {{ tax.tax_perc|float }})">
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                     <form action="{{ url_for('products.delete_tax', id=tax.id) }}" method="POST" class="d-inline">
@@ -79,7 +71,7 @@
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="9" class="text-center py-5">
+                            <td colspan="7" class="text-center py-5">
                                 <div class="empty-state">
                                     <i class="bi bi-percent fs-1"></i>
                                     <p class="mt-2 mb-1">No tax rates found</p>
@@ -98,49 +90,37 @@
 </div>
 
 <!-- Add Tax Rate Modal -->
-<div class="modal fade" id="addTaxRateModal" tabindex="-1" aria-labelledby="addTaxRateModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="addTaxRateModalLabel">
-                    <i class="bi bi-percent me-2"></i>Add Tax Rate
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="addTaxRateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-percent text-primary me-2"></i>Add Tax Rate
+                    </h5>
+                    <p class="text-muted small mb-0">Enter tax rate details</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ url_for('products.add_tax') }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="modal-body">
+                <div class="modal-body pt-3">
                     <div class="mb-3">
-                        <label for="tax_name" class="form-label">Tax Name <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="tax_name" name="tax_name" required
-                               placeholder="e.g., GST 18%, GST 12%">
+                        <label for="tax_name" class="form-label small fw-semibold text-muted">Tax Name</label>
+                        <input type="text" class="form-control" id="tax_name" name="tax_name" placeholder="e.g., GST 18%" required>
                     </div>
                     <div class="mb-3">
-                        <label for="tax_percentage" class="form-label">Tax Percentage <span class="text-danger">*</span></label>
+                        <label for="tax_perc" class="form-label small fw-semibold text-muted">Tax Percentage</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="tax_percentage" name="tax_percentage" 
-                                   required step="0.01" min="0" max="100" placeholder="e.g., 18">
+                            <input type="number" class="form-control" id="tax_perc" name="tax_perc" step="0.01" min="0" max="100" placeholder="e.g., 18" required>
                             <span class="input-group-text">%</span>
                         </div>
-                        <small class="text-muted">Total GST rate (will be split equally into CGST and SGST)</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="2" 
-                                  placeholder="Enter tax description"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="is_active" class="form-label">Status</label>
-                        <select class="form-select" id="is_active" name="is_active">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg me-1"></i>Save
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-plus-lg me-1"></i> Add
                     </button>
                 </div>
             </form>
@@ -149,47 +129,38 @@
 </div>
 
 <!-- Edit Tax Rate Modal -->
-<div class="modal fade" id="editTaxRateModal" tabindex="-1" aria-labelledby="editTaxRateModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="editTaxRateModalLabel">
-                    <i class="bi bi-percent me-2"></i>Edit Tax Rate
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade" id="editTaxRateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-percent text-primary me-2"></i>Edit Tax Rate
+                    </h5>
+                    <p class="text-muted small mb-0">Update tax rate details</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ url_for('products.update_tax', id=0) }}" method="POST" id="editTaxRateForm">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="modal-body">
+                <div class="modal-body pt-3">
                     <input type="hidden" id="edit_tax_id" name="tax_id">
                     <div class="mb-3">
-                        <label for="edit_tax_name" class="form-label">Tax Name <span class="text-danger">*</span></label>
+                        <label for="edit_tax_name" class="form-label small fw-semibold text-muted">Tax Name</label>
                         <input type="text" class="form-control" id="edit_tax_name" name="tax_name" required>
                     </div>
                     <div class="mb-3">
-                        <label for="edit_tax_percentage" class="form-label">Tax Percentage <span class="text-danger">*</span></label>
+                        <label for="edit_tax_perc" class="form-label small fw-semibold text-muted">Tax Percentage</label>
                         <div class="input-group">
-                            <input type="number" class="form-control" id="edit_tax_percentage" name="tax_percentage" 
-                                   required step="0.01" min="0" max="100">
+                            <input type="number" class="form-control" id="edit_tax_perc" name="tax_perc" step="0.01" min="0" max="100" required>
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="edit_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="edit_description" name="description" rows="2"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit_is_active" class="form-label">Status</label>
-                        <select class="form-select" id="edit_is_active" name="is_active">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
-                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg me-1"></i>Update
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-check-lg me-1"></i> Update
                     </button>
                 </div>
             </form>
@@ -199,12 +170,10 @@
 
 {% block extra_js %}
 <script>
-function editTaxRate(id, name, percentage, description, isActive) {
+function editTaxRate(id, name, percentage) {
     document.getElementById('edit_tax_id').value = id;
     document.getElementById('edit_tax_name').value = name;
-    document.getElementById('edit_tax_percentage').value = percentage;
-    document.getElementById('edit_description').value = description;
-    document.getElementById('edit_is_active').value = isActive;
+    document.getElementById('edit_tax_perc').value = percentage;
     document.getElementById('editTaxRateForm').action = '/products/tax-rates/edit/' + id;
     new bootstrap.Modal(document.getElementById('editTaxRateModal')).show();
 }
