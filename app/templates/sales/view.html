@@ -18,6 +18,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form id="receivePaymentForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="modal-body pt-3">
                         <!-- Amount Display Card -->
                         <div class="bg-gradient bg-success bg-opacity-10 rounded-3 p-3 mb-4 text-center">
@@ -532,7 +533,6 @@ document.getElementById('receivePaymentForm').addEventListener('submit', functio
     
     const formData = new FormData(this);
     formData.append('invoice_id', {{ invoice.id }});
-    formData.append('csrf_token', '{{ csrf_token() }}');
     
     fetch('/payments/create', {
         method: 'POST',
