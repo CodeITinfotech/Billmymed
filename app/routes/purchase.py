@@ -9,20 +9,21 @@ import uuid
 purchase_bp = Blueprint('purchase', __name__)
 
 def generate_purchase_no():
-    today = datetime.utcnow()
-    date_str = today.strftime('%Y%m%d')
-    
+    # Get last purchase number
     last_purchase = Purchase.query.filter(
-        Purchase.purchase_no.like(f'PUR{date_str}%')
+        Purchase.purchase_no.like('PI-%')
     ).order_by(Purchase.id.desc()).first()
     
     if last_purchase:
-        last_num = int(last_purchase.purchase_no[-6:])
-        new_num = last_num + 1
+        try:
+            last_num = int(last_purchase.purchase_no.split('-')[-1])
+            new_num = last_num + 1
+        except:
+            new_num = 1
     else:
         new_num = 1
     
-    return f'PUR{date_str}{str(new_num).zfill(6)}'
+    return f'PI-{new_num}'
 
 @purchase_bp.route('/')
 @login_required

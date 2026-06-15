@@ -15,23 +15,22 @@ def generate_invoice_no(invoice_type='sale'):
     elif invoice_type == 'emergency':
         prefix = 'ES'
     
-    today = datetime.utcnow()
-    # Format: DD-MM-YY-00001
-    date_str = today.strftime('%d-%m-%y')
-    
-    # Get last invoice number for today with same prefix
+    # Get last invoice number with same prefix
     last_invoice = Invoice.query.filter(
-        Invoice.invoice_no.like(f'{prefix}{date_str}%')
+        Invoice.invoice_no.like(f'{prefix}-%')
     ).order_by(Invoice.id.desc()).first()
     
     if last_invoice:
-        # Extract the last 5 digits (e.g., "00001")
-        last_num = int(last_invoice.invoice_no[-5:])
-        new_num = last_num + 1
+        # Extract the number after prefix (e.g., "SI-12345" -> "12345")
+        try:
+            last_num = int(last_invoice.invoice_no.split('-')[-1])
+            new_num = last_num + 1
+        except:
+            new_num = 1
     else:
         new_num = 1
     
-    return f'{prefix}{date_str}-{str(new_num).zfill(5)}'
+    return f'{prefix}-{new_num}'
 
 @sales_bp.route('/')
 @login_required
