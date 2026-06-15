@@ -319,6 +319,12 @@ def return_new(original_id):
     
     return render_template('sales/return_new.html', original=original)
 
+# Edit invoice
+@sales_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit(id):
+    return redirect(url_for('sales.edit_duplicate', id=id))
+
 # Edit duplicate invoice
 @sales_bp.route('/<int:id>/edit-duplicate', methods=['GET', 'POST'])
 @login_required

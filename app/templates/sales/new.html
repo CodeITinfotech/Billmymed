@@ -287,44 +287,7 @@
                             <h5 class="mb-0">Total</h5>
                             <h4 class="mb-0 text-primary fw-bold" id="totalAmount">₹0.00</h4>
                         </div>
-                        
-                        <!-- Payment Mode -->
-                        <hr>
-                        <div id="cashPaymentSection">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted fw-bold">Cash Payment</span>
-                            </div>
-                            <div class="row g-2 mb-2">
-                                <div class="col-6">
-                                    <label class="form-label small">Cash</label>
-                                    <input type="number" class="form-control form-control-sm text-end" id="cashAmount" 
-                                           value="0" min="0" step="1" onchange="calculatePayment()">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Card</label>
-                                    <input type="number" class="form-control form-control-sm text-end" id="cardAmount" 
-                                           value="0" min="0" step="1" onchange="calculatePayment()">
-                                </div>
-                            </div>
-                            <div class="row g-2 mb-2">
-                                <div class="col-6">
-                                    <label class="form-label small">GPay / UPI</label>
-                                    <input type="number" class="form-control form-control-sm text-end" id="gpayAmount" 
-                                           value="0" min="0" step="1" onchange="calculatePayment()">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label small">Online</label>
-                                    <input type="number" class="form-control form-control-sm text-end" id="onlineAmount" 
-                                           value="0" min="0" step="1" onchange="calculatePayment()">
-                                </div>
-                            </div>
-                            <!-- GPay QR Button -->
-                            <div id="gpaySection" class="mb-2" style="display: none;">
-                                <button type="button" class="btn btn-outline-primary btn-sm w-100" onclick="generateGPayQR()">
-                                    <i class="bi bi-qr-code me-1"></i> Generate GPay QR
-                                </button>
-                            </div>
-                        </div>
+
                         
                         <!-- Cash Payment Info -->
                         <div id="cashPaymentInfo" style="display: none;">
@@ -1083,37 +1046,28 @@ function calculateTotal() {
 // Calculate payment
 function calculatePayment() {
     const total = parseFloat(document.getElementById('totalAmountHidden').value) || 0;
-    const cash = parseFloat(document.getElementById('cashAmount').value) || 0;
-    const card = parseFloat(document.getElementById('cardAmount').value) || 0;
-    const gpay = parseFloat(document.getElementById('gpayAmount').value) || 0;
-    const online = parseFloat(document.getElementById('onlineAmount').value) || 0;
     const salesType = document.getElementById('salesType').value;
     
-    const received = cash + card + gpay + online;
+    // For cash sales, set full amount as cash received
+    const received = salesType === 'credit' ? 0 : total;
     const balance = total - received;
     
     // Update hidden fields
-    document.getElementById('cashAmountHidden').value = cash.toFixed(2);
-    document.getElementById('cardAmountHidden').value = card.toFixed(2);
-    document.getElementById('gpayAmountHidden').value = gpay.toFixed(2);
-    document.getElementById('onlineAmountHidden').value = online.toFixed(2);
+    document.getElementById('cashAmountHidden').value = received.toFixed(2);
+    document.getElementById('cardAmountHidden').value = '0';
+    document.getElementById('gpayAmountHidden').value = '0';
+    document.getElementById('onlineAmountHidden').value = '0';
     document.getElementById('creditAmountHidden').value = salesType === 'credit' ? total.toFixed(2) : '0';
     
-    // Show/hide cash payment section based on sales type
-    const cashSection = document.getElementById('cashPaymentSection');
+    // Show/hide cash payment info based on sales type
     const cashInfo = document.getElementById('cashPaymentInfo');
-    const gpaySection = document.getElementById('gpaySection');
     
     if (salesType === 'credit') {
-        cashSection.style.display = 'none';
         cashInfo.style.display = 'none';
     } else {
-        cashSection.style.display = 'block';
-        gpaySection.style.display = gpay > 0 ? 'block' : 'none';
-        
-        // Show return calculation
+        cashInfo.style.display = 'block';
+        // Show return calculation if cash given exceeds total
         if (received > total) {
-            cashInfo.style.display = 'block';
             document.getElementById('amountGiven').textContent = formatCurrency(received);
             document.getElementById('returnAmount').textContent = formatCurrency(received - total);
             document.getElementById('returnAmountHidden').value = (received - total).toFixed(2);
@@ -1137,15 +1091,6 @@ function calculatePayment() {
     } else {
         document.getElementById('paymentStatus').value = 'paid';
     }
-}
-
-// Generate GPay QR Code
-function generateGPayQR() {
-    const total = parseFloat(document.getElementById('totalAmountHidden').value) || 0;
-    const amount = parseFloat(document.getElementById('gpayAmount').value) || total;
-    
-    alert('GPay QR Code for ₹' + amount.toFixed(2) + '\n\nPlease show this QR code to the customer for scanning.');
-    // In a real implementation, this would generate a QR code using UPI payment APIs
 }
 
 // Handle sales type change
