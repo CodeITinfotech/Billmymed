@@ -43,6 +43,10 @@
     background-color: #fff3cd;
     font-weight: bold;
 }
+.payment-summary span,
+.payment-summary strong {
+    text-decoration: none !important;
+}
 </style>
 {% endblock %}
 
@@ -218,7 +222,7 @@
                 </div>
                 
                 <!-- Payment Summary -->
-                <div class="card border-0 shadow-sm mb-3">
+                <div class="card border-0 shadow-sm mb-3 payment-summary">
                     <div class="card-body">
                         <h6 class="fw-bold mb-3">Payment Summary</h6>
                         
