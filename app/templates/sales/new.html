@@ -522,6 +522,7 @@ function selectProduct(productId, productCode) {
     document.getElementById('productSearch').value = '';
     selectedProductIndex = -1;
     currentProductResults = [];
+    // Don't clear pendingProductData yet - needed for batch selection
     
     pendingProductId = productId;
     
@@ -536,7 +537,10 @@ function selectProduct(productId, productCode) {
             } else if (product.batches && product.batches.length === 1) {
                 // Single batch - add directly, then focus on quantity
                 addToCartWithBatch(product, product.batches[0]);
-                setTimeout(focusOnLastItemQuantity, 100);
+                setTimeout(() => {
+                    focusOnLastItemQuantity();
+                    pendingProductData = null; // Clear after adding
+                }, 100);
             } else {
                 // No batch - add without batch
                 addItemToCart({
@@ -554,7 +558,10 @@ function selectProduct(productId, productCode) {
                     discount_perc: product.discount_perc || 0,
                     tax_perc: product.tax_perc || 0
                 });
-                setTimeout(focusOnLastItemQuantity, 100);
+                setTimeout(() => {
+                    focusOnLastItemQuantity();
+                    pendingProductData = null; // Clear after adding
+                }, 100);
             }
         });
 }
@@ -567,6 +574,18 @@ function focusOnLastItemQuantity() {
         if (qtyInput) {
             qtyInput.focus();
             qtyInput.select();
+        }
+    }
+}
+
+// Focus on rate input of the last cart item
+function focusOnLastItemRate() {
+    const lastItem = document.querySelector('.cart-item:last-child');
+    if (lastItem) {
+        const rateInput = lastItem.querySelector('.rate-input');
+        if (rateInput) {
+            rateInput.focus();
+            rateInput.select();
         }
     }
 }
@@ -604,6 +623,9 @@ function updateBatchSelection() {
     const items = document.querySelectorAll('.batch-item');
     items.forEach((item, index) => {
         item.classList.toggle('selected', index === selectedBatchIndex);
+        if (index === selectedBatchIndex) {
+            item.scrollIntoView({ block: 'nearest' });
+        }
     });
 }
 
@@ -615,6 +637,9 @@ function selectBatch(index) {
     }
     hideBatchSelector();
     
+    // Clear pending product data to prevent re-adding
+    pendingProductData = null;
+    
     // Focus on quantity of the newly added item
     setTimeout(() => {
         const lastItem = document.querySelector('.cart-item:last-child');
@@ -623,11 +648,6 @@ function selectBatch(index) {
             if (qtyInput) {
                 qtyInput.focus();
                 qtyInput.select();
-            }
-            // Also trigger pack dropdown focus
-            const packSelect = lastItem.querySelector('.pack-select');
-            if (packSelect) {
-                packSelect.focus();
             }
         }
     }, 100);
@@ -767,7 +787,8 @@ function renderCart() {
                     <input type="number" class="form-control form-control-sm text-center qty-input" 
                            value="${item.quantity}" min="1" max="${item.max_qty}" 
                            onchange="setQty(${item.id}, this.value)"
-                           tabindex="1">
+                           tabindex="1"
+                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnLastItemRate(); }">
                 </div>
                 <div class="col-2">
                     <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2">
@@ -775,8 +796,9 @@ function renderCart() {
                     </select>
                 </div>
                 <div class="col-2 text-end">
-                    <input type="number" class="form-control form-control-sm fw-bold" value="${item.unit_rate.toFixed(2)}" 
-                           step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)" tabindex="3">
+                    <input type="number" class="form-control form-control-sm fw-bold rate-input" value="${item.unit_rate.toFixed(2)}" 
+                           step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)" tabindex="3"
+                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); document.getElementById('productSearch').focus(); document.getElementById('productSearch').value = ''; }">
                 </div>
                 <div class="col-1 text-center">
                     <small class="text-muted">${item.tax_perc}%</small>
@@ -1301,18 +1323,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (isDropdownVisible && selectedProductIndex >= 0) {
-                // Select the highlighted product
+            if (isDropdownVisible && selectedProductIndex >= 0 && pendingProductData === null) {
+                // Only select if dropdown is visible, something is selected, and we're not in batch selection mode
                 const product = currentProductResults[selectedProductIndex];
                 if (product) {
                     selectProduct(product.id, product.product_code);
                 }
-            } else {
-                const firstResult = results.querySelector('.product-list-item');
-                if (firstResult) {
-                    firstResult.click();
-                }
             }
+            // If no dropdown or nothing selected, do nothing (stay on product search)
         } else if (e.key === 'ArrowDown') {
             if (isDropdownVisible) {
                 e.preventDefault();
