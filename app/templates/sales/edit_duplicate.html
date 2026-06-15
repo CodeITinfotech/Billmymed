@@ -171,15 +171,17 @@
                         <input type="hidden" name="total_amount" id="totalAmountInput" value="{{ invoice.total_amount }}">
                         
                         <!-- Payment Status Info -->
+                        {% set received = (invoice.cash_amount or 0) + (invoice.card_amount or 0) + (invoice.gpay_amount or 0) + (invoice.online_amount or 0) %}
+                        {% set pending = invoice.total_amount - received %}
                         <div class="mt-3 p-2 bg-light rounded">
                             <small class="text-muted d-block mb-1">Payment Status</small>
                             <div class="d-flex justify-content-between">
                                 <span>Received:</span>
-                                <span class="text-success">₹{{ (invoice.cash_amount + invoice.card_amount + invoice.gpay_amount + invoice.online_amount)|default(0) }}</span>
+                                <span class="text-success">₹{{ "{:,.2f}".format(received) }}</span>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <span>Pending:</span>
-                                <span class="text-danger">₹{{ invoice.credit_amount|default(0) }}</span>
+                                <span class="text-danger">₹{{ "{:,.2f}".format(pending) }}</span>
                             </div>
                         </div>
                     </div>
@@ -237,15 +239,17 @@ function initBatchSelect(row) {
     if (!productId) return;
     
     const batchSelect = row.querySelector('.batch-select');
+    const batchId = row.querySelector('input[name="batch_id"]').value;
     
     fetch(`/api/products/${productId}/batches`)
         .then(res => res.json())
         .then(data => {
+            batchSelect.innerHTML = '<option value="">Select Batch</option>';
             if (data.batches && data.batches.length > 0) {
                 data.batches.forEach(batch => {
                     const option = document.createElement('option');
                     option.value = batch.id;
-                    option.textContent = `${batch.batch_no} - ${batch.available_qty} qty - ₹${batch.sale_rate}`;
+                    option.textContent = `${batch.batch_no} - ${batch.available_qty} - ₹${batch.sale_rate}`;
                     option.dataset.saleRate = batch.sale_rate;
                     option.dataset.mrp = batch.mrp;
                     option.dataset.expiry = batch.expiry_date || '';
@@ -253,7 +257,6 @@ function initBatchSelect(row) {
                 });
                 
                 // Auto-select if batch_id matches
-                const batchId = row.querySelector('input[name="batch_id"]').value;
                 if (batchId) {
                     batchSelect.value = batchId;
                 }
