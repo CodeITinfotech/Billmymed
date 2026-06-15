@@ -53,30 +53,36 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="generic_name" class="form-label">Generic Name</label>
-                                <div class="input-group select2-input-group">
-                                    <select class="form-select select2-no-search" id="generic_name" name="generic_name" data-placeholder="Select Generic">
-                                    </select>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('generic_name', 'Generic Name')" title="Add New Generic">
+                                <div class="d-flex gap-2">
+                                    <div class="flex-grow-1">
+                                        <select class="form-select" id="generic_name" name="generic_name" data-placeholder="Select Generic">
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('generic_name', 'Generic Name')" title="Add New Generic" style="min-width: 42px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="manufacturer" class="form-label">Manufacturer</label>
-                                <div class="input-group select2-input-group">
-                                    <select class="form-select select2-no-search" id="manufacturer" name="manufacturer" data-placeholder="Select Manufacturer">
-                                    </select>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('manufacturer', 'Manufacturer')" title="Add New Manufacturer">
+                                <div class="d-flex gap-2">
+                                    <div class="flex-grow-1">
+                                        <select class="form-select" id="manufacturer" name="manufacturer" data-placeholder="Select Manufacturer">
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('manufacturer', 'Manufacturer')" title="Add New Manufacturer" style="min-width: 42px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
                                 <label for="product_type" class="form-label">Product Type</label>
-                                <div class="input-group select2-input-group">
-                                    <select class="form-select select2-no-search" id="product_type" name="product_type" data-placeholder="Select Product Type">
-                                    </select>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')" title="Add New Product Type">
+                                <div class="d-flex gap-2">
+                                    <div class="flex-grow-1">
+                                        <select class="form-select" id="product_type" name="product_type" data-placeholder="Select Product Type">
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')" title="Add New Product Type" style="min-width: 42px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -173,10 +179,12 @@
                             </div>
                             <div class="col-12 col-md-4">
                                 <label for="hsn_code" class="form-label">HSN Code</label>
-                                <div class="input-group select2-input-group">
-                                    <select class="form-select select2-no-search" id="hsn_code" name="hsn_code" data-placeholder="Select HSN Code">
-                                    </select>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')" title="Add New HSN Code">
+                                <div class="d-flex gap-2">
+                                    <div class="flex-grow-1">
+                                        <select class="form-select" id="hsn_code" name="hsn_code" data-placeholder="Select HSN Code">
+                                        </select>
+                                    </div>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')" title="Add New HSN Code" style="min-width: 42px;">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -929,15 +937,6 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 .barcode-tag.primary {
     background: #d1e7dd;
-}
-/* Select2 input group fix */
-.select2-input-group {
-    display: flex;
-    flex-wrap: nowrap;
-}
-.select2-input-group .select2 {
-    flex: 1;
-    min-width: 0;
 }
 </style>
 {% endblock %}
