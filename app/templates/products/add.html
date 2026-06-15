@@ -37,14 +37,13 @@
                                 <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Auto-generated if empty">
                             </div>
                             <div class="col-12 col-md-8">
-                                <label for="barcode" class="form-label">Barcodes</label>
+                                <label for="barcode" class="form-label">Barcodes <small class="text-muted">(Press Enter or click Add to link barcode)</small></label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="barcode_input" placeholder="Type or scan barcode..." autocomplete="off">
                                     <button type="button" class="btn btn-outline-primary" onclick="checkAndAddBarcode()">
                                         <i class="bi bi-plus"></i> Add
                                     </button>
                                 </div>
-                                <small class="text-muted">Press Enter or click Add to link barcode</small>
                                 <div id="barcodes_list" class="mt-2"></div>
                             </div>
                             <div class="col-12">
