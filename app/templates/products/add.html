@@ -2,6 +2,10 @@
 
 {% block title %}Add Product - {{ config.COMPANY_NAME }}{% endblock %}
 
+{% block extra_head %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid px-3">
     <!-- Page Header -->
@@ -18,6 +22,7 @@
     </div>
     
     <form method="POST" id="productForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="row g-4">
             <!-- Basic Information -->
             <div class="col-12 col-lg-8">
@@ -49,7 +54,9 @@
                             <div class="col-12 col-md-6">
                                 <label for="generic_name" class="form-label">Generic Name</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="generic_name" name="generic_name" autocomplete="off">
+                                    <select class="form-select" id="generic_name" name="generic_name">
+                                        <option value="">Select Generic</option>
+                                    </select>
                                     <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('generic_name', 'Generic Name')">
                                         <i class="bi bi-plus"></i>
                                     </button>
@@ -58,7 +65,9 @@
                             <div class="col-12 col-md-6">
                                 <label for="manufacturer" class="form-label">Manufacturer</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="manufacturer" name="manufacturer" autocomplete="off">
+                                    <select class="form-select" id="manufacturer" name="manufacturer">
+                                        <option value="">Select Manufacturer</option>
+                                    </select>
                                     <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('manufacturer', 'Manufacturer')">
                                         <i class="bi bi-plus"></i>
                                     </button>
@@ -67,7 +76,9 @@
                             <div class="col-12 col-md-4">
                                 <label for="product_type" class="form-label">Product Type</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="product_type" name="product_type" autocomplete="off" placeholder="Type to search...">
+                                    <select class="form-select" id="product_type" name="product_type">
+                                        <option value="">Select Product Type</option>
+                                    </select>
                                     <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('product_type', 'Product Type')">
                                         <i class="bi bi-plus"></i>
                                     </button>
@@ -166,7 +177,9 @@
                             <div class="col-12 col-md-4">
                                 <label for="hsn_code" class="form-label">HSN Code</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="hsn_code" name="hsn_code" autocomplete="off">
+                                    <select class="form-select" id="hsn_code" name="hsn_code">
+                                        <option value="">Select HSN Code</option>
+                                    </select>
                                     <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('hsn_code', 'HSN Code')">
                                         <i class="bi bi-plus"></i>
                                     </button>
@@ -780,7 +793,138 @@ function renderPackagingTable() {
     
     tbody.innerHTML = html;
 }
+
+// Initialize Select2 for dropdowns
+document.addEventListener('DOMContentLoaded', function() {
+    // Category Select2
+    $('#category_id').select2({
+        placeholder: 'Select Category',
+        allowClear: true,
+        width: '100%'
+    });
+    
+    // Generic Name Select2 with AJAX
+    $('#generic_name').select2({
+        placeholder: 'Select or search Generic',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#generic_name').closest('.input-group'),
+        ajax: {
+            url: '/masters/api/generics/search',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return { q: params.term };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.name,
+                        text: item.name
+                    }))
+                };
+            },
+            cache: true
+        },
+        createTag: function(params) {
+            var term = $.trim(params.term);
+            if (term === '') return null;
+            return { id: term, text: term + ' (New)', isNew: true };
+        }
+    });
+    
+    // Manufacturer Select2 with AJAX
+    $('#manufacturer').select2({
+        placeholder: 'Select or search Manufacturer',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#manufacturer').closest('.input-group'),
+        ajax: {
+            url: '/masters/api/manufacturers/search',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return { q: params.term };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.name,
+                        text: item.name + (item.short_name ? ' (' + item.short_name + ')' : '')
+                    }))
+                };
+            },
+            cache: true
+        },
+        createTag: function(params) {
+            var term = $.trim(params.term);
+            if (term === '') return null;
+            return { id: term, text: term + ' (New)', isNew: true };
+        }
+    });
+    
+    // Product Type Select2 with AJAX
+    $('#product_type').select2({
+        placeholder: 'Select or search Product Type',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#product_type').closest('.input-group'),
+        ajax: {
+            url: '/masters/api/product-types/search',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return { q: params.term };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.name,
+                        text: item.name
+                    }))
+                };
+            },
+            cache: true
+        },
+        createTag: function(params) {
+            var term = $.trim(params.term);
+            if (term === '') return null;
+            return { id: term, text: term + ' (New)', isNew: true };
+        }
+    });
+    
+    // HSN Code Select2 with AJAX
+    $('#hsn_code').select2({
+        placeholder: 'Select or search HSN Code',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#hsn_code').closest('.input-group'),
+        ajax: {
+            url: '/masters/api/hsn-codes/search',
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return { q: params.term };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.map(item => ({
+                        id: item.hsn_code,
+                        text: item.hsn_code + ' (' + item.gst_rate + '%)'
+                    }))
+                };
+            },
+            cache: true
+        },
+        createTag: function(params) {
+            var term = $.trim(params.term);
+            if (term === '') return null;
+            return { id: term, text: term + ' (New)', isNew: true };
+        }
+    });
+});
 </script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <style>
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-20px); }

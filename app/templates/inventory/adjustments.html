@@ -201,11 +201,13 @@
                                     </a>
                                     {% if adjustment.status == 'pending' and current_user.is_admin %}
                                     <form action="{{ url_for('inventory.approve_adjustment', id=adjustment.id) }}" method="POST" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                         <button type="submit" class="btn btn-outline-success" title="Approve" onclick="return confirm('Approve this adjustment?')">
                                             <i class="bi bi-check"></i>
                                         </button>
                                     </form>
                                     <form action="{{ url_for('inventory.reject_adjustment', id=adjustment.id) }}" method="POST" class="d-inline">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                         <button type="submit" class="btn btn-outline-danger" title="Reject" onclick="return confirm('Reject this adjustment?')">
                                             <i class="bi bi-x"></i>
                                         </button>
