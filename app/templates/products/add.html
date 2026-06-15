@@ -306,28 +306,33 @@
 
 <!-- Add Category Modal -->
 <div class="modal fade" id="addCategoryModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="bi bi-tag me-2"></i>Add New Category</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-tag text-primary me-2"></i>Add New Category
+                    </h5>
+                    <p class="text-muted small mb-0">Enter category details</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ url_for('products.add_category') }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="modal-body">
+                <div class="modal-body pt-3">
                     <div class="mb-3">
-                        <label for="category_code" class="form-label">Category Code</label>
-                        <input type="text" class="form-control" id="category_code" name="category_code" required>
+                        <label for="category_code" class="form-label small fw-semibold text-muted">Category Code</label>
+                        <input type="text" class="form-control" id="category_code" name="category_code" placeholder="Enter code..." required>
                     </div>
                     <div class="mb-3">
-                        <label for="category_name" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="category_name" name="category_name" required>
+                        <label for="category_name" class="form-label small fw-semibold text-muted">Category Name</label>
+                        <input type="text" class="form-control" id="category_name" name="category_name" placeholder="Enter name..." required>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-plus"></i> Add
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-plus-lg me-1"></i> Add
                     </button>
                 </div>
             </form>
@@ -337,28 +342,33 @@
 
 <!-- Add Tax Modal -->
 <div class="modal fade" id="addTaxModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="bi bi-percent me-2"></i>Add New Tax Rate</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="modal-title fw-bold">
+                        <i class="bi bi-percent text-primary me-2"></i>Add New Tax Rate
+                    </h5>
+                    <p class="text-muted small mb-0">Enter tax details</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ url_for('products.add_tax') }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="modal-body">
+                <div class="modal-body pt-3">
                     <div class="mb-3">
-                        <label for="tax_name" class="form-label">Tax Name</label>
+                        <label for="tax_name" class="form-label small fw-semibold text-muted">Tax Name</label>
                         <input type="text" class="form-control" id="tax_name" name="tax_name" placeholder="e.g., GST 5%" required>
                     </div>
                     <div class="mb-3">
-                        <label for="tax_perc_new" class="form-label">Tax Percentage</label>
-                        <input type="number" class="form-control" id="tax_perc_new" name="tax_perc" step="0.01" required>
+                        <label for="tax_perc_new" class="form-label small fw-semibold text-muted">Tax Percentage</label>
+                        <input type="number" class="form-control" id="tax_perc_new" name="tax_perc" step="0.01" placeholder="e.g., 18" required>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-plus"></i> Add
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="bi bi-plus-lg me-1"></i> Add
                     </button>
                 </div>
             </form>
