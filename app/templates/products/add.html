@@ -815,104 +815,15 @@ document.addEventListener('DOMContentLoaded', function() {
         width: '100%'
     });
     
-    // Generic Name Select2 with AJAX
-    $('#generic_name').select2({
-        placeholder: 'Select or search Generic',
-        allowClear: true,
-        width: '100%',
-        dropdownParent: $('body'),
-        ajax: {
-            url: '/masters/api/generics/search',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return { q: params.term };
-            },
-            processResults: function(data) {
-                return {
-                    results: data.map(item => ({
-                        id: item.name,
-                        text: item.name
-                    }))
-                };
-            },
-            cache: true
-        }
-    });
-    
-    // Manufacturer Select2 with AJAX
-    $('#manufacturer').select2({
-        placeholder: 'Select or search Manufacturer',
-        allowClear: true,
-        width: '100%',
-        dropdownParent: $('body'),
-        ajax: {
-            url: '/masters/api/manufacturers/search',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return { q: params.term };
-            },
-            processResults: function(data) {
-                return {
-                    results: data.map(item => ({
-                        id: item.name,
-                        text: item.name + (item.short_name ? ' (' + item.short_name + ')' : '')
-                    }))
-                };
-            },
-            cache: true
-        }
-    });
-    
-    // Product Type Select2 with AJAX
-    $('#product_type').select2({
-        placeholder: 'Select or search Product Type',
-        allowClear: true,
-        width: '100%',
-        dropdownParent: $('body'),
-        ajax: {
-            url: '/masters/api/product-types/search',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return { q: params.term };
-            },
-            processResults: function(data) {
-                return {
-                    results: data.map(item => ({
-                        id: item.name,
-                        text: item.name
-                    }))
-                };
-            },
-            cache: true
-        }
-    });
-    
-    // HSN Code Select2 with AJAX
-    $('#hsn_code').select2({
-        placeholder: 'Select or search HSN Code',
-        allowClear: true,
-        width: '100%',
-        dropdownParent: $('body'),
-        ajax: {
-            url: '/masters/api/hsn-codes/search',
-            dataType: 'json',
-            delay: 250,
-            data: function(params) {
-                return { q: params.term };
-            },
-            processResults: function(data) {
-                return {
-                    results: data.map(item => ({
-                        id: item.hsn_code,
-                        text: item.hsn_code + ' (' + item.gst_rate + '%)'
-                    }))
-                };
-            },
-            cache: true
-        }
+    // Initialize Select2 without AJAX for now - just use regular selects
+    // This avoids the layout issues
+    ['generic_name', 'manufacturer', 'product_type', 'hsn_code'].forEach(function(id) {
+        $('#' + id).select2({
+            placeholder: 'Select or search',
+            allowClear: true,
+            width: '100%',
+            dropdownParent: $('body')
+        });
     });
 });
 </script>
