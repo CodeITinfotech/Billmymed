@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import Product, Category, Batch, Rack, Tax, StockAdjustment, StockAdjustmentItem, ProductPackaging, ProductBarcode, HSNCodeMaster
+from app.models import Product, Category, Batch, Rack, Tax, StockAdjustment, StockAdjustmentItem, ProductPackaging, ProductBarcode, HSNCodeMaster, GenericMaster, ManufacturerMaster, ProductTypeMaster
 from sqlalchemy import or_
 from datetime import datetime
 import uuid
@@ -166,7 +166,10 @@ def add():
     categories = Category.query.filter_by(is_active=True).order_by(Category.category_name).all()
     taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
     hsn_codes = HSNCodeMaster.query.order_by(HSNCodeMaster.hsn_code).all()
-    return render_template('products/add.html', categories=categories, taxes=taxes, hsn_codes=hsn_codes)
+    generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
+    manufacturers = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
+    product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
+    return render_template('products/add.html', categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types)
 
 @products_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -225,7 +228,10 @@ def edit(id):
     categories = Category.query.filter_by(is_active=True).order_by(Category.category_name).all()
     taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
     hsn_codes = HSNCodeMaster.query.order_by(HSNCodeMaster.hsn_code).all()
-    return render_template('products/add.html', product=product, categories=categories, taxes=taxes, hsn_codes=hsn_codes, is_edit=True)
+    generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
+    manufacturers = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
+    product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
+    return render_template('products/add.html', product=product, categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types, is_edit=True)
 
 @products_bp.route('/<int:id>/delete', methods=['POST'])
 @login_required
