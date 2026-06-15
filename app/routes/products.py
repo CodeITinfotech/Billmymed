@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import Product, Category, Batch, Rack, Tax, StockAdjustment, StockAdjustmentItem
+from app.models import Product, Category, Batch, Rack, Tax, StockAdjustment, StockAdjustmentItem, ProductPackaging, ProductBarcode
 from sqlalchemy import or_
 from datetime import datetime
 import uuid
+import json
 
 products_bp = Blueprint('products', __name__)
 
@@ -54,8 +55,6 @@ def view(id):
 @products_bp.route('/add', methods=['GET', 'POST'])
 @login_required
 def add():
-    from app.models import ProductBarcode
-    
     if request.method == 'POST':
         product_code = request.form.get('product_code', '').strip()
         product_name = request.form.get('product_name', '').strip()
@@ -92,29 +91,46 @@ def add():
         )
         
         db.session.add(product)
-        db.session.commit()
+        db.session.flush()
         
         # Add barcodes
         barcodes_json = request.form.get('barcodes_json', '[]')
         try:
-            import json
             barcodes = json.loads(barcodes_json)
             for i, barcode_str in enumerate(barcodes):
                 barcode_str = barcode_str.strip()
                 if barcode_str:
-                    # Check if barcode already exists
                     existing = ProductBarcode.query.filter_by(barcode=barcode_str).first()
                     if not existing:
                         pb = ProductBarcode(
                             barcode=barcode_str,
                             product_id=product.id,
-                            is_primary=(i == 0)  # First one is primary
+                            is_primary=(i == 0)
                         )
                         db.session.add(pb)
-            db.session.commit()
         except:
             pass
         
+        # Add packaging configurations
+        packaging_json = request.form.get('packaging_json', '[]')
+        try:
+            packaging_data = json.loads(packaging_json)
+            for pkg in packaging_data:
+                pack_type = pkg.get('pack_type', '').strip()
+                pack_qty = int(pkg.get('pack_qty', 1))
+                if pack_type and pack_qty > 0:
+                    pp = ProductPackaging(
+                        product_id=product.id,
+                        pack_type=pack_type,
+                        pack_qty=pack_qty,
+                        is_default_sale=pkg.get('is_default_sale', False),
+                        is_default_purchase=pkg.get('is_default_purchase', False)
+                    )
+                    db.session.add(pp)
+        except Exception as e:
+            pass
+        
+        db.session.commit()
         flash(f'Product {product.product_name} added successfully.', 'success')
         return redirect(url_for('products.list'))
     
@@ -148,6 +164,28 @@ def edit(id):
         product.location = request.form.get('location', '')
         product.category_id = request.form.get('category_id', type=int)
         product.updated_at = datetime.utcnow()
+        
+        # Update packaging configurations
+        packaging_json = request.form.get('packaging_json', '[]')
+        try:
+            # Delete existing packaging and add new ones
+            ProductPackaging.query.filter_by(product_id=product.id).delete()
+            
+            packaging_data = json.loads(packaging_json)
+            for pkg in packaging_data:
+                pack_type = pkg.get('pack_type', '').strip()
+                pack_qty = int(pkg.get('pack_qty', 1))
+                if pack_type and pack_qty > 0:
+                    pp = ProductPackaging(
+                        product_id=product.id,
+                        pack_type=pack_type,
+                        pack_qty=pack_qty,
+                        is_default_sale=pkg.get('is_default_sale', False),
+                        is_default_purchase=pkg.get('is_default_purchase', False)
+                    )
+                    db.session.add(pp)
+        except Exception as e:
+            pass
         
         db.session.commit()
         flash('Product updated successfully.', 'success')
@@ -319,3 +357,61 @@ def update_tax(id):
     db.session.commit()
     flash('Tax rate updated successfully.', 'success')
     return redirect(url_for('products.tax_rates'))
+
+
+# API: Get product packaging
+@products_bp.route('/api/<int:product_id>/packaging')
+@login_required
+def get_product_packaging(product_id):
+    """Get all packaging configurations for a product"""
+    packaging = ProductPackaging.query.filter_by(product_id=product_id, is_active=True).all()
+    return jsonify([{
+        'id': p.id,
+        'pack_type': p.pack_type,
+        'pack_qty': p.pack_qty,
+        'is_default_sale': p.is_default_sale,
+        'is_default_purchase': p.is_default_purchase
+    } for p in packaging])
+
+
+# API: Get default packaging for sales/purchase
+@products_bp.route('/api/<int:product_id>/packaging/default')
+@login_required
+def get_default_packaging(product_id):
+    """Get default sale and purchase packaging for a product"""
+    sale_pack = ProductPackaging.get_default_sale(product_id)
+    purchase_pack = ProductPackaging.get_default_purchase(product_id)
+    
+    return jsonify({
+        'sale': {
+            'id': sale_pack.id,
+            'pack_type': sale_pack.pack_type,
+            'pack_qty': sale_pack.pack_qty
+        } if sale_pack else None,
+        'purchase': {
+            'id': purchase_pack.id,
+            'pack_type': purchase_pack.pack_type,
+            'pack_qty': purchase_pack.pack_qty
+        } if purchase_pack else None
+    })
+# Redirect routes for menu - use masters blueprint
+@products_bp.route('/generics')
+@login_required
+def generics():
+    from app.routes.masters import masters_bp
+    return redirect(url_for('masters.generics'))
+
+@products_bp.route('/manufacturers')
+@login_required
+def manufacturers():
+    return redirect(url_for('masters.manufacturers'))
+
+@products_bp.route('/product-types')
+@login_required
+def product_types():
+    return redirect(url_for('masters.product_types'))
+
+@products_bp.route('/hsn-codes')
+@login_required
+def hsn_codes():
+    return redirect(url_for('masters.hsn_codes'))

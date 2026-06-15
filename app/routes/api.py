@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from app import db
-from app.models import Product, Batch, AccountMaster, AccountGroup, Invoice, InvoiceItem, ProductBarcode
+from app.models import Product, Batch, AccountMaster, AccountGroup, Invoice, InvoiceItem, ProductBarcode, ProductPackaging
 from sqlalchemy import or_
 
 api_bp = Blueprint('api', __name__)
@@ -84,6 +84,11 @@ def get_product(id):
     product = Product.query.get_or_404(id)
     batches = Batch.query.filter_by(product_id=id).filter(Batch.available_qty > 0).order_by(Batch.expiry_date).all()
     
+    # Get packaging
+    packaging = ProductPackaging.query.filter_by(product_id=id, is_active=True).all()
+    default_sale = ProductPackaging.get_default_sale(id)
+    default_purchase = ProductPackaging.get_default_purchase(id)
+    
     return jsonify({
         'id': product.id,
         'product_code': product.product_code,
@@ -102,7 +107,24 @@ def get_product(id):
             'available_qty': b.available_qty,
             'sale_rate': float(b.sale_rate) if b.sale_rate else 0,
             'mrp': float(b.mrp) if b.mrp else 0
-        } for b in batches]
+        } for b in batches],
+        'packaging': [{
+            'id': p.id,
+            'pack_type': p.pack_type,
+            'pack_qty': p.pack_qty,
+            'is_default_sale': p.is_default_sale,
+            'is_default_purchase': p.is_default_purchase
+        } for p in packaging],
+        'default_sale': {
+            'id': default_sale.id,
+            'pack_type': default_sale.pack_type,
+            'pack_qty': default_sale.pack_qty
+        } if default_sale else None,
+        'default_purchase': {
+            'id': default_purchase.id,
+            'pack_type': default_purchase.pack_type,
+            'pack_qty': default_purchase.pack_qty
+        } if default_purchase else None
     })
 
 @api_bp.route('/products/barcode/<barcode>')
@@ -575,13 +597,27 @@ def search_pack_types():
     if len(term) < 1:
         return jsonify([])
     
-    packs = db.session.query(Product.pack_type).distinct().filter(
-        Product.pack_type.ilike(f'%{term}%'),
-        Product.pack_type != None,
-        Product.pack_type != ''
-    ).limit(20).all()
+    # First search in ProductPackaging table
+    packs = db.session.query(ProductPackaging.pack_type).distinct().filter(
+        ProductPackaging.pack_type.ilike(f'%{term}%'),
+        ProductPackaging.pack_type != None,
+        ProductPackaging.pack_type != ''
+    ).limit(15).all()
     
-    return jsonify([p[0] for p in packs if p[0]])
+    pack_list = [p[0] for p in packs if p[0]]
+    
+    # Also search in Product.pack_type for backward compatibility
+    if len(pack_list) < 15:
+        more_packs = db.session.query(Product.pack_type).distinct().filter(
+            Product.pack_type.ilike(f'%{term}%'),
+            Product.pack_type != None,
+            Product.pack_type != ''
+        ).limit(20 - len(pack_list)).all()
+        for p in more_packs:
+            if p[0] and p[0] not in pack_list:
+                pack_list.append(p[0])
+    
+    return jsonify(pack_list)
 
 @api_bp.route('/pack-types', methods=['POST'])
 @login_required

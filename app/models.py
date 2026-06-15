@@ -141,6 +141,64 @@ class ProductBarcode(db.Model):
     def __repr__(self):
         return f'<ProductBarcode {self.barcode} -> {self.product_id}>'
 
+
+class ProductPackaging(db.Model):
+    """Multiple packaging levels for a product (e.g., Tab, Strip, Box)"""
+    __tablename__ = 'product_packaging'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    pack_type = db.Column(db.String(50), nullable=False)  # e.g., Tab, Strip, Box, Bottle
+    pack_qty = db.Column(db.Integer, nullable=False, default=1)  # Quantity in this pack
+    is_default_sale = db.Column(db.Boolean, default=False)
+    is_default_purchase = db.Column(db.Boolean, default=False)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    product = db.relationship('Product', backref='packaging')
+    
+    __table_args__ = (
+        db.UniqueConstraint('product_id', 'pack_type', name='uq_product_pack_type'),
+    )
+    
+    def __repr__(self):
+        return f'<ProductPackaging {self.product_id}: {self.pack_type} x {self.pack_qty}>'
+    
+    @staticmethod
+    def get_default_sale(product_id):
+        """Get default sale packaging for a product"""
+        packaging = ProductPackaging.query.filter_by(
+            product_id=product_id, 
+            is_default_sale=True, 
+            is_active=True
+        ).first()
+        if not packaging:
+            # Fallback to first active packaging
+            packaging = ProductPackaging.query.filter_by(
+                product_id=product_id, 
+                is_active=True
+            ).first()
+        return packaging
+    
+    @staticmethod
+    def get_default_purchase(product_id):
+        """Get default purchase packaging for a product"""
+        packaging = ProductPackaging.query.filter_by(
+            product_id=product_id, 
+            is_default_purchase=True, 
+            is_active=True
+        ).first()
+        if not packaging:
+            # Fallback to first active packaging
+            packaging = ProductPackaging.query.filter_by(
+                product_id=product_id, 
+                is_active=True
+            ).first()
+        return packaging
+
+
 class Category(db.Model):
     __tablename__ = 'categories'
     
@@ -618,3 +676,59 @@ class Salesman(db.Model):
     
     def __repr__(self):
         return f'<Salesman {self.salesman_name}>'
+class GenericMaster(db.Model):
+    __tablename__ = 'generic_master'
+
+    id = db.Column(db.Integer, primary_key=True)
+    generic_name = db.Column(db.String(200), unique=True, nullable=False)
+    description = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<GenericMaster {self.generic_name}>'
+
+class ManufacturerMaster(db.Model):
+    __tablename__ = 'manufacturer_master'
+
+    id = db.Column(db.Integer, primary_key=True)
+    manufacturer_name = db.Column(db.String(200), unique=True, nullable=False)
+    short_name = db.Column(db.String(50))
+    contact_person = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
+    email = db.Column(db.String(120))
+    address = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<ManufacturerMaster {self.manufacturer_name}>'
+
+class ProductTypeMaster(db.Model):
+    __tablename__ = 'product_type_master'
+
+    id = db.Column(db.Integer, primary_key=True)
+    type_name = db.Column(db.String(100), unique=True, nullable=False)
+    description = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<ProductTypeMaster {self.type_name}>'
+
+class HSNCodeMaster(db.Model):
+    __tablename__ = 'hsn_code_master'
+
+    id = db.Column(db.Integer, primary_key=True)
+    hsn_code = db.Column(db.String(20), unique=True, nullable=False)
+    description = db.Column(db.Text)
+    gst_rate = db.Column(db.Numeric(5, 2), default=0)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<HSNCodeMaster {self.hsn_code}>'

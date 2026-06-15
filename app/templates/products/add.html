@@ -67,26 +67,7 @@
                             <div class="col-12 col-md-4">
                                 <label for="product_type" class="form-label">Product Type</label>
                                 <div class="input-group">
-                                    <select class="form-select" id="product_type" name="product_type">
-                                        <option value="">Select Type</option>
-                                        <option value="Tablet">Tablet</option>
-                                        <option value="Capsule">Capsule</option>
-                                        <option value="Syrup">Syrup</option>
-                                        <option value="Injection">Injection</option>
-                                        <option value="Cream/Ointment">Cream/Ointment</option>
-                                        <option value="Drops">Drops</option>
-                                        <option value="Inhaler">Inhaler</option>
-                                        <option value="Granules">Granules</option>
-                                        <option value="Powder">Powder</option>
-                                        <option value="Liquid">Liquid</option>
-                                        <option value="Suspension">Suspension</option>
-                                        <option value="Gel">Gel</option>
-                                        <option value="Solution">Solution</option>
-                                        <option value="Pessary">Pessary</option>
-                                        <option value="Suppository">Suppository</option>
-                                        <option value="Patch">Patch</option>
-                                        <option value="Other">Other</option>
-                                    </select>
+                                    <input type="text" class="form-control typeahead" id="product_type" name="product_type" autocomplete="off" placeholder="Type to search...">
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')">
                                         <i class="bi bi-plus"></i>
                                     </button>
@@ -230,26 +211,35 @@
                     </div>
                 </div>
                 
-                <!-- Packaging -->
+                <!-- Packaging Configuration -->
                 <div class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-white">
-                        <h6 class="mb-0 fw-bold">Packaging</h6>
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-bold">Packaging Configuration <span class="text-danger">*</span></h6>
+                        <button type="button" id="addPackBtn" class="btn btn-sm btn-primary">
+                            <i class="bi bi-plus me-1"></i> Add Pack
+                        </button>
                     </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <label for="pack_type" class="form-label">Pack Type</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="pack_type" name="pack_type" placeholder="e.g., Strip, Bottle" autocomplete="off">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('pack_type', 'Pack Type')">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <label for="pack_qty" class="form-label">Pack Qty</label>
-                                <input type="number" class="form-control" id="pack_qty" name="pack_qty" value="1" min="1">
-                            </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Pack Type <span class="text-danger">*</span></th>
+                                        <th>Pack Qty</th>
+                                        <th class="text-center">Default Sale</th>
+                                        <th class="text-center">Default Purchase</th>
+                                        <th class="text-center pe-3">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="packagingTableBody">
+                                    <!-- Packaging rows will be added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="emptyPackagingMsg" class="text-center py-4 text-muted" style="display: none;">
+                            <i class="bi bi-box-seam fs-4"></i>
+                            <p class="mb-0 mt-2">No packaging configured</p>
+                            <small>Click "Add Pack" to add packaging levels</small>
                         </div>
                     </div>
                 </div>
@@ -354,27 +344,34 @@
 </div>
 {% endblock %}
 
-{% block scripts %}
+{% block extra_js %}
 {{ super() }}
 <script>
 // Typeahead for autocomplete fields
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded fired');
     const typeaheadFields = {
-        'generic_name': '/api/generic-names/search',
-        'manufacturer': '/api/manufacturers/search',
-        'hsn_code': '/api/hsn-codes/search',
+        'generic_name': '/masters/api/generics/search',
+        'manufacturer': '/masters/api/manufacturers/search',
+        'product_type': '/masters/api/product-types/search',
+        'hsn_code': '/masters/api/hsn-codes/search',
         'location': '/api/locations/search',
         'pack_type': '/api/pack-types/search'
     };
     
+    console.log('Setting up typeahead for fields:', Object.keys(typeaheadFields));
     Object.keys(typeaheadFields).forEach(field => {
+        console.log('Setting up typeahead for:', field);
         setupTypeahead(field, typeaheadFields[field]);
     });
 });
 
 function setupTypeahead(fieldId, apiUrl) {
     const input = document.getElementById(fieldId);
-    if (!input) return;
+    if (!input) {
+        console.log('setupTypeahead: No input found for', fieldId);
+        return;
+    }
     
     let timeout = null;
     
@@ -385,11 +382,17 @@ function setupTypeahead(fieldId, apiUrl) {
         if (value.length < 1) return;
         
         timeout = setTimeout(() => {
+            console.log('Fetching suggestions for', fieldId, 'from', apiUrl);
             fetch(`${apiUrl}?q=${encodeURIComponent(value)}`)
-                .then(res => res.json())
+                .then(res => {
+                    console.log('Response status:', res.status);
+                    return res.json();
+                })
                 .then(data => {
+                    console.log('Suggestions received:', data);
                     showSuggestions(fieldId, data);
-                });
+                })
+                .catch(err => console.error('Error fetching suggestions:', err));
         }, 300);
     });
 }
@@ -407,12 +410,16 @@ function showSuggestions(fieldId, suggestions) {
     container.style.cssText = 'position: absolute; z-index: 1000; background: white; border: 1px solid #ddd; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; width: 100%;';
     
     suggestions.forEach(suggestion => {
+        // Handle both string and object formats
+        let displayText = typeof suggestion === 'string' ? suggestion : (suggestion.name || suggestion.hsn_code || suggestion);
+        let valueToSet = displayText;
+        
         const item = document.createElement('div');
         item.className = 'typeahead-item';
-        item.textContent = suggestion;
+        item.textContent = displayText;
         item.style.cssText = 'padding: 8px 12px; cursor: pointer; border-bottom: 1px solid #eee;';
         item.addEventListener('click', () => {
-            input.value = suggestion;
+            input.value = valueToSet;
             container.remove();
         });
         item.addEventListener('mouseenter', () => item.style.backgroundColor = '#f5f5f5');
@@ -529,13 +536,248 @@ document.getElementById('barcode_input').addEventListener('keypress', function(e
     }
 });
 
+// Packaging management - declare variable FIRST
+let packagingData = [];
+
+// Initialize packaging on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add Pack button event listener
+    const addPackBtn = document.getElementById('addPackBtn');
+    if (addPackBtn) {
+        addPackBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            addPackRow();
+        });
+    }
+    
+    {% if is_edit and product %}
+    // For edit mode - load existing packaging
+    fetch('/products/api/{{ product.id }}/packaging')
+        .then(res => res.json())
+        .then(data => {
+            if (data.length > 0) {
+                data.forEach(pkg => {
+                    packagingData.push({
+                        pack_type: pkg.pack_type,
+                        pack_qty: pkg.pack_qty,
+                        is_default_sale: pkg.is_default_sale,
+                        is_default_purchase: pkg.is_default_purchase
+                    });
+                });
+                renderPackagingTable();
+            } else {
+                // No packaging - add a default row
+                packagingData.push({ pack_type: '', pack_qty: 1, is_default_sale: true, is_default_purchase: true });
+                renderPackagingTable();
+                const firstInput = document.querySelector('.pack-type-input');
+                if (firstInput) firstInput.focus();
+            }
+        })
+        .catch(() => {
+            packagingData.push({ pack_type: '', pack_qty: 1, is_default_sale: true, is_default_purchase: true });
+            renderPackagingTable();
+            const firstInput = document.querySelector('.pack-type-input');
+            if (firstInput) firstInput.focus();
+        });
+    {% else %}
+    // For new products - add a default row immediately
+    packagingData.push({ pack_type: '', pack_qty: 1, is_default_sale: true, is_default_purchase: true });
+    renderPackagingTable();
+    const firstInput = document.querySelector('.pack-type-input');
+    if (firstInput) firstInput.focus();
+    {% endif %}
+});
+
+// Form submit handler - attach AFTER variable is declared
 document.querySelector('form').addEventListener('submit', function(e) {
+    // Validate packaging - at least one valid row required
+    const validPackaging = packagingData.filter(p => p.pack_type && p.pack_type.trim() !== '');
+    if (validPackaging.length === 0) {
+        e.preventDefault();
+        alert('Please enter a Pack Type. At least one packaging configuration is required.');
+        // Focus on the first pack type input
+        const firstInput = document.querySelector('.pack-type-input');
+        if (firstInput) firstInput.focus();
+        return false;
+    }
+    
+    // Check if all rows have valid pack types
+    const hasInvalidRows = packagingData.some(p => !p.pack_type || p.pack_type.trim() === '');
+    if (hasInvalidRows) {
+        e.preventDefault();
+        alert('All packaging rows must have a Pack Type entered.');
+        return false;
+    }
+    
+    // Filter out empty rows and add to form
     const hiddenField = document.createElement('input');
     hiddenField.type = 'hidden';
     hiddenField.name = 'barcodes_json';
     hiddenField.value = JSON.stringify(tempBarcodes);
     this.appendChild(hiddenField);
+    
+    // Add packaging data (only valid entries)
+    const packagingField = document.createElement('input');
+    packagingField.type = 'hidden';
+    packagingField.name = 'packaging_json';
+    packagingField.value = JSON.stringify(packagingData);
+    this.appendChild(packagingField);
 });
+
+function addPackRow() {
+    // Add a new empty row inline for the user to enter details
+    packagingData.push({
+        pack_type: '',
+        pack_qty: 1,
+        is_default_sale: false,
+        is_default_purchase: false
+    });
+    renderPackagingTable();
+    
+    // Focus on the new row's pack type input
+    setTimeout(() => {
+        const inputs = document.querySelectorAll('.pack-type-input');
+        const lastInput = inputs[inputs.length - 1];
+        if (lastInput) {
+            lastInput.focus();
+        }
+    }, 100);
+}
+
+function addPackRowInline() {
+    // Add a row inline without prompt (for default row)
+    packagingData.push({
+        pack_type: '',
+        pack_qty: 1,
+        is_default_sale: true,
+        is_default_purchase: true
+    });
+    renderPackagingTable();
+    
+    // Focus on the first pack type input
+    setTimeout(() => {
+        const firstInput = document.querySelector('.pack-type-input');
+        if (firstInput) {
+            firstInput.focus();
+        }
+    }, 100);
+}
+
+function removePackRow(index) {
+    if (packagingData.length === 1) {
+        alert('At least one packaging row is required!');
+        return;
+    }
+    
+    const wasDefaultSale = packagingData[index].is_default_sale;
+    const wasDefaultPurchase = packagingData[index].is_default_purchase;
+    
+    packagingData.splice(index, 1);
+    
+    // If we removed a default, make the first row the default
+    if (wasDefaultSale && packagingData.length > 0) {
+        packagingData[0].is_default_sale = true;
+    }
+    if (wasDefaultPurchase && packagingData.length > 0) {
+        packagingData[0].is_default_purchase = true;
+    }
+    
+    renderPackagingTable();
+}
+
+function setDefaultSale(index) {
+    // Unset all other defaults first
+    packagingData.forEach((p, i) => {
+        p.is_default_sale = (i === index);
+    });
+    renderPackagingTable();
+}
+
+function setDefaultPurchase(index) {
+    // Unset all other defaults first
+    packagingData.forEach((p, i) => {
+        p.is_default_purchase = (i === index);
+    });
+    renderPackagingTable();
+}
+
+function updatePackType(index, value) {
+    // Check for duplicates
+    if (value && packagingData.some((p, i) => i !== index && p.pack_type.toLowerCase() === value.trim().toLowerCase())) {
+        alert('This pack type already exists!');
+        document.querySelectorAll('.pack-type-input')[index].value = packagingData[index].pack_type;
+        return;
+    }
+    packagingData[index].pack_type = value.trim();
+}
+
+function updatePackQty(index, value) {
+    const qty = parseInt(value) || 1;
+    if (qty > 0) {
+        packagingData[index].pack_qty = qty;
+    } else {
+        packagingData[index].pack_qty = 1;
+        document.querySelectorAll('.pack-qty-input')[index].value = 1;
+    }
+}
+
+function renderPackagingTable() {
+    const tbody = document.getElementById('packagingTableBody');
+    const emptyMsg = document.getElementById('emptyPackagingMsg');
+    
+    if (packagingData.length === 0) {
+        tbody.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        return;
+    }
+    
+    emptyMsg.style.display = 'none';
+    
+    let html = '';
+    packagingData.forEach((pkg, index) => {
+        const saleChecked = pkg.is_default_sale ? 'checked' : '';
+        const purchaseChecked = pkg.is_default_purchase ? 'checked' : '';
+        const saleBtnClass = pkg.is_default_sale ? 'success' : 'secondary';
+        const purchaseBtnClass = pkg.is_default_purchase ? 'success' : 'secondary';
+        const saleIcon = pkg.is_default_sale ? 'check-circle-fill' : 'circle';
+        const purchaseIcon = pkg.is_default_purchase ? 'check-circle-fill' : 'circle';
+        
+        html += `
+        <tr>
+            <td class="ps-3">
+                <input type="text" class="form-control form-control-sm pack-type-input" 
+                       value="${pkg.pack_type}" placeholder="e.g., Tab, Strip"
+                       onchange="updatePackType(${index}, this.value)" required>
+            </td>
+            <td>
+                <input type="number" class="form-control form-control-sm pack-qty-input" 
+                       value="${pkg.pack_qty}" min="1"
+                       onchange="updatePackQty(${index}, this.value)">
+            </td>
+            <td class="text-center">
+                <input type="radio" class="btn-check" name="defaultSale" id="sale_${index}" 
+                       ${saleChecked} onchange="setDefaultSale(${index})">
+                <label class="btn btn-sm btn-outline-${saleBtnClass}" for="sale_${index}" title="Default for Sale">
+                    <i class="bi bi-${saleIcon}"></i>
+                </label>
+            </td>
+            <td class="text-center">
+                <input type="radio" class="btn-check" name="defaultPurchase" id="purchase_${index}" 
+                       ${purchaseChecked} onchange="setDefaultPurchase(${index})">
+                <label class="btn btn-sm btn-outline-${purchaseBtnClass}" for="purchase_${index}" title="Default for Purchase">
+                    <i class="bi bi-${purchaseIcon}"></i>
+                </label>
+            </td>
+            <td class="text-center pe-3">
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removePackRow(${index})" title="Remove">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+        </tr>`;
+    });
+    
+    tbody.innerHTML = html;
+}
 </script>
 <style>
 @keyframes fadeIn {

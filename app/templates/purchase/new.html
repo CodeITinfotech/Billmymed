@@ -249,6 +249,34 @@ function formatCurrency(amount) {
     return '₹' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 }
 
+// Generate pack type options from product packaging data
+function generatePackTypeOptions(productData) {
+    if (!productData || !productData.packaging || productData.packaging.length === 0) {
+        // Default options if no packaging configured
+        return `
+            <option value="Unit">📦 Unit</option>
+            <option value="Tab">💊 Tab</option>
+            <option value="Strip">💊 Strip</option>
+            <option value="Bottle">🧴 Bottle</option>
+            <option value="Box">📦 Box</option>
+            <option value="Tube">💉 Tube</option>
+        `;
+    }
+    
+    let options = '';
+    productData.packaging.forEach(pkg => {
+        const isDefaultPurchase = pkg.is_default_purchase ? 'selected' : '';
+        options += `<option value="${pkg.pack_type}" ${isDefaultPurchase}>${pkg.pack_type} (Qty: ${pkg.pack_qty})</option>`;
+    });
+    
+    // Add default option as fallback
+    if (!productData.default_purchase) {
+        options = `<option value="Unit">📦 Unit</option>` + options;
+    }
+    
+    return options;
+}
+
 function searchProducts(query) {
     // Clear previous timeout
     if (searchTimeout) {
@@ -299,25 +327,22 @@ function selectProduct(productId, productCode, productName) {
     
     console.log('selectProduct called:', productId, productCode, productName);
     
-    // Show batch selection modal
-    fetch('/api/products/' + productId + '/batches')
-        .then(res => {
-            console.log('Batches API response:', res.status);
-            if (!res.ok) throw new Error('No batches');
-            return res.json();
-        })
-        .then(batches => {
-            console.log('Batches data:', batches);
-            showBatchModal(productId, productCode, productName, batches);
+    // Get full product data including packaging
+    fetch('/api/products/' + productId)
+        .then(res => res.json())
+        .then(product => {
+            console.log('Product data:', product);
+            // Show batch modal with product packaging info
+            showBatchModal(productId, productCode, productName, product.batches || [], product);
         })
         .catch(err => {
-            console.log('Batches API error:', err);
-            // If no batch API, show modal with empty batches
-            showBatchModal(productId, productCode, productName, []);
+            console.log('Product API error:', err);
+            // If no product API, show modal with empty data
+            showBatchModal(productId, productCode, productName, [], null);
         });
 }
 
-function showBatchModal(productId, productCode, productName, batches) {
+function showBatchModal(productId, productCode, productName, batches, productData) {
     console.log('showBatchModal called:', productId, productCode, productName, batches);
     
     let batchOptions = '<option value="">-- Create New Batch --</option>';
@@ -375,11 +400,7 @@ function showBatchModal(productId, productCode, productName, batches) {
                         <div class="col-md-4">
                             <label class="form-label fw-semibold"><i class="bi bi-box-seam me-1"></i>Pack Type</label>
                             <select class="form-select" id="modalPackType">
-                                <option value="Strip">💊 Strip</option>
-                                <option value="Bottle">🧴 Bottle</option>
-                                <option value="Tablet">💊 Tablet</option>
-                                <option value="Capsule">💉 Capsule</option>
-                                <option value="Unit">📦 Unit</option>
+                                ${generatePackTypeOptions(productData)}
                             </select>
                         </div>
                     </div>
@@ -707,7 +728,7 @@ function renderCart() {
             <div class="row g-2 text-center small align-items-center">
                 <div class="col-2 text-start">
                     <strong>${item.product_name || item.product_code || 'N/A'}</strong>
-                    <br><small class="text-muted">Batch: ${item.batch_no || '-'}</small>
+                    <br><small class="text-muted">${item.pack_type || 'Unit'} | Batch: ${item.batch_no || '-'}</small>
                 </div>
                 <div class="col-1">${item.expiry_date || '-'}</div>
                 <div class="col-1">₹${item.rate ? item.rate.toFixed(2) : '0.00'}</div>

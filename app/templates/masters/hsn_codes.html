@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }} - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-2 px-lg-3 py-3">
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+        <div>
+            <h5 class="fw-bold mb-1">{{ page_title }}</h5>
+            <small class="text-muted">Manage HSN codes for products</small>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addModal">
+                <i class="bi bi-plus-lg me-1"></i> Add HSN Code
+            </button>
+        </div>
+    </div>
+    
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            {% if items %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">HSN Code</th>
+                            <th>Description</th>
+                            <th class="text-end">GST Rate (%)</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td class="ps-3 fw-medium">{{ item.hsn_code }}</td>
+                            <td class="text-muted small">{{ item.description or '-' }}</td>
+                            <td class="text-end">{{ item.gst_rate or 0 }}%</td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-outline-primary" onclick="editItem({{ item.id }})">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <form method="POST" action="{{ url_for('masters.delete_hsn_code', id=item.id) }}" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-upc fs-1"></i>
+                <p class="mt-2 mb-0">No HSN codes found</p>
+                <small>Click "Add HSN Code" to create one</small>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Modal -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Add HSN Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{{ url_for('masters.add_hsn_code') }}">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">HSN Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="hsn_code" required placeholder="e.g., 3004">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">GST Rate (%)</label>
+                            <select class="form-select" name="gst_rate">
+                                <option value="0">0%</option>
+                                <option value="5">5%</option>
+                                <option value="12">12%</option>
+                                <option value="18" selected>18%</option>
+                                <option value="28">28%</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Edit HSN Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" id="editForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">HSN Code <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="hsn_code" id="edit_hsn_code" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">GST Rate (%)</label>
+                            <select class="form-select" name="gst_rate" id="edit_gst_rate">
+                                <option value="0">0%</option>
+                                <option value="5">5%</option>
+                                <option value="12">12%</option>
+                                <option value="18">18%</option>
+                                <option value="28">28%</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" id="edit_description" rows="2"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const hsnCodes = [
+    {% for item in items %}
+    {
+        id: {{ item.id }},
+        hsn_code: "{{ item.hsn_code }}",
+        description: "{{ item.description or '' }}",
+        gst_rate: {{ item.gst_rate or 0 }}
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+];
+
+function editItem(id) {
+    const item = hsnCodes.find(h => h.id === id);
+    if (!item) return;
+    
+    document.getElementById('edit_hsn_code').value = item.hsn_code || '';
+    document.getElementById('edit_description').value = item.description || '';
+    document.getElementById('edit_gst_rate').value = item.gst_rate || 0;
+    document.getElementById('editForm').action = '/masters/hsn-codes/edit/' + id;
+    new bootstrap.Modal(document.getElementById('editModal')).show();
+}
+</script>
+{% endblock %}

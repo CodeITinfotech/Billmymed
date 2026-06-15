@@ -346,7 +346,7 @@
         <div class="row align-items-center g-2">
             <div class="col-5">
                 <div class="fw-medium small">{product_name}</div>
-                <small class="text-muted">{batch_no} | MRP: ₹{mrp}</small>
+                <small class="text-muted">{pack_type} | {batch_no} | MRP: ₹{mrp}</small>
             </div>
             <div class="col-2 text-end">
                 <span class="fw-bold">₹{unit_rate}</span>
@@ -376,6 +376,7 @@
                 <input type="hidden" name="item_discount_perc" value="{discount_perc}">
                 <input type="hidden" name="item_tax_perc" value="{tax_perc}">
                 <input type="hidden" name="amount" value="{amount}">
+                <input type="hidden" name="pack_type" value="{pack_type}">
             </div>
         </div>
     </div>
@@ -570,6 +571,14 @@ function selectBatch(index) {
 
 // Add to cart with specific batch
 function addToCartWithBatch(product, batch) {
+    // Get default sale packaging
+    let pack_type = 'Unit';
+    if (product.default_sale) {
+        pack_type = product.default_sale.pack_type;
+    } else if (product.packaging && product.packaging.length > 0) {
+        pack_type = product.packaging[0].pack_type;
+    }
+    
     addItemToCart({
         id: Date.now(),
         product_id: product.id,
@@ -583,7 +592,8 @@ function addToCartWithBatch(product, batch) {
         quantity: 1,
         max_qty: batch.available_qty,
         discount_perc: product.discount_perc || 0,
-        tax_perc: product.tax_perc || 0
+        tax_perc: product.tax_perc || 0,
+        pack_type: pack_type
     });
 }
 
