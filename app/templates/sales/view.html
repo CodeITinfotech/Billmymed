@@ -50,22 +50,9 @@
                         
                         <!-- UPI Payment Section -->
                         <div id="upiSection" class="d-none">
-                            <div class="card border-0 bg-primary bg-opacity-5 rounded-3 mb-3">
-                                <div class="card-body text-center py-3">
-                                    <i class="bi bi-qr-code-scan text-primary fs-3 mb-2 d-block"></i>
-                                    <p class="mb-0 small text-muted">Push amount to QR machine for customer to scan</p>
-                                </div>
-                            </div>
-                            
                             <div class="d-grid mb-3">
                                 <button type="button" class="btn btn-primary btn-lg rounded-3 shadow-sm" id="pushQRBtn" onclick="pushToQRMachine()">
                                     <i class="bi bi-send me-2"></i>Push to QR Machine
-                                </button>
-                            </div>
-                            
-                            <div class="d-grid mb-3">
-                                <button type="button" class="btn btn-outline-secondary rounded-3" id="cancelQRBtn" onclick="cancelQRPayment()" style="display: none;">
-                                    <i class="bi bi-x-circle me-1"></i> Cancel QR
                                 </button>
                             </div>
                             
@@ -396,7 +383,7 @@ function pushToQRMachine() {
     success.classList.add('d-none');
     expired.classList.add('d-none');
     
-    // Show pushing status
+    // Show pushing status and change button to Cancel Push
     pushBtn.disabled = true;
     pushBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Pushing...';
     statusText.textContent = 'Pushing ₹' + amount + ' to QR machine...';
@@ -407,8 +394,10 @@ function pushToQRMachine() {
     // For demo, simulating successful push after 2 seconds
     setTimeout(() => {
         qrPushTime = Date.now();
-        pushBtn.style.display = 'none';
-        cancelBtn.style.display = 'block';
+        pushBtn.style.display = 'block';
+        pushBtn.disabled = false;
+        pushBtn.className = 'btn btn-outline-danger btn-lg rounded-3';
+        pushBtn.innerHTML = '<i class="bi bi-x-circle me-2"></i>Cancel Push';
         statusText.textContent = 'QR code generated! Waiting for payment...';
         statusText.className = 'text-info';
         spinner.style.display = 'none';
@@ -533,21 +522,35 @@ document.getElementById('receivePaymentForm').addEventListener('submit', functio
     
     const formData = new FormData(this);
     formData.append('invoice_id', {{ invoice.id }});
+    formData.append('csrf_token', '{{ csrf_token() }}');
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Processing...';
     
     fetch('/payments/create', {
         method: 'POST',
         body: formData
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) {
+            throw new Error('Server error: ' + res.status);
+        }
+        return res.json();
+    })
     .then(data => {
         if (data.success) {
             bootstrap.Modal.getInstance(document.getElementById('receivePaymentModal')).hide();
             location.reload();
         } else {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Receive Payment';
             alert('Error: ' + (data.error || 'Failed to receive payment'));
         }
     })
     .catch(err => {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Receive Payment';
         alert('Error: ' + err.message);
     });
 });

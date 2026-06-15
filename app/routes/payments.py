@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app import db
+from app import db, csrf
 from app.models import Payment, Invoice, AccountMaster
 from datetime import datetime
 
@@ -17,8 +17,9 @@ def generate_payment_no():
     return f'REC-{datetime.now().strftime("%d%m%y")}-00001'
 
 
-@payments_bp.route('/payments/create', methods=['POST'])
+@payments_bp.route('/create', methods=['POST'])
 @login_required
+@csrf.exempt
 def create():
     try:
         invoice_id = request.form.get('invoice_id', type=int)
