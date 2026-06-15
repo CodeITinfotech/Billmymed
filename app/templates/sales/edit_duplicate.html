@@ -195,6 +195,15 @@
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+// Initialize customer select with Select2
+$(document).ready(function() {
+    $('#customerSelect').select2({
+        placeholder: 'Select or search customer...',
+        allowClear: true,
+        width: '100%'
+    });
+});
+
 // Store all products for initialization
 let allProducts = [];
 
