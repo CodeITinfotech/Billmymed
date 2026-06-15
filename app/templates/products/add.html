@@ -34,7 +34,7 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-4">
                                 <label for="product_code" class="form-label">Product Code</label>
-                                <input type="text" class="form-control" id="product_code" name="product_code" placeholder="Auto-generated if empty">
+                                <input type="text" class="form-control" id="product_code" name="product_code" value="{{ product.product_code if is_edit else '' }}" placeholder="Auto-generated if empty">
                             </div>
                             <div class="col-12 col-md-8">
                                 <label for="barcode" class="form-label">Barcodes <small class="text-muted">(Press Enter or click Add to link barcode)</small></label>
@@ -48,7 +48,7 @@
                             </div>
                             <div class="col-12">
                                 <label for="product_name" class="form-label">Product Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="product_name" name="product_name" required>
+                                <input type="text" class="form-control" id="product_name" name="product_name" value="{{ product.product_name if is_edit else '' }}" required>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="generic_name" class="form-label">Generic Name</label>
@@ -56,7 +56,7 @@
                                     <select class="form-select" id="generic_name" name="generic_name">
                                         <option value="">Select Generic</option>
                                         {% for g in generics %}
-                                        <option value="{{ g.generic_name }}" {% if is_edit and g.generic_name == product.generic_name %}selected{% endif %}>{{ g.generic_name }}</option>
+                                        <option value="{{ g.generic_name }}" {% if is_edit and product.generic_name and g.generic_name == product.generic_name %}selected{% endif %}>{{ g.generic_name }}</option>
                                         {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('generic_name', 'Generic Name')">
@@ -70,7 +70,7 @@
                                     <select class="form-select" id="manufacturer" name="manufacturer">
                                         <option value="">Select Manufacturer</option>
                                         {% for m in manufacturers %}
-                                        <option value="{{ m.manufacturer_name }}" {% if is_edit and m.manufacturer_name == product.manufacturer %}selected{% endif %}>{{ m.manufacturer_name }}{% if m.short_name %} ({{ m.short_name }}){% endif %}</option>
+                                        <option value="{{ m.manufacturer_name }}" {% if is_edit and product.manufacturer and m.manufacturer_name == product.manufacturer %}selected{% endif %}>{{ m.manufacturer_name }}{% if m.short_name %} ({{ m.short_name }}){% endif %}</option>
                                         {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('manufacturer', 'Manufacturer')">
@@ -84,7 +84,7 @@
                                     <select class="form-select" id="product_type" name="product_type">
                                         <option value="">Select Product Type</option>
                                         {% for pt in product_types %}
-                                        <option value="{{ pt.type_name }}" {% if is_edit and pt.type_name == product.product_type %}selected{% endif %}>{{ pt.type_name }}</option>
+                                        <option value="{{ pt.type_name }}" {% if is_edit and product.product_type and pt.type_name == product.product_type %}selected{% endif %}>{{ pt.type_name }}</option>
                                         {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')">
@@ -97,13 +97,13 @@
                                 <div class="input-group">
                                     <select class="form-select" id="schedule" name="schedule">
                                         <option value="">Select Schedule</option>
-                                        <option value="OTC">OTC</option>
-                                        <option value="H">H</option>
-                                        <option value="Sch-H">Sch-H</option>
-                                        <option value="Sch-H1">Sch-H1</option>
-                                        <option value="Sch-X">Sch-X</option>
-                                        <option value="G">G</option>
-                                        <option value="Sch-G">Sch-G</option>
+                                        <option value="OTC" {% if is_edit and product.schedule == 'OTC' %}selected{% endif %}>OTC</option>
+                                        <option value="H" {% if is_edit and product.schedule == 'H' %}selected{% endif %}>H</option>
+                                        <option value="Sch-H" {% if is_edit and product.schedule == 'Sch-H' %}selected{% endif %}>Sch-H</option>
+                                        <option value="Sch-H1" {% if is_edit and product.schedule == 'Sch-H1' %}selected{% endif %}>Sch-H1</option>
+                                        <option value="Sch-X" {% if is_edit and product.schedule == 'Sch-X' %}selected{% endif %}>Sch-X</option>
+                                        <option value="G" {% if is_edit and product.schedule == 'G' %}selected{% endif %}>G</option>
+                                        <option value="Sch-G" {% if is_edit and product.schedule == 'Sch-G' %}selected{% endif %}>Sch-G</option>
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('schedule', 'Schedule')">
                                         <i class="bi bi-plus"></i>
@@ -116,7 +116,7 @@
                                     <select class="form-select" id="category_id" name="category_id">
                                         <option value="">Select Category</option>
                                         {% for cat in categories %}
-                                        <option value="{{ cat.id }}">{{ cat.category_name }}</option>
+                                        <option value="{{ cat.id }}" {% if is_edit and product.category_id and cat.id == product.category_id %}selected{% endif %}>{{ cat.category_name }}</option>
                                         {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
@@ -139,33 +139,33 @@
                                 <label for="mrp" class="form-label">MRP</label>
                                 <div class="input-group">
                                     <span class="input-group-text">₹</span>
-                                    <input type="number" class="form-control" id="mrp" name="mrp" step="0.01" min="0" value="0">
+                                    <input type="number" class="form-control" id="mrp" name="mrp" step="0.01" min="0" value="{{ product.mrp if is_edit else 0 }}">
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <label for="rate" class="form-label">Rate</label>
                                 <div class="input-group">
                                     <span class="input-group-text">₹</span>
-                                    <input type="number" class="form-control" id="rate" name="rate" step="0.01" min="0" value="0">
+                                    <input type="number" class="form-control" id="rate" name="rate" step="0.01" min="0" value="{{ product.rate if is_edit else 0 }}">
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <label for="ptr" class="form-label">PTR</label>
                                 <div class="input-group">
                                     <span class="input-group-text">₹</span>
-                                    <input type="number" class="form-control" id="ptr" name="ptr" step="0.01" min="0" value="0">
+                                    <input type="number" class="form-control" id="ptr" name="ptr" step="0.01" min="0" value="{{ product.ptr if is_edit else 0 }}">
                                 </div>
                             </div>
                             <div class="col-6 col-md-3">
                                 <label for="pts" class="form-label">PTS</label>
                                 <div class="input-group">
                                     <span class="input-group-text">₹</span>
-                                    <input type="number" class="form-control" id="pts" name="pts" step="0.01" min="0" value="0">
+                                    <input type="number" class="form-control" id="pts" name="pts" step="0.01" min="0" value="{{ product.pts if is_edit else 0 }}">
                                 </div>
                             </div>
                             <div class="col-6 col-md-4">
                                 <label for="discount_perc" class="form-label">Discount %</label>
-                                <input type="number" class="form-control" id="discount_perc" name="discount_perc" step="0.01" min="0" max="100" value="0">
+                                <input type="number" class="form-control" id="discount_perc" name="discount_perc" step="0.01" min="0" max="100" value="{{ product.discount_perc if is_edit else 0 }}">
                             </div>
                             <div class="col-6 col-md-4">
                                 <label for="tax_perc" class="form-label">Tax % (GST)</label>
@@ -187,7 +187,7 @@
                                     <select class="form-select" id="hsn_code" name="hsn_code" onchange="updateTaxFromHSN()">
                                         <option value="">Select HSN Code</option>
                                         {% for hsn in hsn_codes %}
-                                        <option value="{{ hsn.hsn_code }}" data-gst="{{ hsn.gst_rate }}" {% if is_edit and hsn.hsn_code == product.hsn_code %}selected{% endif %}>{{ hsn.hsn_code }} ({{ hsn.gst_rate }}%)</option>
+                                        <option value="{{ hsn.hsn_code }}" data-gst="{{ hsn.gst_rate }}" {% if is_edit and product.hsn_code and hsn.hsn_code == product.hsn_code %}selected{% endif %}>{{ hsn.hsn_code }} ({{ hsn.gst_rate }}%)</option>
                                         {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')">
@@ -211,20 +211,20 @@
                         <div class="row g-3">
                             <div class="col-6">
                                 <label for="min_stock" class="form-label">Min Stock</label>
-                                <input type="number" class="form-control" id="min_stock" name="min_stock" value="0" min="0">
+                                <input type="number" class="form-control" id="min_stock" name="min_stock" value="{{ product.min_stock if is_edit else 0 }}" min="0">
                             </div>
                             <div class="col-6">
                                 <label for="max_stock" class="form-label">Max Stock</label>
-                                <input type="number" class="form-control" id="max_stock" name="max_stock" value="0" min="0">
+                                <input type="number" class="form-control" id="max_stock" name="max_stock" value="{{ product.max_stock if is_edit else 0 }}" min="0">
                             </div>
                             <div class="col-12">
                                 <label for="reorder_level" class="form-label">Reorder Level</label>
-                                <input type="number" class="form-control" id="reorder_level" name="reorder_level" value="0" min="0">
+                                <input type="number" class="form-control" id="reorder_level" name="reorder_level" value="{{ product.reorder_level if is_edit else 0 }}" min="0">
                             </div>
                             <div class="col-12">
                                 <label for="location" class="form-label">Location (Rack)</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="location" name="location" placeholder="e.g., A-12" autocomplete="off">
+                                    <input type="text" class="form-control typeahead" id="location" name="location" value="{{ product.location if is_edit else '' }}" placeholder="e.g., A-12" autocomplete="off">
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('location', 'Location')">
                                         <i class="bi bi-plus"></i>
                                     </button>
