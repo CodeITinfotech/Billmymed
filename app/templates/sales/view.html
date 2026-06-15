@@ -87,7 +87,7 @@
                     </div>
                     <div class="modal-footer border-0 pt-0">
                         <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm" id="submitBtn" disabled>
+                        <button type="submit" class="btn btn-success rounded-pill px-4 shadow-sm" id="submitBtn">
                             <i class="bi bi-check-circle me-1"></i>Receive Payment
                         </button>
                     </div>
@@ -339,14 +339,14 @@ function toggleUPISection() {
         refLabel.textContent = '(Required for UPI)';
         document.getElementById('referenceNo').required = true;
         submitBtn.disabled = true;
-        submitBtn.textContent = 'Push QR to Enable';
+        submitBtn.innerHTML = '<i class="bi bi-qr-code me-1"></i>Push QR to Enable';
         resetUPIState();
     } else {
         upiSection.classList.add('d-none');
         refLabel.textContent = '(Optional)';
         document.getElementById('referenceNo').required = false;
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Receive Payment';
+        submitBtn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Receive Payment';
         resetUPIState();
     }
 }
@@ -371,8 +371,8 @@ function resetUPIState() {
     success.classList.add('d-none');
     expired.classList.add('d-none');
     countdown.innerHTML = '';
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Push QR to Enable';
+    submitBtn.disabled = true; // Keep disabled until QR is pushed
+    submitBtn.innerHTML = '<i class="bi bi-qr-code me-1"></i>Push QR to Enable';
     
     if (upiPollingInterval) clearInterval(upiPollingInterval);
     if (upiCountdownInterval) clearInterval(upiCountdownInterval);
@@ -466,7 +466,7 @@ function qrExpired() {
     expired.classList.remove('d-none');
     countdown.innerHTML = '';
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Push QR to Enable';
+    submitBtn.innerHTML = '<i class="bi bi-qr-code me-1"></i>Push QR to Enable';
 }
 
 function cancelQRPayment() {
