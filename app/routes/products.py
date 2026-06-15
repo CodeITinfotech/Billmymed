@@ -59,13 +59,42 @@ def add():
         product_code = request.form.get('product_code', '').strip()
         product_name = request.form.get('product_name', '').strip()
         
-        if not product_code or not product_name:
-            flash('Product code and name are required.', 'error')
+        if not product_name:
+            flash('Product name is required.', 'error')
             return redirect(url_for('products.add'))
         
-        if Product.query.filter_by(product_code=product_code).first():
-            flash('Product code already exists.', 'error')
+        # Check for duplicate product name
+        if Product.query.filter(Product.product_name.ilike(product_name)).first():
+            flash('Product Already Created', 'error')
             return redirect(url_for('products.add'))
+        
+        # Auto-generate product code if empty
+        if not product_code:
+            # Generate code from first 3 letters of product name (uppercase)
+            prefix = ''.join(c for c in product_name[:3].upper() if c.isalpha())
+            if len(prefix) < 3:
+                prefix = 'PRD'  # Default prefix if name too short
+            
+            # Find the highest existing number for this prefix
+            existing_codes = Product.query.filter(
+                Product.product_code.like(f'{prefix}%')
+            ).all()
+            
+            max_num = 0
+            for p in existing_codes:
+                try:
+                    num = int(p.product_code[len(prefix):])
+                    max_num = max(max_num, num)
+                except:
+                    pass
+            
+            # Generate new code with increment
+            product_code = f'{prefix}{str(max_num + 1).zfill(3)}'
+        else:
+            # Check if provided code already exists
+            if Product.query.filter_by(product_code=product_code).first():
+                flash('Product code already exists.', 'error')
+                return redirect(url_for('products.add'))
         
         product = Product(
             product_code=product_code,
