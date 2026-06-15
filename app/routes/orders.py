@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import PurchaseOrder, PurchaseOrderItem, Product, AccountMaster, Batch
+from app.models import PurchaseOrder, PurchaseOrderItem, Product, AccountMaster, Batch, ProductBarcode
 from sqlalchemy import or_
 from datetime import datetime
 import uuid
@@ -382,11 +382,17 @@ def all_products():
     query = Product.query.filter_by(is_active=True)
     
     if search:
+        # Search by product name, code, generic name, barcode, or batch number
+        query = query.outerjoin(ProductBarcode, Product.id == ProductBarcode.product_id)
+        query = query.outerjoin(Batch, Product.id == Batch.product_id)
         query = query.filter(
             or_(
                 Product.product_code.ilike(f'%{search}%'),
                 Product.product_name.ilike(f'%{search}%'),
-                Product.generic_name.ilike(f'%{search}%')
+                Product.generic_name.ilike(f'%{search}%'),
+                Product.barcode.ilike(f'%{search}%'),
+                ProductBarcode.barcode.ilike(f'%{search}%'),
+                Batch.batch_no.ilike(f'%{search}%')
             )
         )
     
