@@ -204,31 +204,32 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             allProducts = data;
-            // Initialize existing items
+            
+            // Initialize existing items (with data-product-id)
             document.querySelectorAll('.item-row[data-product-id]').forEach(row => {
-                const productId = row.dataset.productId;
-                const product = allProducts.find(p => p.id == productId);
-                if (product) {
-                    // Product already shown as text, just init batch select
-                    initBatchSelect(row);
-                }
+                initBatchSelect(row);
+            });
+            
+            // Initialize new item selects (without data-product-id)
+            document.querySelectorAll('.item-row:not([data-product-id]) .product-select').forEach(select => {
+                initProductSelect(select);
             });
         });
-    
-    // Initialize new item selects
-    document.querySelectorAll('.product-select').forEach(select => {
-        if (!select.closest('[data-product-id]')) {
-            initProductSelect(select);
-        }
-    });
 });
 
 function initProductSelect(select) {
+    // If products not loaded yet, wait
+    if (allProducts.length === 0) {
+        setTimeout(() => initProductSelect(select), 100);
+        return;
+    }
+    
     $(select).select2({
         data: allProducts.map(p => ({ id: p.id, text: p.product_name + ' (' + p.product_code + ')' })),
         placeholder: 'Search product...',
         minimumInputLength: 0,
-        allowClear: true
+        allowClear: true,
+        width: '100%'
     }).on('select2:select', function(e) {
         updateItemBatch(this);
     });
@@ -305,6 +306,8 @@ function addItem() {
         </td>
     `;
     tbody.appendChild(newRow);
+    
+    // Initialize Select2 for the new row
     initProductSelect(newRow.querySelector('.product-select'));
     itemIndex++;
     updateItemCount();
