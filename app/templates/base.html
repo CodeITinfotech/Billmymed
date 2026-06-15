@@ -38,11 +38,6 @@
                 <span class="d-none d-sm-inline fw-bold">BillMyMed</span>
             </a>
             
-            <!-- Mobile Search Toggle -->
-            <button class="btn btn-light btn-sm me-2 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSearch">
-                <i class="bi bi-search"></i>
-            </button>
-            
             <!-- Mobile Menu Toggle -->
             <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -162,14 +157,6 @@
             </div>
         </div>
     </nav>
-    
-    <!-- Mobile Search Bar -->
-    <div class="collapse bg-light p-2 d-lg-none" id="mobileSearch">
-        <form class="d-flex" action="{{ url_for('main.search') }}" method="GET">
-            <input class="form-control me-2" type="search" name="q" placeholder="Search products, customers...">
-            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
-        </form>
-    </div>
     {% endif %}
     
     <!-- Main Content -->

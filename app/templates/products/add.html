@@ -184,10 +184,10 @@
                             <div class="col-12 col-md-4">
                                 <label for="hsn_code" class="form-label">HSN Code</label>
                                 <div class="input-group">
-                                    <select class="form-select" id="hsn_code" name="hsn_code">
+                                    <select class="form-select" id="hsn_code" name="hsn_code" onchange="updateTaxFromHSN()">
                                         <option value="">Select HSN Code</option>
                                         {% for hsn in hsn_codes %}
-                                        <option value="{{ hsn.hsn_code }}" {% if is_edit and hsn.hsn_code == product.hsn_code %}selected{% endif %}>{{ hsn.hsn_code }}</option>
+                                        <option value="{{ hsn.hsn_code }}" data-gst="{{ hsn.gst_rate }}" {% if is_edit and hsn.hsn_code == product.hsn_code %}selected{% endif %}>{{ hsn.hsn_code }} ({{ hsn.gst_rate }}%)</option>
                                         {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')">
@@ -831,6 +831,27 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 });
+
+// Auto-update Tax % when HSN Code is selected
+function updateTaxFromHSN() {
+    const hsnSelect = document.getElementById('hsn_code');
+    const taxSelect = document.getElementById('tax_id');
+    if (hsnSelect && taxSelect) {
+        const selectedOption = hsnSelect.options[hsnSelect.selectedIndex];
+        const gstRate = selectedOption.getAttribute('data-gst');
+        if (gstRate) {
+            // Find the tax option with matching percentage
+            for (let i = 0; i < taxSelect.options.length; i++) {
+                const taxOption = taxSelect.options[i];
+                const taxText = taxOption.text;
+                if (taxText.includes(gstRate + '%') || taxText.includes(parseFloat(gstRate).toFixed(1) + '%')) {
+                    taxSelect.value = taxOption.value;
+                    break;
+                }
+            }
+        }
+    }
+}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
