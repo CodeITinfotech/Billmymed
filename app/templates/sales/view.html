@@ -4,6 +4,51 @@
 
 {% block content %}
 <div class="container-fluid px-3">
+    <!-- Receive Payment Modal -->
+    <div class="modal fade" id="receivePaymentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Receive Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="receivePaymentForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Amount Due</label>
+                            <input type="text" class="form-control" id="amountDue" readonly value="₹{{ '{:,.2f}'.format(invoice.credit_amount or 0) }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Payment Amount</label>
+                            <input type="number" class="form-control" name="amount" id="paymentAmount" step="0.01" min="0.01" required value="{{ invoice.credit_amount or 0 }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Payment Mode</label>
+                            <select class="form-select" name="payment_mode" required>
+                                <option value="cash">Cash</option>
+                                <option value="card">Card</option>
+                                <option value="online">Online/UPI</option>
+                                <option value="cheque">Cheque</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Reference No (Optional)</label>
+                            <input type="text" class="form-control" name="reference_no" placeholder="Transaction/Receipt No">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea class="form-control" name="remarks" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-success">Receive Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Page Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
         <div>
@@ -191,9 +236,9 @@
                             <i class="bi bi-printer me-2"></i>Print Invoice
                         </button>
                         {% if invoice.payment_status != 'paid' %}
-                        <a href="#" class="btn btn-success">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#receivePaymentModal">
                             <i class="bi bi-currency-rupee me-2"></i>Receive Payment
-                        </a>
+                        </button>
                         {% endif %}
                     </div>
                 </div>
@@ -211,4 +256,33 @@
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+document.getElementById('receivePaymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    formData.append('invoice_id', {{ invoice.id }});
+    formData.append('csrf_token', '{{ csrf_token() }}');
+    
+    fetch('/payments/create', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // Close modal and refresh page
+            bootstrap.Modal.getInstance(document.getElementById('receivePaymentModal')).hide();
+            location.reload();
+        } else {
+            alert('Error: ' + (data.error || 'Failed to receive payment'));
+        }
+    })
+    .catch(err => {
+        alert('Error: ' + err.message);
+    });
+});
+</script>
 {% endblock %}

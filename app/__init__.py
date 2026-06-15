@@ -85,6 +85,7 @@ def create_app(config_name='default'):
     from app.routes.api import api_bp
     from app.routes.orders import orders_bp
     from app.routes.masters import masters_bp
+    from app.routes.payments import payments_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(main_bp)
@@ -99,6 +100,7 @@ def create_app(config_name='default'):
     app.register_blueprint(api_bp, url_prefix='/api')
     app.register_blueprint(orders_bp)
     app.register_blueprint(masters_bp, url_prefix='/masters')
+    app.register_blueprint(payments_bp, url_prefix='/payments')
     
     # Create tables
     with app.app_context():
