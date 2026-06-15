@@ -149,7 +149,7 @@
                             <p class="mb-1">Status: <span class="badge bg-{{ 'success' if invoice.payment_status == 'paid' else ('warning' if invoice.payment_status == 'partial' else 'secondary') }}">
                                 {{ invoice.payment_status|title }}
                             </span></p>
-                            {% if invoice.doctor %}
+                            {% if invoice.doctor and invoice.doctor.account_type == 'doctor' %}
                             <p class="mb-0">Dr: {{ invoice.doctor.account_name }}</p>
                             {% endif %}
                         </div>
