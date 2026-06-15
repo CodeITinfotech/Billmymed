@@ -50,7 +50,7 @@
                                 <label for="generic_name" class="form-label">Generic Name</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control typeahead" id="generic_name" name="generic_name" autocomplete="off">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('generic_name', 'Generic Name')">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('generic_name', 'Generic Name')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -59,7 +59,7 @@
                                 <label for="manufacturer" class="form-label">Manufacturer</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control typeahead" id="manufacturer" name="manufacturer" autocomplete="off">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('manufacturer', 'Manufacturer')">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('manufacturer', 'Manufacturer')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -68,7 +68,7 @@
                                 <label for="product_type" class="form-label">Product Type</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control typeahead" id="product_type" name="product_type" autocomplete="off" placeholder="Type to search...">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('product_type', 'Product Type')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -167,7 +167,7 @@
                                 <label for="hsn_code" class="form-label">HSN Code</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control typeahead" id="hsn_code" name="hsn_code" autocomplete="off">
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('hsn_code', 'HSN Code')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -287,11 +287,12 @@
 <div class="modal fade" id="addCategoryModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-tag me-2"></i>Add New Category</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ url_for('products.add_category') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="category_code" class="form-label">Category Code</label>
@@ -317,11 +318,12 @@
 <div class="modal fade" id="addTaxModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add New Tax Rate</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="bi bi-percent me-2"></i>Add New Tax Rate</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ url_for('products.add_tax') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="tax_name" class="form-label">Tax Name</label>

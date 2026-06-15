@@ -101,11 +101,11 @@
 <div class="modal fade" id="addTaxRateModal" tabindex="-1" aria-labelledby="addTaxRateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="addTaxRateModalLabel">
                     <i class="bi bi-percent me-2"></i>Add Tax Rate
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('products.add_tax') }}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
@@ -152,13 +152,14 @@
 <div class="modal fade" id="editTaxRateModal" tabindex="-1" aria-labelledby="editTaxRateModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="editTaxRateModalLabel">
-                    <i class="bi bi-pencil me-2"></i>Edit Tax Rate
+                    <i class="bi bi-percent me-2"></i>Edit Tax Rate
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ url_for('products.update_tax', id=0) }}" method="POST" id="editTaxRateForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <input type="hidden" id="edit_tax_id" name="tax_id">
                     <div class="mb-3">
