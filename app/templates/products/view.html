@@ -175,7 +175,10 @@
                                 <tr>
                                     <th>Batch #</th>
                                     <th>Expiry</th>
+                                    <th>Supplier</th>
+                                    <th class="text-end">Sale Qty</th>
                                     <th class="text-end">Available Qty</th>
+                                    <th>Bill No</th>
                                     <th class="text-end">Purchase Rate</th>
                                     <th class="text-end">Sale Rate</th>
                                     <th class="text-end">MRP</th>
@@ -187,7 +190,10 @@
                                 <tr>
                                     <td><code>{{ batch.batch_no }}</code></td>
                                     <td>{{ batch.expiry_date.strftime('%d/%m/%Y') if batch.expiry_date else '-' }}</td>
+                                    <td>{{ batch.supplier.account_name if batch.supplier else '-' }}</td>
+                                    <td class="text-end">{{ batch.quantity - batch.available_qty if batch.quantity and batch.available_qty else 0 }}</td>
                                     <td class="text-end {{ 'text-danger' if batch.available_qty <= 0 else '' }}">{{ batch.available_qty }}</td>
+                                    <td>{{ batch.purchase.purchase_no if batch.purchase else '-' }}</td>
                                     <td class="text-end">₹{{ "{:,.2f}".format(batch.purchase_rate or 0) }}</td>
                                     <td class="text-end">₹{{ "{:,.2f}".format(batch.sale_rate or 0) }}</td>
                                     <td class="text-end">₹{{ "{:,.2f}".format(batch.mrp or 0) }}</td>
