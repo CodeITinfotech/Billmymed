@@ -51,12 +51,6 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <!-- Desktop Navigation -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}" href="{{ url_for('main.dashboard') }}">
-                            <i class="bi bi-speedometer2 me-1"></i> Dashboard
-                        </a>
-                    </li>
-                    
                     <!-- Masters Dropdown -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {% if 'products' in request.endpoint or 'customers' in request.endpoint or 'suppliers' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
@@ -205,7 +199,7 @@
             <div class="row text-center">
                 <div class="col">
                     <a href="{{ url_for('main.dashboard') }}" class="nav-link py-2 {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
-                        <i class="bi bi-speedometer2 fs-5"></i>
+                        <i class="bi bi-house-fill fs-5"></i>
                         <small class="d-block">Home</small>
                     </a>
                 </div>
