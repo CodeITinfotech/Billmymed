@@ -471,8 +471,8 @@ function doProductSearch(query) {
                                     <small class="text-muted d-block">${highlightedCode}</small>
                                 </div>
                                 <div class="text-end">
-                                    <div class="fw-bold">₹${p.mrp.toFixed(2)}</div>
-                                    <small class="${p.stock < 10 ? 'text-danger' : 'text-success'}">Stock: ${p.stock}</small>
+                                    <small class="text-muted">₹${p.mrp.toFixed(2)}</small>
+                                    <small class="${p.stock < 10 ? 'text-danger' : 'text-success'} d-block">Stock: ${p.stock}</small>
                                 </div>
                             </div>
                         </div>
@@ -736,12 +736,12 @@ function renderCart() {
                 </div>
                 <div class="col-2 text-end">
                     <small class="text-muted d-block">₹${item.unit_rate.toFixed(2)}</small>
-                    <input type="number" class="form-control form-control-sm" value="${item.unit_rate.toFixed(2)}" 
+                    <input type="number" class="form-control form-control-sm fw-bold" value="${item.unit_rate.toFixed(2)}" 
                            step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)">
                 </div>
                 <div class="col-1 text-center">
-                    <small class="text-muted d-block">${item.tax_perc}%</small>
-                    <strong class="small">₹${itemTax.toFixed(2)}</strong>
+                    <small class="text-muted">${item.tax_perc}%</small>
+                    <br><strong class="small">₹${itemTax.toFixed(2)}</strong>
                 </div>
                 <div class="col-2 text-end">
                     <strong>₹${itemTotal.toFixed(2)}</strong>
@@ -1170,7 +1170,7 @@ function searchDoctor(query) {
                     <div class="dropdown-item patient-item" style="cursor: pointer;" 
                          onclick="selectDoctor(${d.id}, '${d.name.replace(/'/g, "\\'")}', '${d.specialization || ''}', '${d.degree || ''}', '${d.phone || ''}', '${d.address || ''}')">
                         <strong>${d.name}</strong>
-                        <small class="text-muted d-block">${d.specialization || 'General'} ${d.degree ? '| ' + d.degree : ''}</small>
+                        ${d.specialization ? '<small class="text-muted"> | ' + d.specialization + (d.degree ? ' - ' + d.degree : '') + '</small>' : ''}
                     </div>
                 `).join('');
                 
