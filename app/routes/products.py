@@ -164,7 +164,8 @@ def add():
         return redirect(url_for('products.list'))
     
     categories = Category.query.filter_by(is_active=True).order_by(Category.category_name).all()
-    return render_template('products/add.html', categories=categories)
+    taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
+    return render_template('products/add.html', categories=categories, taxes=taxes)
 
 @products_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -221,7 +222,8 @@ def edit(id):
         return redirect(url_for('products.view', id=product.id))
     
     categories = Category.query.filter_by(is_active=True).order_by(Category.category_name).all()
-    return render_template('products/add.html', product=product, categories=categories, is_edit=True)
+    taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
+    return render_template('products/add.html', product=product, categories=categories, taxes=taxes, is_edit=True)
 
 @products_bp.route('/<int:id>/delete', methods=['POST'])
 @login_required

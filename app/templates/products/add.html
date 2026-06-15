@@ -163,11 +163,10 @@
                                 <label for="tax_perc" class="form-label">Tax % (GST)</label>
                                 <div class="input-group">
                                     <select class="form-select" id="tax_perc" name="tax_perc">
-                                        <option value="0">0%</option>
-                                        <option value="5">5%</option>
-                                        <option value="12">12%</option>
-                                        <option value="18" selected>18%</option>
-                                        <option value="28">28%</option>
+                                        <option value="">Select Tax</option>
+                                        {% for tax in taxes %}
+                                        <option value="{{ tax.tax_perc }}" {% if not is_edit and tax.tax_perc == 18 %}selected{% elif is_edit and tax.tax_perc == product.tax_perc %}selected{% endif %}>{{ tax.tax_name }} ({{ tax.tax_perc }}%)</option>
+                                        {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addTaxModal">
                                         <i class="bi bi-plus"></i>
