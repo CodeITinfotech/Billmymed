@@ -21,18 +21,18 @@
     <!-- Filters -->
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body py-3">
-            <form method="GET" class="row g-3">
+            <form method="GET" class="row g-3" id="filterForm">
                 <div class="col-12 col-md-4">
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
+                        <input type="text" class="form-control border-end-0" name="search" id="searchInput"
+                               placeholder="Search by code, name, generic..." value="{{ search }}">
+                        <span class="input-group-text bg-white border-start-0">
                             <i class="bi bi-search text-muted"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0" name="search" 
-                               placeholder="Search by code, name, generic..." value="{{ search }}">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <select class="form-select" name="category">
+                    <select class="form-select" name="category" id="categorySelect">
                         <option value="">All Categories</option>
                         {% for cat in categories %}
                         <option value="{{ cat.id }}" {% if selected_category|int == cat.id %}selected{% endif %}>
@@ -42,18 +42,15 @@
                     </select>
                 </div>
                 <div class="col-6 col-md-2">
-                    <select class="form-select" name="stock_filter">
+                    <select class="form-select" name="stock_filter" id="stockFilterSelect">
                         <option value="">All Stock</option>
                         <option value="low" {% if stock_filter == 'low' %}selected{% endif %}>Low Stock</option>
                         <option value="out" {% if stock_filter == 'out' %}selected{% endif %}>Out of Stock</option>
                     </select>
                 </div>
                 <div class="col-12 col-md-3">
-                    <button type="submit" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-search"></i> Filter
-                    </button>
                     <a href="{{ url_for('products.list') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-counterclockwise"></i>
+                        <i class="bi bi-arrow-counterclockwise"></i> Clear
                     </a>
                 </div>
             </form>
@@ -164,4 +161,22 @@
         {% endif %}
     </div>
 </div>
+
+{% block scripts %}
+<script>
+// Auto-submit form on filter change
+document.getElementById('searchInput').addEventListener('input', function() {
+    submitForm();
+});
+document.getElementById('categorySelect').addEventListener('change', submitForm);
+document.getElementById('stockFilterSelect').addEventListener('change', submitForm);
+
+let searchTimeout;
+function submitForm() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(function() {
+        document.getElementById('filterForm').submit();
+    }, 500);
+}
+</script>
 {% endblock %}

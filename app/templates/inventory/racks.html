@@ -24,11 +24,11 @@
             <form method="GET" class="row g-3">
                 <div class="col-12 col-md-4">
                     <div class="input-group">
-                        <span class="input-group-text bg-white border-end-0">
+                        <input type="text" class="form-control border-end-0" name="search" 
+                               placeholder="Search rack name, location..." value="{{ search }}" id="searchInput">
+                        <span class="input-group-text bg-white border-start-0">
                             <i class="bi bi-search text-muted"></i>
                         </span>
-                        <input type="text" class="form-control border-start-0" name="search" 
-                               placeholder="Search rack name, location..." value="{{ search }}">
                     </div>
                 </div>
                 <div class="col-6 col-md-2">
@@ -49,12 +49,9 @@
                     </select>
                 </div>
                 <div class="col-12 col-md-4">
-                    <button type="submit" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-search"></i> Filter
-                    </button>
-                    <a href="{{ url_for('inventory.racks') }}" class="btn btn-outline-secondary">
+                    <button type="button" class="btn btn-outline-secondary" id="clearBtn">
                         <i class="bi bi-arrow-counterclockwise"></i>
-                    </a>
+                    </button>
                 </div>
             </form>
         </div>
@@ -345,6 +342,29 @@ function editRack(id, name, location, warehouseId, isActive) {
     document.getElementById('editRackForm').action = '/inventory/racks/edit/' + id;
     new bootstrap.Modal(document.getElementById('editRackModal')).show();
 }
+(function() {
+    const form = document.querySelector('form[method="GET"]');
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearBtn');
+    let debounceTimer;
+
+    function submitForm() {
+        form.submit();
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(submitForm, 500);
+        });
+    }
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            window.location.href = '{{ url_for('inventory.racks') }}';
+        });
+    }
+})();
 </script>
 {% endblock %}
 {% endblock %}
