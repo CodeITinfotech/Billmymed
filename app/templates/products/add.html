@@ -53,36 +53,33 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="generic_name" class="form-label">Generic Name</label>
-                                <div class="d-flex gap-2">
-                                    <div class="flex-grow-1">
-                                        <select class="form-select" id="generic_name" name="generic_name" data-placeholder="Select Generic">
-                                        </select>
-                                    </div>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('generic_name', 'Generic Name')" title="Add New Generic" style="min-width: 42px;">
+                                <div class="input-group">
+                                    <select class="form-select" id="generic_name" name="generic_name">
+                                        <option value="">Select Generic</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('generic_name', 'Generic Name')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="manufacturer" class="form-label">Manufacturer</label>
-                                <div class="d-flex gap-2">
-                                    <div class="flex-grow-1">
-                                        <select class="form-select" id="manufacturer" name="manufacturer" data-placeholder="Select Manufacturer">
-                                        </select>
-                                    </div>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('manufacturer', 'Manufacturer')" title="Add New Manufacturer" style="min-width: 42px;">
+                                <div class="input-group">
+                                    <select class="form-select" id="manufacturer" name="manufacturer">
+                                        <option value="">Select Manufacturer</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('manufacturer', 'Manufacturer')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
                                 <label for="product_type" class="form-label">Product Type</label>
-                                <div class="d-flex gap-2">
-                                    <div class="flex-grow-1">
-                                        <select class="form-select" id="product_type" name="product_type" data-placeholder="Select Product Type">
-                                        </select>
-                                    </div>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')" title="Add New Product Type" style="min-width: 42px;">
+                                <div class="input-group">
+                                    <select class="form-select" id="product_type" name="product_type">
+                                        <option value="">Select Product Type</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('product_type', 'Product Type')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -179,12 +176,11 @@
                             </div>
                             <div class="col-12 col-md-4">
                                 <label for="hsn_code" class="form-label">HSN Code</label>
-                                <div class="d-flex gap-2">
-                                    <div class="flex-grow-1">
-                                        <select class="form-select" id="hsn_code" name="hsn_code" data-placeholder="Select HSN Code">
-                                        </select>
-                                    </div>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')" title="Add New HSN Code" style="min-width: 42px;">
+                                <div class="input-group">
+                                    <select class="form-select" id="hsn_code" name="hsn_code">
+                                        <option value="">Select HSN Code</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('hsn_code', 'HSN Code')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -813,17 +809,6 @@ document.addEventListener('DOMContentLoaded', function() {
         placeholder: 'Select Category',
         allowClear: true,
         width: '100%'
-    });
-    
-    // Initialize Select2 without AJAX for now - just use regular selects
-    // This avoids the layout issues
-    ['generic_name', 'manufacturer', 'product_type', 'hsn_code'].forEach(function(id) {
-        $('#' + id).select2({
-            placeholder: 'Select or search',
-            allowClear: true,
-            width: '100%',
-            dropdownParent: $('body')
-        });
     });
 });
 </script>
