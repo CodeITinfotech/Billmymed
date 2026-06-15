@@ -570,10 +570,26 @@ function selectProduct(productId, productCode) {
 function focusOnLastItemQuantity() {
     const lastItem = document.querySelector('.cart-item:last-child');
     if (lastItem) {
+        // Enable editing on the newly added item
         const qtyInput = lastItem.querySelector('.qty-input');
+        const packSelect = lastItem.querySelector('.pack-select');
+        const rateInput = lastItem.querySelector('.rate-input');
         if (qtyInput) {
+            qtyInput.readOnly = false;
             qtyInput.focus();
             qtyInput.select();
+        }
+        if (packSelect) packSelect.disabled = false;
+        if (rateInput) rateInput.readOnly = false;
+        
+        // Set this as the editing item
+        const itemId = parseInt(lastItem.dataset.itemId);
+        editingItemId = itemId;
+        
+        // Update icon to checkmark
+        const editBtn = lastItem.querySelector('button[onclick^="toggleEditItem"]');
+        if (editBtn) {
+            editBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
         }
     }
 }
@@ -776,10 +792,18 @@ function renderCart() {
         <div class="cart-item border-bottom p-2" data-item-id="${item.id}">
             <div class="row align-items-center g-2">
                 <div class="col-4">
-                    <div class="d-flex justify-content-between align-items-start">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="fw-medium small">${item.product_name}</div>
                             <small class="text-muted">${item.batch_no}</small>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-link text-primary btn-sm p-0" onclick="toggleEditItem(${item.id})" title="Edit item">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-link text-danger btn-sm p-0" onclick="removeItem(${item.id})" title="Remove item">
+                                <i class="bi bi-trash"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -788,16 +812,18 @@ function renderCart() {
                            value="${item.quantity}" min="1" max="${item.max_qty}" 
                            onchange="setQty(${item.id}, this.value)"
                            tabindex="1"
+                           readonly
                            onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnLastItemRate(); }">
                 </div>
                 <div class="col-2">
-                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2">
+                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2" disabled>
                         ${packOptionsHtml}
                     </select>
                 </div>
                 <div class="col-2 text-end">
                     <input type="number" class="form-control form-control-sm fw-bold rate-input" value="${item.unit_rate.toFixed(2)}" 
                            step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)" tabindex="3"
+                           readonly
                            onkeydown="if(event.key === 'Enter') { event.preventDefault(); document.getElementById('productSearch').focus(); document.getElementById('productSearch').value = ''; }">
                 </div>
                 <div class="col-1 text-center">
@@ -805,16 +831,6 @@ function renderCart() {
                 </div>
                 <div class="col-2 text-end">
                     <strong>₹${itemTotal.toFixed(2)}</strong>
-                </div>
-                <div class="col-12">
-                    <div class="d-flex justify-content-end gap-1">
-                        <button class="btn btn-link text-primary btn-sm p-0 me-2" onclick="editItem(${item.id})" title="Edit item">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-link text-danger btn-sm p-0" onclick="removeItem(${item.id})" title="Remove item">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </div>
                 </div>
             </div>
             <input type="hidden" name="product_id" value="${item.product_id}">
@@ -885,6 +901,68 @@ function editItem(id) {
                 qtyInput.select();
             }
         }
+    }
+}
+
+// Toggle edit mode for an item
+let editingItemId = null;
+function toggleEditItem(id) {
+    const itemElement = document.querySelector(`[data-item-id="${id}"]`);
+    if (!itemElement) return;
+    
+    // If clicking on same item that's being edited, exit edit mode
+    if (editingItemId === id) {
+        // Disable editing
+        const qtyInput = itemElement.querySelector('.qty-input');
+        const packSelect = itemElement.querySelector('.pack-select');
+        const rateInput = itemElement.querySelector('.rate-input');
+        if (qtyInput) qtyInput.readOnly = true;
+        if (packSelect) packSelect.disabled = true;
+        if (rateInput) rateInput.readOnly = true;
+        editingItemId = null;
+        
+        // Update icon to pencil
+        const editBtn = itemElement.querySelector('button[onclick^="toggleEditItem"]');
+        if (editBtn) {
+            editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
+        }
+        return;
+    }
+    
+    // Exit previous edit mode if any
+    if (editingItemId !== null) {
+        const prevItemElement = document.querySelector(`[data-item-id="${editingItemId}"]`);
+        if (prevItemElement) {
+            const qtyInput = prevItemElement.querySelector('.qty-input');
+            const packSelect = prevItemElement.querySelector('.pack-select');
+            const rateInput = prevItemElement.querySelector('.rate-input');
+            if (qtyInput) qtyInput.readOnly = true;
+            if (packSelect) packSelect.disabled = true;
+            if (rateInput) rateInput.readOnly = true;
+            const prevEditBtn = prevItemElement.querySelector('button[onclick^="toggleEditItem"]');
+            if (prevEditBtn) {
+                prevEditBtn.innerHTML = '<i class="bi bi-pencil"></i>';
+            }
+        }
+    }
+    
+    // Enable editing for current item
+    const qtyInput = itemElement.querySelector('.qty-input');
+    const packSelect = itemElement.querySelector('.pack-select');
+    const rateInput = itemElement.querySelector('.rate-input');
+    if (qtyInput) {
+        qtyInput.readOnly = false;
+        qtyInput.focus();
+        qtyInput.select();
+    }
+    if (packSelect) packSelect.disabled = false;
+    if (rateInput) rateInput.readOnly = false;
+    editingItemId = id;
+    
+    // Update icon to checkmark
+    const editBtn = itemElement.querySelector('button[onclick^="toggleEditItem"]');
+    if (editBtn) {
+        editBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
     }
 }
 
