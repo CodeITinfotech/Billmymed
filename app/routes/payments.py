@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app import db, csrf
 from app.models import Payment, Invoice, AccountMaster
 from datetime import datetime
+from decimal import Decimal
 
 payments_bp = Blueprint('payments', __name__)
 
@@ -23,7 +24,7 @@ def generate_payment_no():
 def create():
     try:
         invoice_id = request.form.get('invoice_id', type=int)
-        amount = request.form.get('amount', type=float)
+        amount = Decimal(str(request.form.get('amount', 0)))  # Convert to Decimal
         payment_mode = request.form.get('payment_mode', 'cash')
         reference_no = request.form.get('reference_no', '')
         remarks = request.form.get('remarks', '')
@@ -53,24 +54,31 @@ def create():
         )
         db.session.add(payment)
         
-        # Update invoice payment
+        # Update invoice payment (using Decimal arithmetic)
         if payment_mode == 'cash':
-            invoice.cash_amount = (invoice.cash_amount or 0) + amount
+            invoice.cash_amount = (invoice.cash_amount or Decimal('0')) + amount
         elif payment_mode == 'card':
-            invoice.card_amount = (invoice.card_amount or 0) + amount
+            invoice.card_amount = (invoice.card_amount or Decimal('0')) + amount
+        elif payment_mode == 'upi':
+            invoice.gpay_amount = (invoice.gpay_amount or Decimal('0')) + amount
         elif payment_mode == 'online':
-            invoice.online_amount = (invoice.online_amount or 0) + amount
+            invoice.online_amount = (invoice.online_amount or Decimal('0')) + amount
         elif payment_mode == 'cheque':
-            invoice.card_amount = (invoice.card_amount or 0) + amount  # Using card field for cheque
+            invoice.card_amount = (invoice.card_amount or Decimal('0')) + amount
         
-        # Calculate total received
-        total_received = (invoice.cash_amount or 0) + (invoice.card_amount or 0) + (invoice.gpay_amount or 0) + (invoice.online_amount or 0)
-        total_amount = float(invoice.total_amount)
+        # Calculate total received (all Decimal)
+        total_received = (
+            (invoice.cash_amount or Decimal('0')) + 
+            (invoice.card_amount or Decimal('0')) + 
+            (invoice.gpay_amount or Decimal('0')) + 
+            (invoice.online_amount or Decimal('0'))
+        )
+        total_amount = invoice.total_amount or Decimal('0')
         
         # Update payment status
         if total_received >= total_amount:
             invoice.payment_status = 'paid'
-            invoice.credit_amount = 0
+            invoice.credit_amount = Decimal('0')
         else:
             invoice.payment_status = 'partial'
             invoice.credit_amount = total_amount - total_received
