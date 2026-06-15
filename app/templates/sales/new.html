@@ -426,10 +426,15 @@ function debounce(func, wait) {
 }
 
 // Search products with highlighting (supports single letter, partial match, and wildcards)
+let selectedProductIndex = -1;
+let currentProductResults = [];
+
 const searchProducts = debounce(function(query) {
     if (query.length < 1) {
         document.getElementById('searchResults').style.display = 'none';
         document.getElementById('batchSelector').style.display = 'none';
+        selectedProductIndex = -1;
+        currentProductResults = [];
         return;
     }
     
@@ -462,13 +467,15 @@ function doProductSearch(query) {
     fetch(`/api/all-products?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
+            currentProductResults = data.slice(0, 15);
+            selectedProductIndex = currentProductResults.length > 0 ? 0 : -1;
             const resultsDiv = document.getElementById('searchResults');
-            if (data.length > 0) {
-                resultsDiv.innerHTML = data.slice(0, 15).map(p => {
+            if (currentProductResults.length > 0) {
+                resultsDiv.innerHTML = currentProductResults.map((p, index) => {
                     const highlightedName = highlightMatch(p.product_name, query);
                     const highlightedCode = highlightMatch(p.product_code, query);
                     return `
-                        <div class="product-list-item p-2 border-bottom" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
+                        <div class="product-list-item p-2 border-bottom ${index === selectedProductIndex ? 'selected' : ''}" data-index="${index}" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <strong>${highlightedName}</strong>
@@ -490,6 +497,18 @@ function doProductSearch(query) {
         });
 }
 
+function updateProductSelection() {
+    const items = document.querySelectorAll('.product-list-item');
+    items.forEach((item, index) => {
+        if (index === selectedProductIndex) {
+            item.classList.add('selected');
+            item.scrollIntoView({ block: 'nearest' });
+        } else {
+            item.classList.remove('selected');
+        }
+    });
+}
+
 // Highlight matching text
 function highlightMatch(text, query) {
     if (!query) return text;
@@ -501,6 +520,8 @@ function highlightMatch(text, query) {
 function selectProduct(productId, productCode) {
     document.getElementById('searchResults').style.display = 'none';
     document.getElementById('productSearch').value = '';
+    selectedProductIndex = -1;
+    currentProductResults = [];
     
     pendingProductId = productId;
     
@@ -513,8 +534,9 @@ function selectProduct(productId, productCode) {
                 // Multiple batches - show selector
                 showBatchSelector(product);
             } else if (product.batches && product.batches.length === 1) {
-                // Single batch - add directly
+                // Single batch - add directly, then focus on quantity
                 addToCartWithBatch(product, product.batches[0]);
+                setTimeout(focusOnLastItemQuantity, 100);
             } else {
                 // No batch - add without batch
                 addItemToCart({
@@ -532,8 +554,21 @@ function selectProduct(productId, productCode) {
                     discount_perc: product.discount_perc || 0,
                     tax_perc: product.tax_perc || 0
                 });
+                setTimeout(focusOnLastItemQuantity, 100);
             }
         });
+}
+
+// Focus on quantity input of the last cart item
+function focusOnLastItemQuantity() {
+    const lastItem = document.querySelector('.cart-item:last-child');
+    if (lastItem) {
+        const qtyInput = lastItem.querySelector('.qty-input');
+        if (qtyInput) {
+            qtyInput.focus();
+            qtyInput.select();
+        }
+    }
 }
 
 // Show batch selector with keyboard navigation
@@ -731,16 +766,17 @@ function renderCart() {
                 <div class="col-1 text-center">
                     <input type="number" class="form-control form-control-sm text-center qty-input" 
                            value="${item.quantity}" min="1" max="${item.max_qty}" 
-                           onchange="setQty(${item.id}, this.value)">
+                           onchange="setQty(${item.id}, this.value)"
+                           tabindex="1">
                 </div>
                 <div class="col-2">
-                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)">
+                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2">
                         ${packOptionsHtml}
                     </select>
                 </div>
                 <div class="col-2 text-end">
                     <input type="number" class="form-control form-control-sm fw-bold" value="${item.unit_rate.toFixed(2)}" 
-                           step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)">
+                           step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)" tabindex="3">
                 </div>
                 <div class="col-1 text-center">
                     <small class="text-muted">${item.tax_perc}%</small>
@@ -1259,14 +1295,43 @@ document.addEventListener('DOMContentLoaded', function() {
     searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
     
     // Handle Enter key in search input
-    searchInput.addEventListener('keypress', function(e) {
+    searchInput.addEventListener('keydown', function(e) {
+        const results = document.getElementById('searchResults');
+        const isDropdownVisible = results.style.display === 'block' && currentProductResults.length > 0;
+        
         if (e.key === 'Enter') {
             e.preventDefault();
-            const results = document.getElementById('searchResults');
-            const firstResult = results.querySelector('.product-list-item');
-            if (firstResult) {
-                firstResult.click();
+            if (isDropdownVisible && selectedProductIndex >= 0) {
+                // Select the highlighted product
+                const product = currentProductResults[selectedProductIndex];
+                if (product) {
+                    selectProduct(product.id, product.product_code);
+                }
+            } else {
+                const firstResult = results.querySelector('.product-list-item');
+                if (firstResult) {
+                    firstResult.click();
+                }
             }
+        } else if (e.key === 'ArrowDown') {
+            if (isDropdownVisible) {
+                e.preventDefault();
+                if (currentProductResults.length > 0) {
+                    selectedProductIndex = (selectedProductIndex + 1) % currentProductResults.length;
+                    updateProductSelection();
+                }
+            }
+        } else if (e.key === 'ArrowUp') {
+            if (isDropdownVisible) {
+                e.preventDefault();
+                if (currentProductResults.length > 0) {
+                    selectedProductIndex = (selectedProductIndex - 1 + currentProductResults.length) % currentProductResults.length;
+                    updateProductSelection();
+                }
+            }
+        } else if (e.key === 'Escape') {
+            results.style.display = 'none';
+            selectedProductIndex = -1;
         }
     });
     
