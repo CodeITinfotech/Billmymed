@@ -331,6 +331,7 @@ def edit(id):
 def edit_duplicate(id):
     invoice = Invoice.query.get_or_404(id)
     doctors = Doctor.query.filter_by(is_active=True).order_by(Doctor.doctor_name).all()
+    customers = AccountMaster.query.filter_by(is_active=True, account_type='customer').order_by(AccountMaster.account_name).all()
     
     if request.method == 'POST':
         # Update invoice
@@ -396,7 +397,7 @@ def edit_duplicate(id):
     # Get tax rates for dropdown
     taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
     
-    return render_template('sales/edit_duplicate.html', invoice=invoice, taxes=taxes, doctors=doctors)
+    return render_template('sales/edit_duplicate.html', invoice=invoice, taxes=taxes, doctors=doctors, customers=customers)
 
 # Duplicate bill
 @sales_bp.route('/<int:id>/duplicate')
