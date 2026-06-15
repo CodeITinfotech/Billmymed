@@ -262,6 +262,22 @@
                     {% endif %}
                     {% endif %}
                     
+                    {% if invoice.payments %}
+                    <hr>
+                    <h6 class="text-muted mb-2">Payment History</h6>
+                    {% for payment in invoice.payments|sort(attribute='payment_date', reverse=True) %}
+                    <div class="d-flex justify-content-between mb-1 small">
+                        <span>
+                            <i class="bi bi-check-circle text-success me-1"></i>
+                            {{ payment.payment_mode|upper }}
+                            {% if payment.reference_no %} - {{ payment.reference_no }}{% endif %}
+                        </span>
+                        <span class="fw-medium">₹{{ "{:,.2f}".format(payment.amount) }}</span>
+                    </div>
+                    <div class="text-muted small mb-2">{{ payment.payment_date.strftime('%d %b %Y, %I:%M %p') }}</div>
+                    {% endfor %}
+                    {% endif %}
+                    
                     {% if invoice.return_amount and invoice.return_amount > 0 %}
                     <hr>
                     <div class="d-flex justify-content-between text-success fw-bold">
