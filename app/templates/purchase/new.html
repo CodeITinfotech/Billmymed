@@ -86,10 +86,11 @@
                         <div class="input-group">
                             <input type="text" class="form-control border-end-0" id="productSearch" 
                                    placeholder="Search by name, code, or scan barcode..." autofocus>
-                            <span class="input-group-text bg-white border-start-0">
+                            <button type="button" class="input-group-text bg-white border-start-0" onclick="document.getElementById('productSearch').focus()">
                                 <i class="bi bi-search text-muted"></i>
-                            </span>
+                            </button>
                         </div>
+                        <small class="text-muted ms-2">Press Enter to search</small>
                         
                         <!-- Search Results Dropdown -->
                         <div class="position-relative">
@@ -1092,6 +1093,18 @@ function clearCart() {
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('productSearch');
     searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
+    
+    // Handle Enter key in search input
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const results = document.getElementById('searchResults');
+            const firstResult = results.querySelector('.product-list-item');
+            if (firstResult) {
+                firstResult.click();
+            }
+        }
+    });
     
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#productSearch') && !e.target.closest('#searchResults')) {

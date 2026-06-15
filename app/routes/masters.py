@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import GenericMaster, ManufacturerMaster, ProductTypeMaster, HSNCodeMaster
+from app.models import GenericMaster, ManufacturerMaster, ProductTypeMaster, HSNCodeMaster, Doctor
 
 masters_bp = Blueprint('masters', __name__, url_prefix='/masters')
 
@@ -288,3 +288,87 @@ def search_hsn_codes():
     ).order_by(HSNCodeMaster.hsn_code).limit(20).all()
     
     return jsonify([{'id': i.id, 'hsn_code': i.hsn_code, 'gst_rate': float(i.gst_rate) if i.gst_rate else 0} for i in items])
+
+# ==================== DOCTOR MASTER ====================
+@masters_bp.route('/doctors')
+@login_required
+def doctors():
+    items = Doctor.query.filter_by(is_active=True).order_by(Doctor.doctor_name).all()
+    return render_template('masters/doctors.html', items=items, page_title='Doctor Master')
+
+@masters_bp.route('/doctors/add', methods=['POST'])
+@login_required
+def add_doctor():
+    doctor_name = request.form.get('doctor_name', '').strip()
+    doctor_code = request.form.get('doctor_code', '').strip()
+    specialization = request.form.get('specialization', '').strip()
+    degree = request.form.get('degree', '').strip()
+    phone = request.form.get('phone', '').strip()
+    mobile = request.form.get('mobile', '').strip()
+    address = request.form.get('address', '').strip()
+    
+    if not doctor_name:
+        flash('Doctor name is required', 'danger')
+        return redirect(url_for('masters.doctors'))
+    
+    if not doctor_code:
+        # Auto-generate code
+        last_doctor = Doctor.query.order_by(Doctor.id.desc()).first()
+        doctor_code = f"DOC{str(int(last_doctor.id) + 1).zfill(4)}" if last_doctor else "DOC0001"
+    
+    existing = Doctor.query.filter_by(doctor_name=doctor_name).first()
+    if existing:
+        flash('Doctor name already exists', 'warning')
+        return redirect(url_for('masters.doctors'))
+    
+    item = Doctor(
+        doctor_name=doctor_name,
+        doctor_code=doctor_code,
+        specialization=specialization,
+        degree=degree,
+        phone=phone,
+        mobile=mobile,
+        address=address
+    )
+    db.session.add(item)
+    db.session.commit()
+    flash('Doctor added successfully', 'success')
+    return redirect(url_for('masters.doctors'))
+
+@masters_bp.route('/doctors/edit/<int:id>', methods=['POST'])
+@login_required
+def edit_doctor(id):
+    item = Doctor.query.get_or_404(id)
+    item.doctor_name = request.form.get('doctor_name', '').strip()
+    item.doctor_code = request.form.get('doctor_code', '').strip()
+    item.specialization = request.form.get('specialization', '').strip()
+    item.degree = request.form.get('degree', '').strip()
+    item.phone = request.form.get('phone', '').strip()
+    item.mobile = request.form.get('mobile', '').strip()
+    item.address = request.form.get('address', '').strip()
+    db.session.commit()
+    flash('Doctor updated successfully', 'success')
+    return redirect(url_for('masters.doctors'))
+
+@masters_bp.route('/doctors/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_doctor(id):
+    item = Doctor.query.get_or_404(id)
+    item.is_active = False
+    db.session.commit()
+    flash('Doctor deleted successfully', 'success')
+    return redirect(url_for('masters.doctors'))
+
+@masters_bp.route('/api/doctors/search')
+@login_required
+def search_doctors():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    items = Doctor.query.filter(
+        Doctor.is_active == True,
+        Doctor.doctor_name.ilike(f'%{term}%')
+    ).order_by(Doctor.doctor_name).limit(20).all()
+    
+    return jsonify([{'id': i.id, 'name': i.doctor_name, 'specialization': i.specialization or '', 'degree': i.degree or ''} for i in items])

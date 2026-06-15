@@ -25,10 +25,11 @@
                     <div class="input-group">
                         <input type="text" class="form-control border-end-0" name="search" 
                                placeholder="Search product..." value="{{ search or '' }}" id="searchInput">
-                        <span class="input-group-text bg-white border-start-0">
+                        <button type="button" class="input-group-text bg-white border-start-0" onclick="document.getElementById('searchInput').closest('form').submit()">
                             <i class="bi bi-search text-muted"></i>
-                        </span>
+                        </button>
                     </div>
+                    <small class="text-muted ms-2">Press Enter to search</small>
                 </div>
                 <div class="col-6 col-md-2">
                     <label class="form-label small mb-1">Expiry Within</label>
@@ -254,6 +255,14 @@
         searchInput.addEventListener('input', function() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(submitForm, 500);
+        });
+        
+        // Handle Enter key in search input
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.closest('form').submit();
+            }
         });
     }
 
