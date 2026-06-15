@@ -66,13 +66,42 @@ def add():
         account_code = request.form.get('account_code', '').strip()
         account_name = request.form.get('account_name', '').strip()
         
-        if not account_code or not account_name:
-            flash('Account code and name are required.', 'error')
+        if not account_name:
+            flash('Customer name is required.', 'error')
             return redirect(url_for('customers.add'))
         
-        if AccountMaster.query.filter_by(account_code=account_code).first():
-            flash('Account code already exists.', 'error')
+        # Check for duplicate customer name
+        if AccountMaster.query.filter(AccountMaster.account_name.ilike(account_name), AccountMaster.account_type == 'customer').first():
+            flash('Customer Already Created', 'error')
             return redirect(url_for('customers.add'))
+        
+        # Auto-generate customer code if empty
+        if not account_code:
+            # Generate code from first 3 letters of customer name (uppercase)
+            prefix = ''.join(c for c in account_name[:3].upper() if c.isalpha())
+            if len(prefix) < 3:
+                prefix = 'CUS'  # Default prefix if name too short
+            
+            # Find the highest existing number for this prefix
+            existing_codes = AccountMaster.query.filter(
+                AccountMaster.account_code.like(f'{prefix}%')
+            ).all()
+            
+            max_num = 0
+            for c in existing_codes:
+                try:
+                    num = int(c.account_code[len(prefix):])
+                    max_num = max(max_num, num)
+                except:
+                    pass
+            
+            # Generate new code with increment
+            account_code = f'{prefix}{str(max_num + 1).zfill(3)}'
+        else:
+            # Check if provided code already exists
+            if AccountMaster.query.filter_by(account_code=account_code).first():
+                flash('Customer code already exists.', 'error')
+                return redirect(url_for('customers.add'))
         
         customer = AccountMaster(
             account_code=account_code,

@@ -371,4 +371,4 @@ def search_doctors():
         Doctor.doctor_name.ilike(f'%{term}%')
     ).order_by(Doctor.doctor_name).limit(20).all()
     
-    return jsonify([{'id': i.id, 'name': i.doctor_name, 'specialization': i.specialization or '', 'degree': i.degree or ''} for i in items])
+    return jsonify([{'id': i.id, 'name': i.doctor_name, 'specialization': i.specialization or '', 'degree': i.degree or '', 'phone': i.phone or '', 'mobile': i.mobile or '', 'address': i.address or ''} for i in items])

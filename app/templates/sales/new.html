@@ -112,26 +112,31 @@
                         <div class="row g-2 align-items-end mt-2">
                             <div class="col-12 col-md-4">
                                 <label class="form-label small mb-0">Doctor (Prescribed By)</label>
-                                <div class="position-relative">
-                                    <input type="text" class="form-control form-control-sm" id="doctorName" 
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" id="doctorName" 
                                            placeholder="Search or enter doctor name" autocomplete="off"
                                            onkeyup="searchDoctor(this.value)">
-                                    <div id="doctorDropdown" class="position-absolute w-100 shadow-sm bg-white rounded mt-1" 
+                                    <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <div id="doctorDropdown" class="dropdown-menu w-100 shadow-sm bg-white rounded mt-1" 
                                          style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;">
                                     </div>
+                                    <a href="{{ url_for('masters.doctors') }}" class="btn btn-outline-secondary" title="Add Doctor">
+                                        <i class="bi bi-plus"></i>
+                                    </a>
                                 </div>
                                 <input type="hidden" id="doctorId" name="doctor_id" value="">
                             </div>
                             <div class="col-12 col-md-4">
-                                <label class="form-label small mb-0">Doctor Address</label>
-                                <input type="text" class="form-control form-control-sm" id="doctorAddress" 
-                                       placeholder="Doctor's address">
+                                <label class="form-label small mb-0">Doctor Phone</label>
+                                <input type="text" class="form-control form-control-sm" id="doctorPhone" 
+                                       placeholder="Doctor's phone" readonly>
                             </div>
                             <div class="col-12 col-md-4">
-                                <label class="form-label small mb-0">Customer (for Credit)</label>
-                                <select class="form-select form-select-sm" id="customerSelect" name="customer_id">
-                                    <option value="">Walk-in / No Customer</option>
-                                </select>
+                                <label class="form-label small mb-0">Doctor Address</label>
+                                <input type="text" class="form-control form-control-sm" id="doctorAddress" 
+                                       placeholder="Doctor's address" readonly>
                             </div>
                         </div>
                     </div>
@@ -1162,8 +1167,8 @@ function searchDoctor(query) {
         .then(data => {
             if (data.length > 0) {
                 dropdown.innerHTML = data.slice(0, 10).map(d => `
-                    <div class="patient-item p-2 border-bottom" style="cursor: pointer;" 
-                         onclick="selectDoctor(${d.id}, '${d.name.replace(/'/g, "\\'")}', '${d.specialization || ''}', '${d.degree || ''}')">
+                    <div class="dropdown-item patient-item" style="cursor: pointer;" 
+                         onclick="selectDoctor(${d.id}, '${d.name.replace(/'/g, "\\'")}', '${d.specialization || ''}', '${d.degree || ''}', '${d.phone || ''}', '${d.address || ''}')">
                         <strong>${d.name}</strong>
                         <small class="text-muted d-block">${d.specialization || 'General'} ${d.degree ? '| ' + d.degree : ''}</small>
                     </div>
@@ -1171,17 +1176,17 @@ function searchDoctor(query) {
                 
                 // Add "Create New" option
                 dropdown.innerHTML += `
-                    <div class="patient-item p-2 border-bottom text-primary" style="cursor: pointer; background: #f8f9fa;" 
+                    <div class="dropdown-item patient-item text-primary" style="cursor: pointer;" 
                          onclick="createNewDoctor('${query.replace(/'/g, "\\'")}')">
                         <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
                     </div>
                 `;
             } else {
                 dropdown.innerHTML = `
-                    <div class="p-3 text-muted text-center">
+                    <div class="dropdown-item text-muted text-center">
                         No doctors found
                     </div>
-                    <div class="patient-item p-2 border-bottom text-primary" style="cursor: pointer; background: #f8f9fa;" 
+                    <div class="dropdown-item patient-item text-primary" style="cursor: pointer;" 
                          onclick="createNewDoctor('${query.replace(/'/g, "\\'")}')">
                         <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
                     </div>
@@ -1192,9 +1197,11 @@ function searchDoctor(query) {
 }
 
 // Select doctor from dropdown
-function selectDoctor(id, name, specialization, degree) {
+function selectDoctor(id, name, specialization, degree, phone, address) {
     document.getElementById('doctorId').value = id;
     document.getElementById('doctorName').value = name;
+    document.getElementById('doctorPhone').value = phone || '';
+    document.getElementById('doctorAddress').value = address || '';
     document.getElementById('doctorDropdown').style.display = 'none';
     document.getElementById('productSearch').focus();
 }

@@ -18,6 +18,7 @@
     </div>
     
     <form method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="row g-4">
             <!-- Basic Information -->
             <div class="col-12 col-lg-8">
@@ -28,12 +29,12 @@
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
-                                <label for="customer_code" class="form-label">Customer Code <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="customer_code" name="customer_code" required>
+                                <label for="account_code" class="form-label">Customer Code</label>
+                                <input type="text" class="form-control" id="account_code" name="account_code" placeholder="Auto-generated if empty">
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="customer_name" class="form-label">Customer Name <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="customer_name" name="customer_name" required>
+                                <label for="account_name" class="form-label">Customer Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="account_name" name="account_name" required>
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="customer_type" class="form-label">Customer Type</label>
