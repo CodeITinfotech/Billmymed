@@ -21,10 +21,11 @@ def generate_invoice_no(invoice_type='sale'):
     ).order_by(Invoice.id.desc()).first()
     
     if last_invoice:
-        # Extract the number after prefix (e.g., "SI-12345" -> "12345")
         try:
             last_num = int(last_invoice.invoice_no.split('-')[-1])
             new_num = last_num + 1
+            if new_num > 9999999999:  # Max 10 digits
+                new_num = 1
         except:
             new_num = 1
     else:

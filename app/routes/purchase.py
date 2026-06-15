@@ -18,6 +18,8 @@ def generate_purchase_no():
         try:
             last_num = int(last_purchase.purchase_no.split('-')[-1])
             new_num = last_num + 1
+            if new_num > 9999999999:  # Max 10 digits
+                new_num = 1
         except:
             new_num = 1
     else:
