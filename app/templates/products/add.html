@@ -930,38 +930,14 @@ document.addEventListener('DOMContentLoaded', function() {
 .barcode-tag.primary {
     background: #d1e7dd;
 }
-/* Fix Select2 in input-group */
+/* Select2 input group fix */
 .select2-input-group {
     display: flex;
+    flex-wrap: nowrap;
 }
-.select2-input-group .select2-container {
+.select2-input-group .select2 {
     flex: 1;
-}
-.select2-input-group .select2-container .selection {
-    width: 100%;
-}
-.select2-input-group .select2-container .selection .selection-inner {
-    width: 100%;
-}
-.select2-input-group .select2-container .selection .select2-search {
-    width: 100%;
-}
-.select2-input-group .select2-container .selection .select2-search__field {
-    width: 100% !important;
-}
-.select2-input-group .form-select {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-right: none;
-}
-.select2-input-group .btn {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-.select2-input-group .select2-selection {
-    height: calc(2.25rem + 2px);
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    min-width: 0;
 }
 </style>
 {% endblock %}
