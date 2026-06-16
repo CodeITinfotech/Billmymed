@@ -22,7 +22,7 @@ def save_general():
     settings_to_update = [
         'company_name', 'company_address', 'company_phone', 'company_email',
         'company_gstin', 'company_dl', 'invoice_prefix', 'print_after_sale',
-        'default_discount', 'low_stock_alert', 'expiry_alert_days'
+        'allow_non_stock_billing', 'default_discount', 'low_stock_alert', 'expiry_alert_days'
     ]
     
     for key in settings_to_update:

@@ -4,6 +4,9 @@ from app.models import User, Settings, Category, Tax
 
 app = create_app(os.environ.get('FLASK_CONFIG', 'development'))
 
+# Export app for gunicorn
+application = app
+
 @app.shell_context_processor
 def make_shell_context():
     return {
@@ -101,6 +104,11 @@ def reset_db():
     db.drop_all()
     db.create_all()
     print('Database reset!')
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint for container orchestration."""
+    return {'status': 'healthy', 'service': 'BillMyMed'}, 200
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

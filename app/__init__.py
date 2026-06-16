@@ -102,8 +102,11 @@ def create_app(config_name='default'):
     app.register_blueprint(masters_bp, url_prefix='/masters')
     app.register_blueprint(payments_bp, url_prefix='/payments')
     
-    # Create tables
+    # Create tables (if they don't exist)
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception:
+            pass  # Tables may already exist
     
     return app

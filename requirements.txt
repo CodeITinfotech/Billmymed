@@ -24,7 +24,7 @@ python-dotenv==1.0.0
 python-dateutil==2.8.2
 Pillow==10.1.0
 qrcode==7.4.2
-barcode==0.15.1
+python-barcode==0.15.1
 
 # Development and testing
 pytest==7.4.3

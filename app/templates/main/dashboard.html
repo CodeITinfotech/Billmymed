@@ -2,12 +2,34 @@
 
 {% block title %}Dashboard - {{ config.COMPANY_NAME }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .stat-card-hover {
+        position: relative;
+        overflow: hidden;
+    }
+    .stat-card-hover::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+    }
+    .stat-card-hover:hover {
+        transform: translateY(-4px);
+    }
+    .stat-card-hover.sales::before { background: var(--gradient-success); }
+    .stat-card-hover.monthly::before { background: var(--gradient-primary); }
+    .stat-card-hover.products::before { background: var(--gradient-info); }
+    .stat-card-hover.customers::before { background: linear-gradient(135deg, var(--warning) 0%, var(--warning-dark) 100%); }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container-fluid px-3">
     <!-- Page Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
         <div>
-            <h4 class="fw-bold mb-1">Dashboard</h4>
+            <h4 class="fw-bold mb-1 page-title"><i class="bi bi-speedometer2"></i> Dashboard</h4>
             <p class="text-muted mb-0">Welcome back, {{ current_user.full_name }}</p>
         </div>
         <div class="d-flex gap-2">
@@ -22,17 +44,17 @@
     <div class="row g-3 mb-4">
         <!-- Today's Sales -->
         <div class="col-6 col-lg-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card stat-card-hover sales h-100 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="bg-success bg-opacity-10 rounded-3 p-3">
-                                <i class="bi bi-currency-rupee text-success fs-4"></i>
+                            <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                                <i class="bi bi-currency-rupee"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3 overflow-hidden">
-                            <p class="text-muted small mb-1 text-truncate">Today's Sales</p>
-                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(today_sales) }}</h4>
+                            <p class="text-muted small mb-1 text-truncate fw-medium">Today's Sales</p>
+                            <h4 class="mb-0 fw-bold stat-value">₹{{ "{:,.2f}".format(today_sales) }}</h4>
                             <small class="text-muted">{{ today_sales_count }} invoices</small>
                         </div>
                     </div>
@@ -42,17 +64,17 @@
         
         <!-- Monthly Sales -->
         <div class="col-6 col-lg-3">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card stat-card-hover monthly h-100 shadow-sm">
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <div class="bg-primary bg-opacity-10 rounded-3 p-3">
-                                <i class="bi bi-graph-up text-primary fs-4"></i>
+                            <div class="stat-icon" style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary);">
+                                <i class="bi bi-graph-up"></i>
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3 overflow-hidden">
-                            <p class="text-muted small mb-1 text-truncate">Monthly Sales</p>
-                            <h4 class="mb-0 fw-bold">₹{{ "{:,.2f}".format(monthly_sales) }}</h4>
+                            <p class="text-muted small mb-1 text-truncate fw-medium">Monthly Sales</p>
+                            <h4 class="mb-0 fw-bold stat-value">₹{{ "{:,.2f}".format(monthly_sales) }}</h4>
                             <small class="text-muted">This month</small>
                         </div>
                     </div>
@@ -62,18 +84,18 @@
         
         <!-- Products -->
         <div class="col-6 col-lg-3">
-            <a href="{{ url_for('products.list') }}" class="text-decoration-none">
-                <div class="card border-0 shadow-sm h-100">
+            <a href="{{ url_for('products.list') }}" class="text-decoration-none d-block">
+                <div class="card stat-card-hover products h-100 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <div class="bg-info bg-opacity-10 rounded-3 p-3">
-                                    <i class="bi bi-box-seam text-info fs-4"></i>
+                                <div class="stat-icon" style="background: rgba(6, 182, 212, 0.1); color: var(--info);">
+                                    <i class="bi bi-box-seam"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3 overflow-hidden">
-                                <p class="text-muted small mb-1 text-truncate">Products</p>
-                                <h4 class="mb-0 fw-bold">{{ total_products }}</h4>
+                                <p class="text-muted small mb-1 text-truncate fw-medium">Products</p>
+                                <h4 class="mb-0 fw-bold stat-value">{{ total_products }}</h4>
                                 <small class="text-muted">Active items</small>
                             </div>
                         </div>
@@ -84,18 +106,18 @@
         
         <!-- Customers -->
         <div class="col-6 col-lg-3">
-            <a href="{{ url_for('customers.list') }}" class="text-decoration-none">
-                <div class="card border-0 shadow-sm h-100">
+            <a href="{{ url_for('customers.list') }}" class="text-decoration-none d-block">
+                <div class="card stat-card-hover customers h-100 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
-                                <div class="bg-warning bg-opacity-10 rounded-3 p-3">
-                                    <i class="bi bi-people text-warning fs-4"></i>
+                                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                                    <i class="bi bi-people"></i>
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3 overflow-hidden">
-                                <p class="text-muted small mb-1 text-truncate">Customers</p>
-                                <h4 class="mb-0 fw-bold">{{ total_customers }}</h4>
+                                <p class="text-muted small mb-1 text-truncate fw-medium">Customers</p>
+                                <h4 class="mb-0 fw-bold stat-value">{{ total_customers }}</h4>
                                 <small class="text-muted">{{ total_suppliers }} suppliers</small>
                             </div>
                         </div>

@@ -404,6 +404,18 @@ let selectedCustomer = null;
 let selectedBatchIndex = -1;
 let pendingProductId = null;
 let pendingProductData = null;
+let allowNonStockBilling = false;
+
+// Load settings on page load
+async function loadSettings() {
+    try {
+        const response = await fetch('/api/settings');
+        const settings = await response.json();
+        allowNonStockBilling = settings.allow_non_stock_billing === 'true';
+    } catch (err) {
+        console.error('Error loading settings:', err);
+    }
+}
 
 // Toast notification function
 function showToast(message, type = 'success') {
@@ -557,6 +569,16 @@ function selectProduct(productId, productCode) {
         .then(product => {
             pendingProductData = product;
             
+            // Check stock availability
+            const hasStock = product.batches && product.batches.length > 0 && product.batches.some(b => b.available_qty > 0);
+            
+            if (!hasStock && !allowNonStockBilling) {
+                showToast(`${product.product_name} is out of stock`, 'error');
+                pendingProductData = null;
+                document.getElementById('productSearch').focus();
+                return;
+            }
+            
             if (product.batches && product.batches.length > 1) {
                 // Multiple batches - show selector
                 showBatchSelector(product);
@@ -568,7 +590,7 @@ function selectProduct(productId, productCode) {
                     pendingProductData = null; // Clear after adding
                 }, 100);
             } else {
-                // No batch - add without batch
+                // No batch - add without batch (for non-stock billing)
                 addItemToCart({
                     id: Date.now(),
                     product_id: product.id,
@@ -580,7 +602,7 @@ function selectProduct(productId, productCode) {
                     mrp: product.mrp,
                     unit_rate: product.rate,
                     quantity: 1,
-                    max_qty: 0,
+                    max_qty: allowNonStockBilling ? 9999 : 0,
                     discount_perc: product.discount_perc || 0,
                     tax_perc: product.tax_perc || 0
                 });
@@ -1566,6 +1588,9 @@ function openBarcodeScanner() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
+    // Load settings first
+    loadSettings();
+    
     const searchInput = document.getElementById('productSearch');
     searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
     

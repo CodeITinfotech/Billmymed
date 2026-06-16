@@ -1,10 +1,18 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required
 from app import db
-from app.models import Product, Batch, AccountMaster, AccountGroup, Invoice, InvoiceItem, ProductBarcode, ProductPackaging
+from app.models import Product, Batch, AccountMaster, AccountGroup, Invoice, InvoiceItem, ProductBarcode, ProductPackaging, Settings
 from sqlalchemy import or_
 
 api_bp = Blueprint('api', __name__)
+
+# Settings API
+@api_bp.route('/settings')
+@login_required
+def get_settings():
+    """Get all settings as a dictionary"""
+    settings = {s.setting_key: s.setting_value for s in Settings.query.all()}
+    return jsonify(settings)
 
 # Product APIs
 @api_bp.route('/products')

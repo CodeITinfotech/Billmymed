@@ -4,38 +4,69 @@
 
 {% block extra_css %}
 <style>
+    /* Modern Login Page Styles */
     html, body {
         overflow-x: hidden;
-        overflow-y: auto;
         height: 100%;
-        max-height: 100vh;
     }
+    
     .login-wrapper {
         min-height: 100vh;
-        height: 100vh;
-        max-height: 100vh;
+        background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-tertiary) 50%, var(--bg-primary) 100%);
+        position: relative;
         overflow: hidden;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     }
+    
+    /* Animated Background Shapes */
+    .login-wrapper::before,
+    .login-wrapper::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1) 0%, transparent 70%);
+        z-index: 0;
+    }
+    
+    .login-wrapper::before {
+        width: 600px;
+        height: 600px;
+        top: -200px;
+        right: -100px;
+        animation: float 15s ease-in-out infinite;
+    }
+    
+    .login-wrapper::after {
+        width: 400px;
+        height: 400px;
+        bottom: -100px;
+        left: -50px;
+        animation: float 20s ease-in-out infinite reverse;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        50% { transform: translate(30px, 30px) rotate(180deg); }
+    }
+    
     .login-card {
         border: none;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-xl);
         overflow: hidden;
-        max-height: 100vh;
-        height: 100%;
+        background: var(--bg-secondary);
+        position: relative;
+        z-index: 1;
+        backdrop-filter: blur(20px);
     }
+    
     .login-form-col {
-        background: #ffffff;
-        padding: 1.5rem;
-        max-height: 100vh;
-        height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
+        padding: 2.5rem;
+        background: var(--bg-secondary);
     }
+    
     .calendar-col {
-        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 50%, #084298 100%);
-        padding: 1.5rem 1rem;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        padding: 2rem;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -43,107 +74,114 @@
         color: white;
         position: relative;
         overflow: hidden;
-        max-height: 100vh;
-        height: 100%;
     }
     
-    /* Tab/Mobile view - hide calendar, show full form */
+    /* Animated gradient orbs */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        animation: orbFloat 10s ease-in-out infinite;
+    }
+    
+    .orb-1 {
+        width: 200px;
+        height: 200px;
+        top: -50px;
+        right: -50px;
+    }
+    
+    .orb-2 {
+        width: 150px;
+        height: 150px;
+        bottom: 50px;
+        left: -30px;
+        animation-delay: -5s;
+    }
+    
+    .orb-3 {
+        width: 100px;
+        height: 100px;
+        bottom: -30px;
+        right: 30%;
+        animation-delay: -3s;
+    }
+    
+    @keyframes orbFloat {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(20px, -20px) scale(1.1); }
+    }
+    
+    /* Tab/Mobile view */
     @media (max-width: 991px) {
-        .login-wrapper {
-            height: auto;
-            min-height: 100vh;
-        }
-        .login-card {
-            height: auto;
-            min-height: auto;
-        }
-        .login-form-col {
-            height: auto;
-            min-height: 100vh;
-            padding: 2rem 1rem;
-        }
-        .calendar-col {
-            display: none !important;
-        }
-    }
-    
-    @media (max-height: 600px) {
         .login-wrapper {
             height: auto;
             min-height: 100vh;
             overflow-y: auto;
         }
+        .login-card {
+            margin: 1rem;
+        }
+        .calendar-col {
+            display: none !important;
+        }
         .login-form-col {
-            overflow-y: visible;
-            padding: 1rem;
-        }
-        .calendar-card {
-            padding: 1rem;
+            padding: 2rem 1.5rem;
         }
     }
-    .calendar-col::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 100%;
-        height: 100%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        border-radius: 50%;
-    }
-    .calendar-col::after {
-        content: '';
-        position: absolute;
-        bottom: -30%;
-        left: -30%;
-        width: 80%;
-        height: 80%;
-        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
-        border-radius: 50%;
-    }
+    
     .calendar-card {
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: var(--radius-xl);
         padding: 2rem;
         width: 100%;
-        max-width: 320px;
+        max-width: 300px;
         border: 1px solid rgba(255, 255, 255, 0.2);
         position: relative;
         z-index: 1;
     }
+    
     .calendar-header {
         text-align: center;
         margin-bottom: 1.5rem;
     }
+    
     .calendar-month {
         font-size: 1.5rem;
-        font-weight: 600;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
     }
+    
     .calendar-year {
         font-size: 0.9rem;
         opacity: 0.8;
+        font-weight: 500;
     }
+    
     .calendar-day-names {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         gap: 4px;
         margin-bottom: 8px;
     }
+    
     .calendar-day-name {
         text-align: center;
-        font-size: 0.7rem;
-        font-weight: 600;
+        font-size: 0.65rem;
+        font-weight: 700;
         opacity: 0.7;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
+    
     .calendar-days {
         display: grid;
         grid-template-columns: repeat(7, 1fr);
         gap: 4px;
     }
+    
     .calendar-day {
         aspect-ratio: 1;
         display: flex;
@@ -154,110 +192,131 @@
         font-weight: 500;
         transition: all 0.2s ease;
     }
+    
     .calendar-day.empty {
         background: transparent;
     }
+    
     .calendar-day.today {
-        background: #ffffff;
-        color: #0d6efd;
+        background: white;
+        color: var(--primary);
         font-weight: 700;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         transform: scale(1.1);
     }
+    
     .calendar-day:hover:not(.empty):not(.today) {
         background: rgba(255, 255, 255, 0.2);
     }
+    
     .time-display {
         text-align: center;
         margin-top: 1.5rem;
         padding-top: 1.5rem;
         border-top: 1px solid rgba(255, 255, 255, 0.2);
     }
+    
     .time-display .time {
         font-size: 2.5rem;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 2px;
         font-variant-numeric: tabular-nums;
     }
+    
     .time-display .date {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         opacity: 0.9;
         margin-top: 0.25rem;
     }
-    .medicine-icon {
-        position: absolute;
-        font-size: 6rem;
-        opacity: 0.05;
-        z-index: 0;
-    }
-    .medicine-icon.top-right {
-        top: 10%;
-        right: 5%;
-    }
-    .medicine-icon.bottom-left {
-        bottom: 15%;
-        left: 5%;
-        transform: rotate(-20deg);
-    }
+    
     .logo-icon {
-        width: 70px;
-        height: 70px;
-        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-        border-radius: 16px;
+        width: 80px;
+        height: 80px;
+        background: var(--gradient-primary);
+        border-radius: var(--radius-xl);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 1rem;
-        box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4);
     }
+    
+    .logo-icon i {
+        font-size: 2.5rem;
+        color: white;
+    }
+    
     .pharmacy-tagline {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-top: 1rem;
-        padding: 0.75rem 1rem;
+        margin-top: 1.5rem;
+        padding: 0.875rem 1.25rem;
         background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        font-size: 0.85rem;
+        border-radius: var(--radius-lg);
+        font-size: 0.875rem;
+        font-weight: 500;
+        backdrop-filter: blur(10px);
     }
+    
     .pharmacy-tagline i {
-        font-size: 1.2rem;
+        font-size: 1.25rem;
     }
-    @media (max-width: 991px) {
-        .calendar-col {
-            padding: 2rem;
-            min-height: auto;
-        }
-        .login-form-col {
-            padding: 2rem;
-        }
+    
+    /* Modern Form Styling */
+    .form-label {
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+    
+    .input-group-text {
+        background: var(--bg-tertiary);
+        border: 2px solid var(--border-color);
+        border-right: none;
+        color: var(--primary);
+        font-weight: 600;
+    }
+    
+    .input-group .form-control {
+        border: 2px solid var(--border-color);
+        border-left: none;
+        padding-left: 0;
+    }
+    
+    .input-group .form-control:focus {
+        border-color: var(--primary);
+    }
+    
+    .input-group:focus-within .input-group-text {
+        border-color: var(--primary);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="login-wrapper d-flex align-items-center py-4">
+<div class="login-wrapper d-flex align-items-center py-5">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-12">
+            <div class="col-12 col-xl-10">
                 <div class="card login-card">
                     <div class="row g-0">
                         <!-- Left Side - Login Form -->
                         <div class="col-lg-6 login-form-col">
-                            <div class="text-center text-lg-start mb-4">
-                                <div class="logo-icon mx-auto mx-lg-0">
-                                    <i class="bi bi-capsule-pill text-white fs-2"></i>
+                            <div class="text-center mb-4 mb-lg-5">
+                                <div class="logo-icon mx-auto">
+                                    <i class="bi bi-prescription2"></i>
                                 </div>
                                 <h3 class="fw-bold text-dark mb-1">{{ config.COMPANY_NAME }}</h3>
-                                <p class="text-muted small mb-0">Pharmacy Billing System</p>
                             </div>
                             
-                            <h5 class="fw-semibold mb-4">Welcome Back</h5>
+                            <h5 class="fw-bold mb-4">Welcome Back 👋</h5>
                             
                             {% with messages = get_flashed_messages(with_categories=true) %}
                                 {% if messages %}
                                     {% for category, message in messages %}
                                         <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                                            <i class="bi bi-exclamation-circle me-2"></i>
                                             {{ message }}
                                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                         </div>
@@ -268,24 +327,24 @@
                             <form method="POST" action="{{ url_for('auth.login') }}" class="needs-validation" novalidate>
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 
-                                <div class="mb-3">
-                                    <label for="username" class="form-label fw-medium">Username</label>
+                                <div class="mb-4">
+                                    <label for="username" class="form-label">Username</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="bi bi-person text-muted"></i>
+                                        <span class="input-group-text">
+                                            <i class="bi bi-person"></i>
                                         </span>
-                                        <input type="text" class="form-control border-start-0 ps-0" id="username" name="username" 
+                                        <input type="text" class="form-control" id="username" name="username" 
                                                placeholder="Enter your username" required autofocus>
                                     </div>
                                 </div>
                                 
-                                <div class="mb-3">
-                                    <label for="password" class="form-label fw-medium">Password</label>
+                                <div class="mb-4">
+                                    <label for="password" class="form-label">Password</label>
                                     <div class="input-group">
-                                        <span class="input-group-text bg-light border-end-0">
-                                            <i class="bi bi-lock text-muted"></i>
+                                        <span class="input-group-text">
+                                            <i class="bi bi-lock"></i>
                                         </span>
-                                        <input type="password" class="form-control border-start-0 ps-0" id="password" name="password" 
+                                        <input type="password" class="form-control" id="password" name="password" 
                                                placeholder="Enter your password" required>
                                     </div>
                                 </div>
@@ -299,20 +358,24 @@
                                     </div>
                                 </div>
                                 
-                                <button type="submit" class="btn btn-primary w-100 py-2 fw-medium">
+                                <button type="submit" class="btn btn-primary w-100 py-2.5 fw-semibold">
                                     <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
                                 </button>
                             </form>
                             
-                            <p class="text-center text-muted mt-4 mb-0 small">
-                                &copy; {{ now.year }} {{ config.COMPANY_NAME }}. All rights reserved.
-                            </p>
+                            <div class="mt-5 pt-4 border-top text-center">
+                                <p class="text-muted small mb-0">
+                                    &copy; {{ now.year }} {{ config.COMPANY_NAME }}. All rights reserved.
+                                </p>
+                            </div>
                         </div>
                         
                         <!-- Right Side - Calendar with Medicine Theme -->
                         <div class="col-lg-6 calendar-col">
-                            <i class="bi bi-prescription2 medicine-icon top-right"></i>
-                            <i class="bi bi-heart-pulse medicine-icon bottom-left"></i>
+                            <!-- Animated Orbs -->
+                            <div class="orb orb-1"></div>
+                            <div class="orb orb-2"></div>
+                            <div class="orb orb-3"></div>
                             
                             <div class="calendar-card">
                                 <div class="calendar-header">
@@ -338,7 +401,7 @@
                                 </div>
                             </div>
                             
-                            <div class="pharmacy-tagline mt-3">
+                            <div class="pharmacy-tagline">
                                 <i class="bi bi-shield-check"></i>
                                 <span>Your Trusted Pharmacy Partner</span>
                             </div>
@@ -351,6 +414,8 @@
 </div>
 
 <script>
+// Optimize calendar updates with requestAnimationFrame
+let lastUpdate = 0;
 function updateCalendar() {
     const now = new Date();
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
@@ -365,7 +430,7 @@ function updateCalendar() {
     document.getElementById('calendarMonth').textContent = monthNames[month];
     document.getElementById('calendarYear').textContent = year;
     
-    // Time
+    // Time - only update every second to reduce DOM operations
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
@@ -393,7 +458,9 @@ function updateCalendar() {
 }
 
 // Update immediately and then every second
-updateCalendar();
-setInterval(updateCalendar, 1000);
+document.addEventListener('DOMContentLoaded', function() {
+    updateCalendar();
+    setInterval(updateCalendar, 1000);
+});
 </script>
 {% endblock %}

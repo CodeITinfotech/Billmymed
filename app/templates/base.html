@@ -10,13 +10,13 @@
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/logo.svg') }}">
     <link rel="icon" href="{{ url_for('static', filename='images/logo.svg') }}" type="image/svg+xml">
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts - Preconnect for Performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     
     <!-- DataTables -->
@@ -30,16 +30,16 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
     {% if current_user.is_authenticated %}
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <!-- Navigation - Modern Glass Effect -->
+    <nav class="navbar navbar-expand-lg sticky-top" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color);">
         <div class="container-fluid px-2 px-lg-3">
-            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.dashboard') }}">
-                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" height="32" class="me-2">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.dashboard') }}" style="color: var(--primary);">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" height="36" class="me-2">
                 <span class="d-none d-sm-inline fw-bold">BillMyMed</span>
             </a>
             
             <!-- Mobile Menu Toggle -->
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" style="color: var(--text-primary);">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
@@ -48,7 +48,7 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <!-- Masters Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {% if 'products' in request.endpoint or 'customers' in request.endpoint or 'suppliers' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle {% if 'products' in request.endpoint or 'customers' in request.endpoint or 'suppliers' in request.endpoint %}active{% endif %}" href="#" data-bs-toggle="dropdown" style="color: var(--text-primary); font-weight: 500;">
                             <i class="bi bi-people me-1"></i> Masters
                         </a>
                         <ul class="dropdown-menu">
@@ -180,8 +180,8 @@
     </main>
     
     {% if current_user.is_authenticated %}
-    <!-- Bottom Navigation for Mobile/Tablet -->
-    <nav class="bottom-nav d-lg-none fixed-bottom bg-white border-top">
+    <!-- Bottom Navigation for Mobile/Tablet - Modern -->
+    <nav class="bottom-nav d-lg-none fixed-bottom" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-top: 1px solid var(--border-color);">
         <div class="container-fluid">
             <div class="row text-center">
                 <div class="col">
@@ -191,7 +191,7 @@
                     </a>
                 </div>
                 <div class="col">
-                    <a href="{{ url_for('sales.new') }}" class="nav-link py-2 text-primary">
+                    <a href="{{ url_for('sales.new') }}" class="nav-link py-2" style="color: var(--primary);">
                         <i class="bi bi-plus-circle-fill fs-5"></i>
                         <small class="d-block">Sale</small>
                     </a>
@@ -218,9 +218,9 @@
         </div>
     </nav>
     
-    <!-- More Menu Offcanvas -->
+    <!-- More Menu Offcanvas - Modern -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="moreMenu">
-        <div class="offcanvas-header bg-primary text-white">
+        <div class="offcanvas-header" style="background: var(--gradient-primary); color: white;">
             <h5 class="offcanvas-title"><i class="bi bi-grid me-2"></i>Menu</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
         </div>
@@ -249,36 +249,40 @@
                     <i class="bi bi-gear me-3"></i>Settings
                 </a>
                 {% endif %}
+                <a href="{{ url_for('auth.logout') }}" class="list-group-item list-group-item-action text-danger">
+                    <i class="bi bi-box-arrow-left me-3"></i>Logout
+                </a>
             </div>
         </div>
-    </nav>
+    </div>
     {% endif %}
     
-    <!-- Footer -->
-    <footer class="footer mt-auto py-3 bg-light {% if current_user.is_authenticated %}d-none d-lg-block{% endif %}">
+    <!-- Footer - Modern -->
+    <footer class="footer mt-auto py-3 {% if current_user.is_authenticated %}d-none d-lg-block{% endif %}" style="background: var(--bg-secondary); border-top: 1px solid var(--border-color);">
         <div class="container text-center">
             <span class="text-muted">{{ config.COMPANY_NAME }} - Pharmacy Billing Software &copy; {{ now.year }}</span>
         </div>
     </footer>
     
+    <!-- Scripts - Optimized loading -->
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
     
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <!-- DataTables -->
-    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js" defer></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js" defer></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js" defer></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js" defer></script>
     
     <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
     
     {% block extra_js %}{% endblock %}
     
-    <!-- Stock Alerts Scrolling Strip -->
+    <!-- Stock Alerts Scrolling Strip - Modern -->
     {% if current_user.is_authenticated %}
     <div class="stock-alert-strip" id="stockAlertStrip">
         <div class="stock-alert-content" id="stockAlertContent">
@@ -292,12 +296,12 @@
         bottom: 60px;
         left: 0;
         right: 0;
-        background: linear-gradient(90deg, #dc3545, #c82333);
+        background: linear-gradient(90deg, var(--danger), var(--danger-dark));
         color: white;
         padding: 8px 0;
         z-index: 999;
         overflow: hidden;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     }
     @media (min-width: 992px) {
         .stock-alert-strip {
@@ -316,15 +320,16 @@
         gap: 8px;
         padding: 0 20px;
         font-size: 13px;
+        font-weight: 500;
     }
     .stock-alert-item i {
         font-size: 16px;
     }
     .stock-alert-item.low-stock {
-        color: #ffcccc;
+        color: rgba(255, 255, 255, 0.9);
     }
     .stock-alert-item.near-expiry {
-        color: #ffe0a0;
+        color: rgba(255, 255, 255, 0.9);
     }
     @keyframes scroll-alerts {
         0% { transform: translateX(0); }
