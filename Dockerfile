@@ -3,11 +3,15 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies including WeasyPrint requirements
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
     curl \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libffi-dev \
+    shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -26,7 +30,6 @@ ENV FLASK_CONFIG=production
 ENV PORT=5000
 
 EXPOSE 5000
-EXPOSE 12000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
