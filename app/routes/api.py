@@ -598,6 +598,31 @@ def unset_favorite_supplier(product_id, supplier_id):
     
     return jsonify({'success': True, 'message': 'Supplier removed from favorites'})
 
+@api_bp.route('/products/<int:product_id>/favorite-supplier')
+@login_required
+def get_favorite_supplier(product_id):
+    """Get the favorite supplier for a product (for auto-fill in purchase)"""
+    from app.models import ProductSupplier
+    
+    # First check for manual favorite
+    favorite = ProductSupplier.query.filter_by(product_id=product_id, is_favorite=True).first()
+    
+    if not favorite:
+        # Fallback to auto-favorite (most purchased)
+        favorite = ProductSupplier.query.filter_by(product_id=product_id).order_by(
+            ProductSupplier.purchase_count.desc()
+        ).first()
+    
+    if favorite:
+        return jsonify({
+            'supplier_id': favorite.supplier_id,
+            'supplier_name': favorite.supplier.account_name,
+            'purchase_count': favorite.purchase_count,
+            'is_auto_favorite': favorite.is_auto_favorite
+        })
+    
+    return jsonify({'supplier_id': None, 'supplier_name': None})
+
 # Product Type APIs
 @api_bp.route('/product-types/search')
 @login_required

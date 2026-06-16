@@ -175,6 +175,23 @@ def create():
         purchase.subtotal = subtotal
         db.session.commit()
         
+        # Update auto-favorite supplier for all products in this purchase
+        for i, product_id in enumerate(product_ids):
+            if product_id:
+                # Find the supplier with highest purchase count for this product
+                top_supplier = ProductSupplier.query.filter_by(product_id=product_id).order_by(
+                    ProductSupplier.purchase_count.desc()
+                ).first()
+                
+                if top_supplier:
+                    # Reset all suppliers for this product to non-favorite
+                    ProductSupplier.query.filter_by(product_id=product_id).update({'is_favorite': False})
+                    # Set the top supplier as auto-favorite
+                    top_supplier.is_favorite = True
+                    top_supplier.is_auto_favorite = True
+        
+        db.session.commit()
+        
         flash(f'Purchase {purchase_no} created successfully.', 'success')
         return jsonify({'success': True, 'purchase_no': purchase_no, 'purchase_id': purchase.id})
     
