@@ -279,6 +279,39 @@ def doctors():
     items = Doctor.query.filter_by(is_active=True).order_by(Doctor.name).all()
     return render_template('masters/doctors.html', items=items, page_title='Doctor Master')
 
+@masters_bp.route('/api/doctors/search')
+@login_required
+def search_doctors():
+    query = request.args.get('q', '')
+    doctors = Doctor.query.filter(
+        Doctor.is_active == True,
+        Doctor.name.ilike(f'%{query}%')
+    ).order_by(Doctor.name).limit(10).all()
+    return jsonify([{
+        'id': d.id,
+        'name': d.name,
+        'specialty': d.specialty or '',
+        'phone': d.phone or '',
+        'address': d.address or ''
+    } for d in doctors])
+
+# Alias for backward compatibility
+@masters_bp.route('/masters/api/doctors/search')
+@login_required
+def search_doctors_compat():
+    query = request.args.get('q', '')
+    doctors = Doctor.query.filter(
+        Doctor.is_active == True,
+        Doctor.name.ilike(f'%{query}%')
+    ).order_by(Doctor.name).limit(10).all()
+    return jsonify([{
+        'id': d.id,
+        'name': d.name,
+        'specialty': d.specialty or '',
+        'phone': d.phone or '',
+        'address': d.address or ''
+    } for d in doctors])
+
 @masters_bp.route('/doctors/add', methods=['POST'])
 @login_required
 def add_doctor():
