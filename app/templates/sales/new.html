@@ -151,21 +151,19 @@
                         <div class="row g-2 align-items-end mt-2">
                             <div class="col-12 col-md-4">
                                 <label class="form-label small mb-0">Doctor (Prescribed By)</label>
-                                <div class="position-relative">
-                                    <div class="input-group input-group-sm">
-                                        <input type="text" class="form-control" id="doctorName" 
-                                               placeholder="Search or enter doctor name" autocomplete="off"
-                                               oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)">
-                                        <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <span class="visually-hidden">Toggle Dropdown</span>
-                                        </button>
-                                        <a href="{{ url_for('masters.doctors') }}" class="btn btn-outline-secondary" title="Add Doctor">
-                                            <i class="bi bi-plus"></i>
-                                        </a>
-                                    </div>
-                                    <div id="doctorDropdown" class="position-fixed shadow-sm bg-white rounded mt-1" 
-                                         style="z-index: 9999; max-height: 200px; overflow-y: auto; display: none; width: 300px;">
-                                    </div>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" id="doctorName" 
+                                           placeholder="Search or enter doctor name" autocomplete="off"
+                                           oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)">
+                                    <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span class="visually-hidden">Toggle Dropdown</span>
+                                    </button>
+                                    <a href="{{ url_for('masters.doctors') }}" class="btn btn-outline-secondary" title="Add Doctor">
+                                        <i class="bi bi-plus"></i>
+                                    </a>
+                                </div>
+                                <div id="doctorDropdown" class="position-fixed shadow-sm bg-white rounded mt-1" 
+                                     style="z-index: 9999; max-height: 200px; overflow-y: auto; display: none;">
                                 </div>
                                 <input type="hidden" id="doctorId" name="doctor_id" value="">
                             </div>
@@ -1429,12 +1427,12 @@ function searchDoctor(query) {
                 `;
             }
             
-            // Position dropdown dynamically
-            const input = document.getElementById('doctorName');
-            const rect = input.getBoundingClientRect();
+            // Position dropdown dynamically - match full input group width (input + buttons)
+            const inputGroup = document.querySelector('#doctorName').closest('.input-group');
+            const rect = inputGroup.getBoundingClientRect();
             dropdown.style.left = rect.left + 'px';
             dropdown.style.top = (rect.bottom + window.scrollY + 2) + 'px';
-            dropdown.style.width = (rect.width + 50) + 'px'; // Match input + buttons width
+            dropdown.style.width = rect.width + 'px';
             
             dropdown.style.display = 'block';
             updateDoctorSelection();
