@@ -84,6 +84,11 @@ def create():
         invoice_no = generate_invoice_no()
         sales_type = request.form.get('sales_type', 'cash')
         
+        # For credit sales, get credit customer
+        credit_customer_id = request.form.get('credit_customer_id', type=int)
+        credit_customer_name = request.form.get('credit_customer_name', '')
+        
+        # For cash sales, use walk-in customer
         customer_id = request.form.get('customer_id', type=int)
         if not customer_id:
             # Create walk-in customer if not selected
@@ -105,6 +110,7 @@ def create():
             invoice_date=datetime.utcnow(),
             customer_id=customer_id,
             sales_type=sales_type,
+            patient_id=request.form.get('patient_id', type=int),
             doctor_id=request.form.get('doctor_id', type=int),
             doctor_name=request.form.get('doctor_name', ''),
             doctor_address=request.form.get('doctor_address', ''),
@@ -112,6 +118,8 @@ def create():
             patient_name=request.form.get('patient_name', ''),
             patient_phone=request.form.get('patient_phone', ''),
             patient_address=request.form.get('patient_place', ''),
+            credit_customer_id=credit_customer_id,
+            credit_customer_name=credit_customer_name,
             subtotal=0,
             discount_perc=request.form.get('discount_perc', 0, type=float),
             discount_amt=request.form.get('discount_amt', 0, type=float),

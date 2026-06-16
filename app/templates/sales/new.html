@@ -143,6 +143,36 @@
                                 <input type="text" class="form-control form-control-sm" name="prescription_no" placeholder="Rx #">
                             </div>
                         </div>
+                        
+                        <!-- Credit Customer Row - Only shown for credit sales -->
+                        <div class="row g-2 mt-2" id="creditCustomerRow" style="display: none;">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label small mb-0">
+                                    <i class="bi bi-person me-1"></i>Credit Customer *
+                                </label>
+                                <select class="form-select form-select-sm" id="customerSelect" name="credit_customer_id">
+                                    <option value="">Walk-in Customer</option>
+                                </select>
+                                <input type="hidden" name="credit_customer_name" id="creditCustomerName" value="">
+                            </div>
+                            <div class="col-12 col-md-2 d-flex align-items-end">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="sameAsPatient" onchange="handleSameAsPatient(this.checked)">
+                                    <label class="form-check-label small" for="sameAsPatient">
+                                        Same as Patient
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small mb-0">Credit Customer Phone</label>
+                                <input type="text" class="form-control form-control-sm" id="creditCustomerPhone" placeholder="Phone" readonly>
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small mb-0">Credit Customer Balance</label>
+                                <input type="text" class="form-control form-control-sm" id="creditCustomerBalance" placeholder="Balance" readonly>
+                            </div>
+                        </div>
+                        
                         <!-- Doctor Info Row -->
                         <div class="row g-2 align-items-end mt-2">
                             <div class="col-12 col-md-3">
@@ -1161,14 +1191,54 @@ function handleSalesTypeChange() {
     const salesType = document.getElementById('salesType').value;
     const customerSelect = document.getElementById('customerSelect');
     const customerCard = document.getElementById('customerInfoCard');
+    const creditCustomerRow = document.getElementById('creditCustomerRow');
     
     if (salesType === 'credit') {
-        // For credit sales, focus on customer selection
+        // Show credit customer row for credit sales
+        creditCustomerRow.style.display = 'flex';
+        // Focus on customer selection
         customerSelect.focus();
+    } else {
+        // Hide credit customer row for cash/emergency sales
+        creditCustomerRow.style.display = 'none';
+        // Reset customer selection
+        customerSelect.value = '';
+        document.getElementById('creditCustomerName').value = '';
+        document.getElementById('creditCustomerPhone').value = '';
+        document.getElementById('creditCustomerBalance').value = '';
+        document.getElementById('sameAsPatient').checked = false;
     }
     
     // Recalculate payment display
     calculatePayment();
+}
+
+// Handle "Same as Patient" checkbox
+function handleSameAsPatient(checked) {
+    if (checked) {
+        // Copy patient info to credit customer fields
+        const patientName = document.getElementById('patientName').value.trim();
+        const patientPhone = document.getElementById('patientPhone').value.trim();
+        
+        if (!patientName) {
+            showToast('Please enter patient name first', 'error');
+            document.getElementById('sameAsPatient').checked = false;
+            return;
+        }
+        
+        // Set the hidden field with patient name for credit
+        document.getElementById('creditCustomerName').value = patientName;
+        document.getElementById('creditCustomerPhone').value = patientPhone;
+        document.getElementById('creditCustomerBalance').value = '';
+        
+        // For display, we show it but don't create a customer - the sale will record patient name as credit customer
+        showToast('Credit will be recorded under: ' + patientName, 'info');
+    } else {
+        // Clear the credit customer name
+        document.getElementById('creditCustomerName').value = '';
+        document.getElementById('creditCustomerPhone').value = '';
+        document.getElementById('creditCustomerBalance').value = '';
+    }
 }
 
 // Complete sale
@@ -1243,7 +1313,7 @@ function printBill() {
 let selectedPatientIndex = -1;
 let currentPatientResults = [];
 
-// Search patient (customers with typeahead)
+// Search patient (from Patient Master)
 function searchPatient(query) {
     const dropdown = document.getElementById('patientDropdown');
     
@@ -1253,7 +1323,7 @@ function searchPatient(query) {
         return;
     }
     
-    fetch(`/api/customers?search=${encodeURIComponent(query)}`)
+    fetch(`/masters/api/patients/search?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
             currentPatientResults = data.slice(0, 10);
@@ -1264,8 +1334,8 @@ function searchPatient(query) {
                     <div class="patient-item p-2 border-bottom ${i === selectedPatientIndex ? 'selected' : ''}" 
                          style="cursor: pointer;"
                          data-index="${i}"
-                         onclick="selectPatient(${c.id}, '${c.account_name.replace(/'/g, "\\'")}', '${c.phone || ''}', '${c.address || ''}')">
-                        <strong>${c.account_name}</strong>
+                         onclick="selectPatient(${c.id}, '${c.name.replace(/'/g, "\\'")}', '${c.phone || ''}', '${c.address || ''}')">
+                        <strong>${c.name}</strong>
                         <small class="text-muted d-block">${c.phone || 'No phone'} | ${c.city || 'No city'}</small>
                     </div>
                 `).join('');
@@ -1378,17 +1448,10 @@ function selectPatient(id, name, phone, address) {
     document.getElementById('patientPlace').value = address || '';
     document.getElementById('patientDropdown').style.display = 'none';
     
-    // If credit sale, select this customer
-    const salesType = document.getElementById('salesType').value;
-    if (salesType === 'credit') {
-        // Set customer ID from patient selection
-        const customerSelect = document.getElementById('customerSelect');
-        for (let option of customerSelect.options) {
-            if (option.value == id) {
-                option.selected = true;
-                break;
-            }
-        }
+    // If "Same as Patient" is checked, update credit customer info
+    if (document.getElementById('sameAsPatient').checked) {
+        document.getElementById('creditCustomerName').value = name;
+        document.getElementById('creditCustomerPhone').value = phone || '';
     }
     
     // Focus back on product search
@@ -1422,15 +1485,14 @@ function saveNewPatient() {
         return;
     }
     
-    fetch('/customers/create_quick', {
+    fetch('/masters/api/patients/quick_add', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
         },
         body: JSON.stringify({
-            account_name: name,
-            account_type: 'customer',
+            patient_name: name,
             phone: phone || '',
             address: address || ''
         })

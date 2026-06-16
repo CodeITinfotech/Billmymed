@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import GenericMaster, CompanyMaster, ProductTypeMaster, HSNCodeMaster, Doctor
+from app.models import GenericMaster, CompanyMaster, ProductTypeMaster, HSNCodeMaster, Doctor, Patient
 
 masters_bp = Blueprint('masters', __name__, url_prefix='/masters')
 
@@ -354,3 +354,129 @@ def delete_doctor(id):
     db.session.commit()
     flash('Doctor deleted successfully', 'success')
     return redirect(url_for('masters.doctors'))
+
+# ==================== PATIENT MASTER ====================
+@masters_bp.route('/patients')
+@login_required
+def patients():
+    items = Patient.query.filter_by(is_active=True).order_by(Patient.patient_name).all()
+    return render_template('masters/patients.html', items=items, page_title='Patient Master')
+
+@masters_bp.route('/patients/add', methods=['POST'])
+@login_required
+def add_patient():
+    patient_name = request.form.get('patient_name', '').strip()
+    phone = request.form.get('phone', '').strip()
+    mobile = request.form.get('mobile', '').strip()
+    email = request.form.get('email', '').strip()
+    address = request.form.get('address', '').strip()
+    city = request.form.get('city', '').strip()
+    state = request.form.get('state', '').strip()
+    pincode = request.form.get('pincode', '').strip()
+    gender = request.form.get('gender', '').strip()
+    date_of_birth = request.form.get('date_of_birth', '').strip()
+    blood_group = request.form.get('blood_group', '').strip()
+    allergies = request.form.get('allergies', '').strip()
+    notes = request.form.get('notes', '').strip()
+    
+    if not patient_name:
+        flash('Patient name is required', 'danger')
+        return redirect(url_for('masters.patients'))
+    
+    # Generate patient code
+    last_patient = Patient.query.order_by(Patient.id.desc()).first()
+    next_num = int(last_patient.patient_code[2:]) + 1 if last_patient and last_patient.patient_code.startswith('P') else 1
+    patient_code = f'P{next_num:04d}'
+    
+    item = Patient(
+        patient_code=patient_code,
+        patient_name=patient_name,
+        phone=phone,
+        mobile=mobile,
+        email=email,
+        address=address,
+        city=city,
+        state=state,
+        pincode=pincode,
+        gender=gender,
+        blood_group=blood_group,
+        allergies=allergies,
+        notes=notes
+    )
+    db.session.add(item)
+    db.session.commit()
+    flash('Patient added successfully', 'success')
+    return redirect(url_for('masters.patients'))
+
+@masters_bp.route('/patients/edit/<int:id>', methods=['POST'])
+@login_required
+def edit_patient(id):
+    item = Patient.query.get_or_404(id)
+    item.patient_name = request.form.get('patient_name', '').strip()
+    item.phone = request.form.get('phone', '').strip()
+    item.mobile = request.form.get('mobile', '').strip()
+    item.email = request.form.get('email', '').strip()
+    item.address = request.form.get('address', '').strip()
+    item.city = request.form.get('city', '').strip()
+    item.state = request.form.get('state', '').strip()
+    item.pincode = request.form.get('pincode', '').strip()
+    item.gender = request.form.get('gender', '').strip()
+    item.blood_group = request.form.get('blood_group', '').strip()
+    item.allergies = request.form.get('allergies', '').strip()
+    item.notes = request.form.get('notes', '').strip()
+    db.session.commit()
+    flash('Patient updated successfully', 'success')
+    return redirect(url_for('masters.patients'))
+
+@masters_bp.route('/patients/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_patient(id):
+    item = Patient.query.get_or_404(id)
+    item.is_active = False
+    db.session.commit()
+    flash('Patient deleted successfully', 'success')
+    return redirect(url_for('masters.patients'))
+
+@masters_bp.route('/api/patients/search')
+@login_required
+def search_patients():
+    query = request.args.get('q', '')
+    patients = Patient.query.filter(
+        Patient.is_active == True,
+        Patient.patient_name.ilike(f'%{query}%')
+    ).order_by(Patient.patient_name).limit(10).all()
+    return jsonify([{
+        'id': p.id,
+        'name': p.patient_name,
+        'phone': p.phone or '',
+        'mobile': p.mobile or '',
+        'address': p.address or '',
+        'city': p.city or ''
+    } for p in patients])
+
+@masters_bp.route('/api/patients/quick_add', methods=['POST'])
+@login_required
+def quick_add_patient():
+    data = request.get_json()
+    patient_name = data.get('patient_name', '').strip()
+    phone = data.get('phone', '').strip()
+    address = data.get('address', '').strip()
+    
+    if not patient_name:
+        return jsonify({'success': False, 'error': 'Patient name is required'})
+    
+    # Generate patient code
+    last_patient = Patient.query.order_by(Patient.id.desc()).first()
+    next_num = int(last_patient.patient_code[2:]) + 1 if last_patient and last_patient.patient_code.startswith('P') else 1
+    patient_code = f'P{next_num:04d}'
+    
+    patient = Patient(
+        patient_code=patient_code,
+        patient_name=patient_name,
+        phone=phone,
+        address=address
+    )
+    db.session.add(patient)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'id': patient.id, 'patient_code': patient.patient_code})

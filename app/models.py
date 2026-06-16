@@ -369,13 +369,18 @@ class Invoice(db.Model):
     payment_status = db.Column(db.String(20), default='paid')  # paid, partial, credit
     due_date = db.Column(db.Date)
     sales_type = db.Column(db.String(10), default='cash')  # cash, credit, emergency
-    # Patient Information
+    # Patient Information (linked to Patient Master)
+    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id'))
     patient_name = db.Column(db.String(200))
     patient_phone = db.Column(db.String(20))
     patient_address = db.Column(db.Text)
+    # Credit Customer Information (for credit sales)
+    credit_customer_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'))
+    credit_customer = db.relationship('AccountMaster', foreign_keys=[credit_customer_id])
+    credit_customer_name = db.Column(db.String(200))  # Store name if no customer selected
     # Doctor Information
-    doctor_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'))
-    doctor = db.relationship('AccountMaster', foreign_keys=[doctor_id])
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id'))
+    doctor = db.relationship('Doctor', foreign_keys=[doctor_id])
     doctor_name = db.Column(db.String(200))  # Store doctor name directly
     doctor_address = db.Column(db.Text)
     prescription_no = db.Column(db.String(50))
@@ -664,6 +669,31 @@ class Doctor(db.Model):
     
     def __repr__(self):
         return f'<Doctor {self.doctor_name}>'
+
+class Patient(db.Model):
+    __tablename__ = 'patients'
+
+    id = db.Column(db.Integer, primary_key=True)
+    patient_code = db.Column(db.String(20), unique=True, nullable=False)
+    patient_name = db.Column(db.String(200), nullable=False, index=True)
+    phone = db.Column(db.String(20))
+    mobile = db.Column(db.String(15))
+    email = db.Column(db.String(120))
+    address = db.Column(db.Text)
+    city = db.Column(db.String(100))
+    state = db.Column(db.String(100))
+    pincode = db.Column(db.String(10))
+    date_of_birth = db.Column(db.Date)
+    gender = db.Column(db.String(10))
+    blood_group = db.Column(db.String(5))
+    allergies = db.Column(db.Text)
+    notes = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __repr__(self):
+        return f'<Patient {self.patient_name}>'
 
 class Settings(db.Model):
     __tablename__ = 'settings'
