@@ -516,30 +516,30 @@ def search_companies():
     if len(term) < 1:
         return jsonify([])
     
-    companies = ManufacturerMaster.query.filter(
-        ManufacturerMaster.manufacturer_name.ilike(f'%{term}%'),
-        ManufacturerMaster.is_active == True
+    companies = CompanyMaster.query.filter(
+        CompanyMaster.company_name.ilike(f'%{term}%'),
+        CompanyMaster.is_active == True
     ).limit(20).all()
     
-    return jsonify([{'id': c.id, 'name': c.manufacturer_name} for c in companies])
+    return jsonify([{'id': c.id, 'name': c.company_name} for c in companies])
 
 @api_bp.route('/companies', methods=['POST'])
 @login_required
 def add_company():
-    from app.models import ManufacturerMaster
+    from app.models import CompanyMaster
     data = request.get_json()
     name = data.get('name', '').strip()
     if not name:
         return jsonify({'error': 'Company name is required'}), 400
     
-    existing = ManufacturerMaster.query.filter_by(manufacturer_name=name).first()
+    existing = CompanyMaster.query.filter_by(company_name=name).first()
     if existing:
         return jsonify({'error': 'Company already exists', 'id': existing.id}), 400
     
-    company = ManufacturerMaster(manufacturer_name=name)
+    company = CompanyMaster(company_name=name)
     db.session.add(company)
     db.session.commit()
-    return jsonify({'success': True, 'id': company.id, 'name': company.manufacturer_name})
+    return jsonify({'success': True, 'id': company.id, 'name': company.company_name})
 
 # Product Supplier APIs
 @api_bp.route('/products/<int:product_id>/suppliers')

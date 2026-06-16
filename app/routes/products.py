@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import login_required, current_user
 from app import db
-from app.models import Product, Category, Batch, Rack, Tax, StockAdjustment, StockAdjustmentItem, ProductPackaging, ProductBarcode, HSNCodeMaster, GenericMaster, ManufacturerMaster, ProductTypeMaster
+from app.models import Product, Category, Batch, Rack, Tax, StockAdjustment, StockAdjustmentItem, ProductPackaging, ProductBarcode, HSNCodeMaster, GenericMaster, CompanyMaster, ProductTypeMaster
 from sqlalchemy import or_
 from datetime import datetime
 import uuid
@@ -175,7 +175,7 @@ def add():
     taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
     hsn_codes = HSNCodeMaster.query.order_by(HSNCodeMaster.hsn_code).all()
     generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
-    companies = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
+    companies = CompanyMaster.query.filter_by(is_active=True).order_by(CompanyMaster.company_name).all()
     product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
     return render_template('products/add.html', categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, companies=companies, product_types=product_types, is_edit=False)
 
@@ -253,7 +253,7 @@ def edit(id):
     taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
     hsn_codes = HSNCodeMaster.query.order_by(HSNCodeMaster.hsn_code).all()
     generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
-    companies = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
+    companies = CompanyMaster.query.filter_by(is_active=True).order_by(CompanyMaster.company_name).all()
     product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
     return render_template('products/add.html', product=product, all_packaging=all_packaging, categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, companies=companies, product_types=product_types, is_edit=True)
 

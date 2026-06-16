@@ -92,8 +92,7 @@ class Product(db.Model):
     product_code = db.Column(db.String(20), unique=True, nullable=False, index=True)
     product_name = db.Column(db.String(200), nullable=False, index=True)
     generic_name = db.Column(db.String(200))
-    manufacturer = db.Column(db.String(200))  # Legacy field - kept for backwards compatibility
-    company_id = db.Column(db.Integer, db.ForeignKey('manufacturer_master.id'))  # New company field
+    company_id = db.Column(db.Integer, db.ForeignKey('company_master.id'))  # Company field
     schedule = db.Column(db.String(10))  # H, Sch-H, Sch-X, OTC
     product_type = db.Column(db.String(20))  # Tablet, Syrup, Injection, etc.
     pack_type = db.Column(db.String(50))
@@ -128,14 +127,21 @@ class Product(db.Model):
     def current_stock(self):
         return sum(b.available_qty for b in self.batches if b.available_qty > 0)
     
-    def get_favorite_supplier(self):
-        """Get the most frequently used supplier for this product"""
+    @property
+    def favorite_supplier(self):
+        """Get the favorite supplier for this product (manual or auto)"""
         favorite = ProductSupplier.query.filter_by(product_id=self.id, is_favorite=True).first()
         if favorite:
             return favorite.supplier
         # Fallback to most purchased supplier
         most_purchased = ProductSupplier.query.filter_by(product_id=self.id).order_by(ProductSupplier.purchase_count.desc()).first()
         return most_purchased.supplier if most_purchased else None
+    
+    def get_suppliers(self):
+        """Get all suppliers for this product ordered by purchase count"""
+        return ProductSupplier.query.filter_by(product_id=self.id).order_by(
+            ProductSupplier.purchase_count.desc()
+        ).all()
 
 class ProductBarcode(db.Model):
     """Multiple barcodes can be linked to one product"""
@@ -722,12 +728,12 @@ class GenericMaster(db.Model):
     def __repr__(self):
         return f'<GenericMaster {self.generic_name}>'
 
-class ManufacturerMaster(db.Model):
-    """Company Master - Manufacturer/Company information"""
-    __tablename__ = 'manufacturer_master'
+class CompanyMaster(db.Model):
+    """Company Master - Company/Manufacturer information"""
+    __tablename__ = 'company_master'
 
     id = db.Column(db.Integer, primary_key=True)
-    manufacturer_name = db.Column(db.String(200), unique=True, nullable=False)
+    company_name = db.Column(db.String(200), unique=True, nullable=False)
     short_name = db.Column(db.String(50))
     contact_person = db.Column(db.String(100))
     phone = db.Column(db.String(20))
@@ -737,8 +743,15 @@ class ManufacturerMaster(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+    # Relationship to products
+    products = db.relationship('Product', backref='company', lazy='dynamic')
+
     def __repr__(self):
-        return f'<CompanyMaster {self.manufacturer_name}>'
+        return f'<CompanyMaster {self.company_name}>'
+
+
+# Alias for backward compatibility
+ManufacturerMaster = CompanyMaster
 
 
 class ProductSupplier(db.Model):

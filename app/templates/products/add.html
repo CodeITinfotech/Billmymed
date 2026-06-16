@@ -75,7 +75,7 @@
                                     <select class="form-select" id="company_id" name="company_id">
                                         <option value="">Select Company</option>
                                         {% for c in companies %}
-                                        <option value="{{ c.id }}" {% if is_edit and product.company_id == c.id %}selected{% endif %}>{{ c.manufacturer_name }}{% if c.short_name %} ({{ c.short_name }}){% endif %}</option>
+                                        <option value="{{ c.id }}" {% if is_edit and product.company_id == c.id %}selected{% endif %}>{{ c.company_name }}{% if c.short_name %} ({{ c.short_name }}){% endif %}</option>
                                         {% endfor %}
                                     </select>
                                     <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('company', 'Company')">
