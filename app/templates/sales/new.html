@@ -145,23 +145,12 @@
                         </div>
                         <!-- Doctor Info Row -->
                         <div class="row g-2 align-items-end mt-2">
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md-3">
                                 <label class="form-label small mb-0">Doctor (Prescribed By)</label>
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control form-control-sm" id="doctorName" 
-                                           placeholder="Search or enter doctor name" autocomplete="off"
-                                           oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)"
-                                           tabindex="6">
-                                    <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <span class="visually-hidden">Toggle Dropdown</span>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary" title="Add Doctor" onclick="openAddDoctorModal()" tabindex="8">
-                                        <i class="bi bi-plus"></i>
-                                    </button>
-                                </div>
-                                <div id="doctorDropdown" class="position-fixed shadow-sm bg-white rounded mt-1" 
-                                     style="z-index: 10001; max-height: 200px; overflow-y: auto; display: none;">
-                                </div>
+                                <input type="text" class="form-control form-control-sm" id="doctorName" 
+                                       placeholder="Search or enter doctor name" autocomplete="off"
+                                       oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)"
+                                       tabindex="6">
                                 <input type="hidden" id="doctorId" name="doctor_id" value="">
                             </div>
                             <div class="col-12 col-md-4">
@@ -210,6 +199,10 @@
                         <strong>Select Batch (Use ↑↓ keys or click)</strong>
                     </div>
                     <div id="batchList"></div>
+                </div>
+                
+                <!-- Doctor Dropdown - Outside card for proper z-index -->
+                <div id="doctorDropdown" class="position-fixed shadow-sm bg-white rounded" style="z-index: 10002; max-height: 200px; overflow-y: auto; display: none; width: 300px;">
                 </div>
                 
                 <!-- Cart Items -->
@@ -1516,9 +1509,19 @@ function searchDoctor(query) {
             const rect = inputGroup.getBoundingClientRect();
             dropdown.style.left = rect.left + 'px';
             dropdown.style.top = (rect.bottom + window.scrollY + 2) + 'px';
-            dropdown.style.width = rect.width + 'px';
+            dropdown.style.width = Math.max(300, rect.width) + 'px';
             
             dropdown.style.display = 'block';
+            
+            // Ensure dropdown stays within viewport
+            const dropdownRect = dropdown.getBoundingClientRect();
+            if (dropdownRect.right > window.innerWidth) {
+                dropdown.style.left = (window.innerWidth - dropdownRect.width - 10) + 'px';
+            }
+            if (dropdownRect.bottom > window.innerHeight) {
+                dropdown.style.top = (rect.top + window.scrollY - dropdownRect.height - 2) + 'px';
+            }
+            
             updateDoctorSelection();
         });
 }
