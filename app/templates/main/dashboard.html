@@ -20,7 +20,29 @@
     .stat-card-hover.sales::before { background: var(--gradient-success); }
     .stat-card-hover.monthly::before { background: var(--gradient-primary); }
     .stat-card-hover.products::before { background: var(--gradient-info); }
-    .stat-card-hover.customers::before { background: linear-gradient(135deg, var(--warning) 0%, var(--warning-dark) 100%); }
+    .stat-card-hover.stock::before { background: linear-gradient(135deg, var(--success) 0%, #10b981 100%); }
+    .stat-card-hover.lastbill::before { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    /* Responsive tiles - all in same row */
+    .stats-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+    .stats-row .col-6 {
+        flex: 1 1 calc(12.5% - 0.75rem);
+        min-width: 140px;
+        max-width: 200px;
+    }
+    @media (max-width: 991px) {
+        .stats-row .col-6 {
+            flex: 1 1 calc(25% - 0.75rem);
+        }
+    }
+    @media (max-width: 767px) {
+        .stats-row .col-6 {
+            flex: 1 1 calc(50% - 0.75rem);
+        }
+    }
 </style>
 {% endblock %}
 
@@ -37,11 +59,56 @@
                 <i class="bi bi-plus-lg me-1"></i>
                 <span class="d-none d-sm-inline">New Sale</span>
             </a>
+            <a href="{{ url_for('purchase.new') }}" class="btn btn-outline-primary">
+                <i class="bi bi-cart-plus me-1"></i>
+                <span class="d-none d-sm-inline">New Purchase</span>
+            </a>
         </div>
     </div>
     
     <!-- Stats Cards -->
     <div class="row g-3 mb-4">
+        <!-- Last Bill -->
+        <div class="col-6 col-lg-3">
+            {% if last_bill %}
+            <a href="{{ url_for('sales.view', id=last_bill.id) }}" class="text-decoration-none d-block">
+                <div class="card stat-card-hover lastbill h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                                    <i class="bi bi-receipt"></i>
+                                </div>
+                            </div>
+                            <div class="flex-grow-1 ms-3 overflow-hidden">
+                                <p class="text-muted small mb-1 text-truncate fw-medium">Last Bill</p>
+                                <h6 class="mb-0 fw-bold stat-value">{{ last_bill.invoice_no }}</h6>
+                                <small class="text-muted">₹{{ "{:,.2f}".format(last_bill.total_amount) }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% else %}
+            <div class="card stat-card-hover lastbill h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <div class="stat-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+                                <i class="bi bi-receipt"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3 overflow-hidden">
+                            <p class="text-muted small mb-1 text-truncate fw-medium">Last Bill</p>
+                            <h6 class="mb-0 fw-bold stat-value">-</h6>
+                            <small class="text-muted">No bills yet</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
         <!-- Today's Sales -->
         <div class="col-6 col-lg-3">
             <div class="card stat-card-hover sales h-100 shadow-sm">
@@ -82,10 +149,10 @@
             </div>
         </div>
         
-        <!-- Products -->
+        <!-- Products with Stock -->
         <div class="col-6 col-lg-3">
-            <a href="{{ url_for('products.list') }}" class="text-decoration-none d-block">
-                <div class="card stat-card-hover products h-100 shadow-sm">
+            <a href="{{ url_for('inventory.stock') }}" class="text-decoration-none d-block">
+                <div class="card stat-card-hover stock h-100 shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
@@ -94,31 +161,9 @@
                                 </div>
                             </div>
                             <div class="flex-grow-1 ms-3 overflow-hidden">
-                                <p class="text-muted small mb-1 text-truncate fw-medium">Products</p>
-                                <h4 class="mb-0 fw-bold stat-value">{{ total_products }}</h4>
-                                <small class="text-muted">Active items</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-        
-        <!-- Customers -->
-        <div class="col-6 col-lg-3">
-            <a href="{{ url_for('customers.list') }}" class="text-decoration-none d-block">
-                <div class="card stat-card-hover customers h-100 shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0">
-                                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
-                                    <i class="bi bi-people"></i>
-                                </div>
-                            </div>
-                            <div class="flex-grow-1 ms-3 overflow-hidden">
-                                <p class="text-muted small mb-1 text-truncate fw-medium">Customers</p>
-                                <h4 class="mb-0 fw-bold stat-value">{{ total_customers }}</h4>
-                                <small class="text-muted">{{ total_suppliers }} suppliers</small>
+                                <p class="text-muted small mb-1 text-truncate fw-medium">Products in Stock</p>
+                                <h4 class="mb-0 fw-bold stat-value">{{ products_with_stock }}</h4>
+                                <small class="text-muted">of {{ total_products }} total</small>
                             </div>
                         </div>
                     </div>

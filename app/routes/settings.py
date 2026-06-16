@@ -356,3 +356,96 @@ def add_tax_rate():
     
     flash('Tax rate added successfully.', 'success')
     return redirect(url_for('settings.tax_rates'))
+
+@settings_bp.route('/backup')
+@login_required
+def backup_database():
+    """Download database backup"""
+    if not current_user.is_admin:
+        flash('Access denied. Admin privileges required.', 'error')
+        return redirect(url_for('main.dashboard'))
+    
+    from flask import make_response
+    import sqlite3
+    from datetime import datetime
+    
+    db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'instance', 'billmymed.db')
+    
+    # Create backup filename with timestamp
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    backup_filename = f'billmymed_backup_{timestamp}.db'
+    
+    # Create backup by reading the database
+    conn = sqlite3.connect(db_path)
+    
+    # Create in-memory backup and export as bytes
+    output = BytesIO()
+    for line in conn.iterdump():
+        output.write(f"{line}\n".encode())
+    output.seek(0)
+    conn.close()
+    
+    response = make_response(output.getvalue())
+    response.headers['Content-Type'] = 'application/octet-stream'
+    response.headers['Content-Disposition'] = f'attachment; filename={backup_filename}'
+    
+    flash('Database backup created successfully.', 'success')
+    return response
+
+@settings_bp.route('/execute-sql', methods=['POST'])
+@login_required
+def execute_sql():
+    """Execute raw SQL queries"""
+    if not current_user.is_admin:
+        return jsonify({'success': False, 'error': 'Access denied. Admin privileges required.'}), 403
+    
+    query = request.json.get('query', '').strip()
+    
+    if not query:
+        return jsonify({'success': False, 'error': 'No query provided'}), 400
+    
+    # Only allow SELECT, INSERT, UPDATE, DELETE
+    query_upper = query.upper()
+    if not any(query_upper.startswith(q) for q in ['SELECT', 'INSERT', 'UPDATE', 'DELETE']):
+        return jsonify({'success': False, 'error': 'Only SELECT, INSERT, UPDATE, DELETE queries are allowed'}), 400
+    
+    try:
+        import sqlite3
+        db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'instance', 'billmymed.db')
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Determine query type
+        query_type = 'SELECT'
+        if query_upper.startswith('INSERT'):
+            query_type = 'INSERT'
+        elif query_upper.startswith('UPDATE'):
+            query_type = 'UPDATE'
+        elif query_upper.startswith('DELETE'):
+            query_type = 'DELETE'
+        
+        cursor.execute(query)
+        
+        if query_type == 'SELECT':
+            rows = cursor.fetchall()
+            results = [dict(row) for row in rows]
+            conn.close()
+            return jsonify({
+                'success': True,
+                'type': 'SELECT',
+                'results': results,
+                'row_count': len(results)
+            })
+        else:
+            conn.commit()
+            rows_affected = cursor.rowcount
+            conn.close()
+            return jsonify({
+                'success': True,
+                'type': query_type,
+                'message': f'{query_type} executed successfully. {rows_affected} row(s) affected.'
+            })
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500

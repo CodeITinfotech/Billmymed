@@ -317,17 +317,28 @@ def search_doctors_compat():
 @masters_bp.route('/doctors/add', methods=['POST'])
 @login_required
 def add_doctor():
-    name = request.form.get('name', '').strip()
-    specialty = request.form.get('specialty', '').strip()
+    doctor_name = request.form.get('name', '').strip()
+    specialization = request.form.get('specialty', '').strip()
+    degree = request.form.get('degree', '').strip()
     phone = request.form.get('phone', '').strip()
-    email = request.form.get('email', '').strip()
     address = request.form.get('address', '').strip()
     
-    if not name:
+    if not doctor_name:
         flash('Doctor name is required', 'danger')
         return redirect(url_for('masters.doctors'))
     
-    item = Doctor(name=name, specialty=specialty, phone=phone, email=email, address=address)
+    # Generate doctor code
+    from datetime import datetime
+    doctor_code = f'DOC{datetime.utcnow().strftime("%Y%m%d%H%M%S")}'
+    
+    item = Doctor(
+        doctor_code=doctor_code,
+        doctor_name=doctor_name,
+        specialization=specialization,
+        degree=degree,
+        phone=phone,
+        address=address
+    )
     db.session.add(item)
     db.session.commit()
     flash('Doctor added successfully', 'success')
@@ -337,10 +348,10 @@ def add_doctor():
 @login_required
 def edit_doctor(id):
     item = Doctor.query.get_or_404(id)
-    item.name = request.form.get('name', '').strip()
-    item.specialty = request.form.get('specialty', '').strip()
+    item.doctor_name = request.form.get('name', '').strip()
+    item.specialization = request.form.get('specialty', '').strip()
+    item.degree = request.form.get('degree', '').strip()
     item.phone = request.form.get('phone', '').strip()
-    item.email = request.form.get('email', '').strip()
     item.address = request.form.get('address', '').strip()
     db.session.commit()
     flash('Doctor updated successfully', 'success')
@@ -441,14 +452,20 @@ def delete_patient(id):
 @login_required
 def search_patients():
     query = request.args.get('q', '')
+    # Search by name, phone, or mobile
     patients = Patient.query.filter(
-        Patient.is_active == True,
-        Patient.patient_name.ilike(f'%{query}%')
+        Patient.is_active == True
+    ).filter(
+        db.or_(
+            Patient.patient_name.ilike(f'%{query}%'),
+            Patient.phone.ilike(f'%{query}%'),
+            Patient.mobile.ilike(f'%{query}%')
+        )
     ).order_by(Patient.patient_name).limit(10).all()
     return jsonify([{
         'id': p.id,
         'name': p.patient_name,
-        'phone': p.phone or '',
+        'phone': p.phone or p.mobile or '',
         'mobile': p.mobile or '',
         'address': p.address or '',
         'city': p.city or ''

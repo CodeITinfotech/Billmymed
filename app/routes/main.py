@@ -26,6 +26,11 @@ def dashboard():
     total_customers = AccountMaster.query.filter_by(account_type='customer', is_active=True).count()
     total_suppliers = AccountMaster.query.filter_by(account_type='supplier', is_active=True).count()
     
+    # Products with stock (for dashboard tile)
+    products_with_stock = db.session.query(func.count(func.distinct(Batch.product_id))).filter(
+        Batch.available_qty > 0
+    ).scalar() or 0
+    
     # Today's sales
     today_sales = db.session.query(func.sum(Invoice.total_amount)).filter(
         Invoice.invoice_type == 'sale',
@@ -38,6 +43,12 @@ def dashboard():
         func.date(Invoice.invoice_date) == today,
         Invoice.is_cancelled == False
     ).count()
+    
+    # Last bill
+    last_bill = Invoice.query.filter(
+        Invoice.invoice_type == 'sale',
+        Invoice.is_cancelled == False
+    ).order_by(Invoice.invoice_date.desc()).first()
     
     # Today's purchases
     today_purchases = db.session.query(func.sum(Purchase.total_amount)).filter(
@@ -91,6 +102,7 @@ def dashboard():
                          total_products=total_products,
                          total_customers=total_customers,
                          total_suppliers=total_suppliers,
+                         products_with_stock=products_with_stock,
                          today_sales=today_sales,
                          today_sales_count=today_sales_count,
                          today_purchases=today_purchases,
@@ -98,6 +110,7 @@ def dashboard():
                          low_stock=low_stock,
                          recent_sales=recent_sales,
                          credit_customers=credit_customers,
+                         last_bill=last_bill,
                          expiring_batches=expiring_batches)
 
 @main_bp.route('/quick-view')

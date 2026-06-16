@@ -19,11 +19,13 @@
                 <i class="bi bi-gear me-1"></i> General
             </button>
         </li>
+        {% if current_user.is_admin %}
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="company-tab" data-bs-toggle="tab" data-bs-target="#company" type="button">
-                <i class="bi bi-building me-1"></i> Company
+            <button class="nav-link" id="database-tab" data-bs-toggle="tab" data-bs-target="#database" type="button">
+                <i class="bi bi-database me-1"></i> Database
             </button>
         </li>
+        {% endif %}
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing" type="button">
                 <i class="bi bi-receipt me-1"></i> Billing
@@ -34,17 +36,19 @@
                 <i class="bi bi-bell me-1"></i> Alerts
             </button>
         </li>
+        {% if current_user.is_admin %}
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button">
                 <i class="bi bi-people me-1"></i> Users
             </button>
         </li>
+        {% endif %}
     </ul>
     
     <form method="POST" action="{{ url_for('settings.save_general') }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="tab-content" id="settingsTabsContent">
-            <!-- General Settings -->
+            <!-- General Settings - Always in Edit Mode -->
             <div class="tab-pane fade show active" id="general" role="tabpanel">
                 <div class="row">
                     <div class="col-12 col-lg-8">
@@ -90,6 +94,101 @@
                 </div>
             </div>
             
+            <!-- Database Tab (Admin Only) -->
+            {% if current_user.is_admin %}
+            <div class="tab-pane fade" id="database" role="tabpanel">
+                <div class="row">
+                    <div class="col-12 col-lg-5">
+                        <!-- Backup Section -->
+                        <div class="card border-0 shadow-sm mb-4">
+                            <div class="card-header bg-white">
+                                <h6 class="mb-0 fw-bold"><i class="bi bi-download me-2"></i>Database Backup</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted small">Download a backup of your database. The backup file can be used to restore data if needed.</p>
+                                <a href="{{ url_for('settings.backup_database') }}" class="btn btn-primary">
+                                    <i class="bi bi-download me-1"></i>Download Backup
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- SQL Console -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white">
+                                <h6 class="mb-0 fw-bold"><i class="bi bi-terminal me-2"></i>SQL Console</h6>
+                            </div>
+                            <div class="card-body">
+                                <p class="text-muted small">Execute SQL queries directly on the database. Use with caution!</p>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Query Type</label>
+                                    <div class="btn-group w-100" role="group">
+                                        <input type="radio" class="btn-check" name="queryType" id="typeSelect" value="SELECT" checked>
+                                        <label class="btn btn-outline-secondary" for="typeSelect">SELECT</label>
+                                        
+                                        <input type="radio" class="btn-check" name="queryType" id="typeUpdate" value="UPDATE">
+                                        <label class="btn btn-outline-warning" for="typeUpdate">UPDATE</label>
+                                        
+                                        <input type="radio" class="btn-check" name="queryType" id="typeInsert" value="INSERT">
+                                        <label class="btn btn-outline-success" for="typeInsert">INSERT</label>
+                                        
+                                        <input type="radio" class="btn-check" name="queryType" id="typeDelete" value="DELETE">
+                                        <label class="btn btn-outline-danger" for="typeDelete">DELETE</label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">Table Name</label>
+                                    <select class="form-select" id="tableSelect" onchange="updateSQLPreview()">
+                                        <option value="">-- Select Table --</option>
+                                        <option value="products">products</option>
+                                        <option value="customers">customers (account_masters)</option>
+                                        <option value="invoices">invoices</option>
+                                        <option value="invoice_items">invoice_items</option>
+                                        <option value="batches">batches</option>
+                                        <option value="users">users</option>
+                                        <option value="settings">settings</option>
+                                        <option value="doctors">doctors</option>
+                                        <option value="patients">patients</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small fw-bold">SQL Statement</label>
+                                    <textarea class="form-control font-monospace" id="sqlQuery" rows="4" 
+                                              placeholder="SELECT * FROM table_name WHERE condition;&#10;UPDATE table_name SET column = value WHERE condition;&#10;INSERT INTO table_name (col1, col2) VALUES (val1, val2);&#10;DELETE FROM table_name WHERE condition;"
+                                              oninput="updateQueryType()"></textarea>
+                                    <small class="text-muted d-block mt-1">For UPDATE/INSERT/DELETE, you will be asked to confirm before execution.</small>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-primary" onclick="executeSQL()">
+                                        <i class="bi bi-play-fill me-1"></i>Execute Query
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 col-lg-7">
+                        <!-- Results -->
+                        <div class="card border-0 shadow-sm">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold"><i class="bi bi-table me-2"></i>Query Results</h6>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearResults()">
+                                    <i class="bi bi-x-circle"></i> Clear
+                                </button>
+                            </div>
+                            <div class="card-body p-0">
+                                <div id="sqlResults" style="max-height: 500px; overflow: auto;">
+                                    <div class="p-4 text-center text-muted">
+                                        <i class="bi bi-arrow-left-circle fs-1 d-block mb-2"></i>
+                                        Execute a query to see results here
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
             <!-- Billing Settings -->
             <div class="tab-pane fade" id="billing" role="tabpanel">
                 <div class="row">
@@ -124,7 +223,7 @@
                                             <label class="form-check-label" for="allow_non_stock_billing">
                                                 <strong>Allow Non-Stock Billing</strong>
                                             </label>
-                                            <small class="text-muted d-block mt-1">When enabled, products with zero stock can be billed. When disabled, only products with stock > 0 can be sold.</small>
+                                            <small class="text-muted d-block mt-1">When enabled, products with zero stock can be billed.</small>
                                         </div>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="hide_zero_stock_sale" name="hide_zero_stock_sale" 
@@ -132,7 +231,6 @@
                                             <label class="form-check-label" for="hide_zero_stock_sale">
                                                 <strong>Hide Zero Stock Products in Sale</strong>
                                             </label>
-                                            <small class="text-muted d-block mt-1">When enabled, products with zero stock will not appear in the sales product search dropdown.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +269,8 @@
                 </div>
             </div>
             
-            <!-- Users -->
+            <!-- Users (Admin Only) -->
+            {% if current_user.is_admin %}
             <div class="tab-pane fade" id="users" role="tabpanel">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
@@ -228,6 +327,7 @@
                     </div>
                 </div>
             </div>
+            {% endif %}
         </div>
         
         <!-- Submit Button -->
@@ -238,4 +338,118 @@
         </div>
     </form>
 </div>
+
+{% if current_user.is_admin %}
+{% block extra_js %}
+<script>
+function updateSQLPreview() {
+    const table = document.getElementById('tableSelect').value;
+    const queryType = document.querySelector('input[name="queryType"]:checked').value;
+    const textarea = document.getElementById('sqlQuery');
+    
+    if (!table) return;
+    
+    let query = '';
+    switch(queryType) {
+        case 'SELECT':
+            query = `SELECT * FROM ${table} LIMIT 10;`;
+            break;
+        case 'UPDATE':
+            query = `UPDATE ${table}\nSET column_name = 'value'\nWHERE condition;`;
+            break;
+        case 'INSERT':
+            query = `INSERT INTO ${table} (column1, column2)\nVALUES ('value1', 'value2');`;
+            break;
+        case 'DELETE':
+            query = `DELETE FROM ${table}\nWHERE condition;`;
+            break;
+    }
+    textarea.value = query;
+}
+
+function updateQueryType() {
+    const query = document.getElementById('sqlQuery').value.trim().toUpperCase();
+    
+    if (query.startsWith('SELECT')) {
+        document.getElementById('typeSelect').checked = true;
+    } else if (query.startsWith('UPDATE')) {
+        document.getElementById('typeUpdate').checked = true;
+    } else if (query.startsWith('INSERT')) {
+        document.getElementById('typeInsert').checked = true;
+    } else if (query.startsWith('DELETE')) {
+        document.getElementById('typeDelete').checked = true;
+    }
+}
+
+async function executeSQL() {
+    const query = document.getElementById('sqlQuery').value.trim();
+    const queryType = document.querySelector('input[name="queryType"]:checked').value;
+    
+    if (!query) {
+        alert('Please enter a SQL query');
+        return;
+    }
+    
+    // Confirmation for dangerous operations
+    if (['UPDATE', 'INSERT', 'DELETE'].includes(queryType)) {
+        if (!confirm(`⚠️ WARNING: You are about to execute a ${queryType} statement.\n\nThis will modify the database!\n\nQuery:\n${query}\n\nClick OK to proceed or Cancel to abort.`)) {
+            return;
+        }
+    }
+    
+    const resultsDiv = document.getElementById('sqlResults');
+    resultsDiv.innerHTML = '<div class="p-4 text-center"><i class="bi bi-hourglass-split fs-1 d-block mb-2"></i>Executing query...</div>';
+    
+    try {
+        const response = await fetch('{{ url_for("settings.execute_sql") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            },
+            body: JSON.stringify({ query: query })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            if (data.type === 'SELECT') {
+                if (data.results && data.results.length > 0) {
+                    const keys = Object.keys(data.results[0]);
+                    let html = '<table class="table table-sm table-hover mb-0"><thead><tr>';
+                    keys.forEach(k => html += `<th>${k}</th>`);
+                    html += '</tr></thead><tbody>';
+                    data.results.forEach(row => {
+                        html += '<tr>';
+                        keys.forEach(k => html += `<td>${row[k] ?? ''}</td>`);
+                        html += '</tr>';
+                    });
+                    html += '</tbody></table>';
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = '<div class="p-4 text-center text-muted"><i class="bi bi-check-circle fs-1 d-block mb-2 text-success"></i>Query executed successfully. No results found.</div>';
+                }
+            } else {
+                resultsDiv.innerHTML = `<div class="p-4 text-center"><i class="bi bi-check-circle fs-1 d-block mb-2 text-success"></i><strong>Success!</strong><br>${data.message}</div>`;
+            }
+        } else {
+            resultsDiv.innerHTML = `<div class="p-4 text-center"><i class="bi bi-x-circle fs-1 d-block mb-2 text-danger"></i><strong>Error:</strong><br><span class="text-danger">${data.error}</span></div>`;
+        }
+    } catch (err) {
+        resultsDiv.innerHTML = `<div class="p-4 text-center"><i class="bi bi-x-circle fs-1 d-block mb-2 text-danger"></i><strong>Error:</strong><br>${err.message}</div>`;
+    }
+}
+
+function clearResults() {
+    document.getElementById('sqlResults').innerHTML = '<div class="p-4 text-center text-muted"><i class="bi bi-arrow-left-circle fs-1 d-block mb-2"></i>Execute a query to see results here</div>';
+}
+
+// Initialize
+document.getElementById('tableSelect').addEventListener('change', updateSQLPreview);
+document.querySelectorAll('input[name="queryType"]').forEach(radio => {
+    radio.addEventListener('change', updateSQLPreview);
+});
+</script>
+{% endblock %}
+{% endif %}
 {% endblock %}

@@ -1323,6 +1323,10 @@ function searchPatient(query) {
         return;
     }
     
+    // Check if query looks like a phone number (mostly digits)
+    const isPhoneSearch = /^\d[\d\s\-]*/.test(query);
+    
+    // Search patients API - supports both name and phone search
     fetch(`/masters/api/patients/search?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
@@ -1335,8 +1339,8 @@ function searchPatient(query) {
                          style="cursor: pointer;"
                          data-index="${i}"
                          onclick="selectPatient(${c.id}, '${c.name.replace(/'/g, "\\'")}', '${c.phone || ''}', '${c.address || ''}')">
-                        <strong>${c.name}</strong>
-                        <small class="text-muted d-block">${c.phone || 'No phone'} | ${c.city || 'No city'}</small>
+                        <strong>${isPhoneSearch && c.phone && c.phone.includes(query) ? '<span class="text-primary">' + c.phone + '</span>' : c.name}</strong>
+                        <small class="text-muted d-block">${c.phone || 'No phone'} | ${c.name}</small>
                     </div>
                 `).join('');
                 
@@ -1454,8 +1458,8 @@ function selectPatient(id, name, phone, address) {
         document.getElementById('creditCustomerPhone').value = phone || '';
     }
     
-    // Focus back on product search
-    document.getElementById('productSearch').focus();
+    // Focus on Doctor field next
+    document.getElementById('doctorName').focus();
 }
 
 // Create new patient
@@ -1664,23 +1668,19 @@ function createNewDoctor(name) {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
             },
-            body: `doctor_name=${encodeURIComponent(name)}`
+            body: `name=${encodeURIComponent(name)}&specialty=&degree=&phone=&address=`
         })
-        .then(res => res.redirected ? res.json() : res.json())
-        .then(data => {
-            // Refresh page to get updated doctor list
-            window.location.reload();
-        })
+        .then(res => res.redirected ? window.location.reload() : window.location.reload())
         .catch(err => {
             // Fallback: just set the values locally
             document.getElementById('doctorId').value = '';
             document.getElementById('doctorName').value = name;
             document.getElementById('doctorDropdown').style.display = 'none';
+            document.getElementById('productSearch').focus();
         });
     }
     
     document.getElementById('doctorDropdown').style.display = 'none';
-    document.getElementById('productSearch').focus();
 }
 
 // Open barcode scanner

@@ -237,29 +237,97 @@ def create_transfer():
 @inventory_bp.route('/racks')
 @login_required
 def racks():
-    racks = Rack.query.order_by(Rack.rack_name).all()
-    return render_template('inventory/racks.html', racks=racks)
+    from app.models import Warehouse
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = 20
+    search = request.args.get('search', '')
+    warehouse_id = request.args.get('warehouse', '', type=int)
+    status = request.args.get('status', '')
+    
+    query = Rack.query
+    
+    if search:
+        query = query.filter(
+            or_(
+                Rack.rack_name.ilike(f'%{search}%'),
+                Rack.location.ilike(f'%{search}%')
+            )
+        )
+    
+    if warehouse_id:
+        query = query.filter_by(warehouse_id=warehouse_id)
+    
+    if status == 'active':
+        query = query.filter_by(is_active=True)
+    elif status == 'inactive':
+        query = query.filter_by(is_active=False)
+    
+    racks_pagination = query.order_by(Rack.rack_name).paginate(page=page, per_page=per_page, error_out=False)
+    
+    warehouses = Warehouse.query.filter_by(is_active=True).order_by(Warehouse.warehouse_name).all()
+    
+    # Calculate summary
+    total_racks = Rack.query.count()
+    active_racks = Rack.query.filter_by(is_active=True).count()
+    warehouses_count = Warehouse.query.filter_by(is_active=True).count()
+    
+    summary = {
+        'total': total_racks,
+        'active': active_racks,
+        'products_stored': 0,  # Would need complex query
+        'warehouses': warehouses_count
+    }
+    
+    return render_template('inventory/racks.html', 
+                         racks=racks_pagination, 
+                         warehouses=warehouses,
+                         summary=summary,
+                         search=search,
+                         warehouse=warehouse_id or '',
+                         status=status)
 
 @inventory_bp.route('/racks/add', methods=['POST'])
 @login_required
 def add_rack():
-    rack_code = request.form.get('rack_code', '').strip()
     rack_name = request.form.get('rack_name', '').strip()
+    warehouse_id = request.form.get('warehouse_id', type=int)
+    location = request.form.get('location', '').strip()
+    is_active = request.form.get('is_active', '1') == '1'
     
-    if Rack.query.filter_by(rack_code=rack_code).first():
-        flash('Rack code already exists.', 'error')
+    if not rack_name:
+        flash('Rack name is required.', 'error')
         return redirect(url_for('inventory.racks'))
+    
+    # Generate rack code
+    from datetime import datetime
+    rack_code = f'RACK{datetime.utcnow().strftime("%Y%m%d%H%M%S")}'
     
     rack = Rack(
         rack_code=rack_code,
         rack_name=rack_name,
-        location=request.form.get('location', '')
+        warehouse_id=warehouse_id,
+        location=location,
+        is_active=is_active
     )
     
     db.session.add(rack)
     db.session.commit()
     
     flash('Rack added successfully.', 'success')
+    return redirect(url_for('inventory.racks'))
+
+@inventory_bp.route('/racks/edit/<int:id>', methods=['POST'])
+@login_required
+def update_rack(id):
+    rack = Rack.query.get_or_404(id)
+    rack.rack_name = request.form.get('rack_name', '').strip()
+    rack.warehouse_id = request.form.get('warehouse_id', type=int)
+    rack.location = request.form.get('location', '').strip()
+    rack.is_active = request.form.get('is_active', '1') == '1'
+    
+    db.session.commit()
+    flash('Rack updated successfully.', 'success')
     return redirect(url_for('inventory.racks'))
 
 # Barcode generation
