@@ -134,8 +134,8 @@ def user_rights(id):
         {'key': 'cancel_sale_bill', 'label': 'Cancel Sale Bill'},
         {'key': 'show_supplier', 'label': 'Show Supplier'},
         {'key': 'edit_payment', 'label': 'Edit Payment'},
-        {'key': 'edit_purchase_return', 'label': 'Edit Purchase Return'},
         {'key': 'add_purchase_return', 'label': 'Add Purchase Return'},
+        {'key': 'edit_purchase_return', 'label': 'Edit Purchase Return'},
         {'key': 'add_purchase', 'label': 'Add Purchase'},
         {'key': 'edit_purchase', 'label': 'Edit Purchase'},
         {'key': 'add_sales_return', 'label': 'Add Sales Return'},
@@ -167,8 +167,8 @@ def save_user_rights(id):
     rights_keys = [
         'dashboard', 'reports', 'edit_product', 'edit_stock', 'edit_price',
         'edit_company', 'show_customer', 'show_purchase', 'edit_sale_bill',
-        'cancel_sale_bill', 'show_supplier', 'edit_payment', 'edit_purchase_return',
-        'add_purchase_return', 'add_purchase', 'edit_purchase', 'add_sales_return',
+        'cancel_sale_bill', 'show_supplier', 'edit_payment', 'add_purchase_return',
+        'edit_purchase_return', 'add_purchase', 'edit_purchase', 'add_sales_return',
         'edit_sales_return', 'add_sales', 'edit_sales'
     ]
     
