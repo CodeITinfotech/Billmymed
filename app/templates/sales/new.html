@@ -595,26 +595,10 @@ function selectProduct(productId, productCode) {
 function focusOnLastItemQuantity() {
     const lastItem = document.querySelector('.cart-item:last-child');
     if (lastItem) {
-        // Enable editing on the newly added item
         const qtyInput = lastItem.querySelector('.qty-input');
-        const packSelect = lastItem.querySelector('.pack-select');
-        const rateInput = lastItem.querySelector('.rate-input');
         if (qtyInput) {
-            qtyInput.readOnly = false;
             qtyInput.focus();
             qtyInput.select();
-        }
-        if (packSelect) packSelect.disabled = false;
-        if (rateInput) rateInput.readOnly = false;
-        
-        // Set this as the editing item
-        const itemId = parseInt(lastItem.dataset.itemId);
-        editingItemId = itemId;
-        
-        // Update icon to checkmark
-        const editBtn = lastItem.querySelector('button[onclick^="toggleEditItem"]');
-        if (editBtn) {
-            editBtn.innerHTML = '<i class="bi bi-check-lg"></i>';
         }
     }
 }
@@ -628,6 +612,15 @@ function focusOnLastItemRate() {
             rateInput.focus();
             rateInput.select();
         }
+    }
+}
+
+// Focus on product search and clear for fast billing
+function focusOnProductSearch() {
+    const searchInput = document.getElementById('productSearch');
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
     }
 }
 
@@ -672,10 +665,13 @@ function updateBatchSelection() {
 
 // Select batch from list
 function selectBatch(index) {
+    console.log('selectBatch called with index:', index);
     if (pendingProductData && pendingProductData.batches && pendingProductData.batches[index]) {
         const batch = pendingProductData.batches[index];
+        console.log('Adding to cart with batch:', batch.batch_no);
         addToCartWithBatch(pendingProductData, batch);
     }
+    console.log('Hiding batch selector');
     hideBatchSelector();
     
     // Clear pending product data to prevent re-adding
@@ -687,6 +683,7 @@ function selectBatch(index) {
         if (lastItem) {
             const qtyInput = lastItem.querySelector('.qty-input');
             if (qtyInput) {
+                console.log('Focusing on quantity input');
                 qtyInput.focus();
                 qtyInput.select();
             }
@@ -837,8 +834,7 @@ function renderCart() {
                            value="${item.quantity}" min="1" max="${item.max_qty}" 
                            onchange="setQty(${item.id}, this.value)"
                            tabindex="1"
-                           readonly
-                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnLastItemRate(); }">
+                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnProductSearch(); } else if(event.key === 'Tab' && !event.shiftKey) { /* Let Tab work naturally to next field */ }">
                 </div>
                 <div class="col-2">
                     <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2" disabled>
@@ -848,8 +844,7 @@ function renderCart() {
                 <div class="col-2 text-end">
                     <input type="number" class="form-control form-control-sm fw-bold rate-input" value="${item.unit_rate.toFixed(2)}" 
                            step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)" tabindex="3"
-                           readonly
-                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); document.getElementById('productSearch').focus(); document.getElementById('productSearch').value = ''; }">
+                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnProductSearch(); }">
                 </div>
                 <div class="col-1 text-center">
                     <small class="text-muted">${item.tax_perc}%</small>
