@@ -117,9 +117,10 @@
                                 <div class="position-relative">
                                     <input type="text" class="form-control form-control-sm" id="patientName" 
                                            placeholder="Enter patient name" autocomplete="off"
-                                           oninput="searchPatient(this.value)" onkeydown="handlePatientKeydown(event)">
+                                           oninput="searchPatient(this.value)" onkeydown="handlePatientKeydown(event)"
+                                           tabindex="5">
                                     <div id="patientDropdown" class="position-fixed shadow-sm bg-white rounded mt-1" 
-                                         style="z-index: 9999; max-height: 200px; overflow-y: auto; display: none; width: 350px;">
+                                         style="z-index: 10001; max-height: 200px; overflow-y: auto; display: none; width: 350px;">
                                     </div>
                                 </div>
                                 <input type="hidden" id="patientId" name="patient_id" value="">
@@ -154,16 +155,17 @@
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control form-control-sm" id="doctorName" 
                                            placeholder="Search or enter doctor name" autocomplete="off"
-                                           oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)">
+                                           oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)"
+                                           tabindex="6">
                                     <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="visually-hidden">Toggle Dropdown</span>
                                     </button>
-                                    <button type="button" class="btn btn-outline-secondary" title="Add Doctor" onclick="openAddDoctorModal()">
+                                    <button type="button" class="btn btn-outline-secondary" title="Add Doctor" onclick="openAddDoctorModal()" tabindex="8">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
                                 <div id="doctorDropdown" class="position-fixed shadow-sm bg-white rounded mt-1" 
-                                     style="z-index: 9999; max-height: 200px; overflow-y: auto; display: none;">
+                                     style="z-index: 10001; max-height: 200px; overflow-y: auto; display: none;">
                                 </div>
                                 <input type="hidden" id="doctorId" name="doctor_id" value="">
                             </div>
@@ -190,8 +192,8 @@
                             </span>
                             <input type="text" class="form-control border-start-0 ps-0" id="productSearch" 
                                    placeholder="Search by name, code, barcode, or batch number..." autofocus
-                                   autocomplete="off">
-                            <button type="button" class="btn btn-outline-secondary border-start-0" onclick="document.getElementById('productSearch').focus()">
+                                   autocomplete="off" tabindex="1">
+                            <button type="button" class="btn btn-outline-secondary border-start-0" onclick="document.getElementById('productSearch').focus()" tabindex="2">
                                 <i class="bi bi-caret-right"></i>
                             </button>
                         </div>
@@ -313,10 +315,10 @@
                 
                 <!-- Action Buttons -->
                 <div class="d-grid gap-2">
-                    <button type="button" class="btn btn-success btn-lg py-3" onclick="completeSale()">
+                    <button type="button" class="btn btn-success btn-lg py-3" onclick="completeSale()" tabindex="10">
                         <i class="bi bi-check-circle me-2"></i>Complete Sale (F10)
                     </button>
-                    <button type="button" class="btn btn-outline-primary" onclick="printBill()">
+                    <button type="button" class="btn btn-outline-primary" onclick="printBill()" tabindex="11">
                         <i class="bi bi-printer me-2"></i>Print Bill
                     </button>
                 </div>
@@ -1006,7 +1008,8 @@ function calculateTotal() {
     
     let discountAmount = subtotal * (discountPerc / 100) + discountAmtInput;
     let taxableAmount = subtotal - discountAmount;
-    let taxAmount = totalTax - (discountAmount * (totalTax / subtotal)); // Proportional tax reduction
+    // Handle division by zero when subtotal is 0
+    let taxAmount = subtotal > 0 ? totalTax - (discountAmount * (totalTax / subtotal)) : 0; // Proportional tax reduction
     let total = taxableAmount + taxAmount;
     let roundOff = Math.round(total) - total;
     
@@ -1554,6 +1557,9 @@ function openBarcodeScanner() {
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('productSearch');
     searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
+    
+    // Focus on product search on page load
+    setTimeout(() => searchInput.focus(), 100);
     
     // Handle Enter key in search input
     searchInput.addEventListener('keydown', function(e) {
