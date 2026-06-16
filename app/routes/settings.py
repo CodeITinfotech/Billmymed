@@ -14,7 +14,8 @@ settings_bp = Blueprint('settings', __name__)
 @login_required
 def general():
     settings = {s.setting_key: s.setting_value for s in Settings.query.all()}
-    return render_template('settings/general.html', settings=settings)
+    users = User.query.order_by(User.username).all()
+    return render_template('settings/general.html', settings=settings, users=users)
 
 @settings_bp.route('/general/save', methods=['POST'])
 @login_required
