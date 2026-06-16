@@ -489,8 +489,49 @@ function openAddModal(fieldId, fieldName) {
     document.getElementById('targetField').value = fieldId;
     document.getElementById('modalItemType').textContent = fieldName;
     document.getElementById('newItemName').value = document.getElementById(fieldId).value;
-    new bootstrap.Modal(document.getElementById('addItemModal')).show();
+    
+    var modalEl = document.getElementById('addItemModal');
+    
+    // Ensure Bootstrap is loaded
+    function showModal() {
+        if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+            var modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else {
+            // Fallback: use jQuery if available
+            if (typeof $ !== 'undefined' && $.fn.modal) {
+                $(modalEl).modal('show');
+            } else {
+                // Last resort: use native show
+                modalEl.style.display = 'block';
+                modalEl.classList.add('show');
+            }
+        }
+    }
+    
+    // Try immediately, if fails wait for bootstrap
+    if (typeof bootstrap !== 'undefined') {
+        showModal();
+    } else {
+        setTimeout(showModal, 100);
+    }
 }
+
+// Add click event listeners for the + buttons
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for bootstrap to be available
+    setTimeout(function() {
+        var addButtons = document.querySelectorAll('[onclick*="openAddModal"]');
+        addButtons.forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                var match = this.getAttribute('onclick').match(/openAddModal\(['"]([^'"]+)['"],\s*['"]([^'"]+)['"]\)/);
+                if (match) {
+                    openAddModal(match[1], match[2]);
+                }
+            });
+        });
+    }, 500);
+});
 
 function addNewItem() {
     const fieldId = document.getElementById('targetField').value;
@@ -530,6 +571,39 @@ function addNewItem() {
         .catch(err => {
             console.error(err);
             showToast('danger', 'Error adding Company');
+        });
+        return;
+    }
+    
+    // For Generic Name, save to database
+    if (fieldId === 'generic_name') {
+        fetch('/masters/api/generics', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            },
+            body: JSON.stringify({ generic_name: name })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Add new option to dropdown
+                const select = document.getElementById('generic_name');
+                const option = document.createElement('option');
+                option.value = data.name;
+                option.text = data.name;
+                option.selected = true;
+                select.appendChild(option);
+                bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
+                showToast('success', `Generic Name added: ${name}`);
+            } else {
+                showToast('danger', data.error || 'Failed to add Generic Name');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast('danger', 'Error adding Generic Name');
         });
         return;
     }

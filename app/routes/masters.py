@@ -256,6 +256,39 @@ def search_companies():
     
     return jsonify([{'id': i.id, 'name': i.company_name, 'short_name': i.short_name} for i in companies])
 
+@masters_bp.route('/api/generics/search')
+@login_required
+def search_generics():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    generics = GenericMaster.query.filter(
+        GenericMaster.generic_name.ilike(f'%{term}%'),
+        GenericMaster.is_active == True
+    ).order_by(GenericMaster.generic_name).limit(20).all()
+    
+    return jsonify([{'id': i.id, 'name': i.generic_name} for i in generics])
+
+@masters_bp.route('/api/generics', methods=['POST'])
+@login_required
+def api_add_generic():
+    data = request.get_json()
+    generic_name = data.get('generic_name', '').strip()
+    
+    if not generic_name:
+        return jsonify({'success': False, 'error': 'Generic name is required'}), 400
+    
+    existing = GenericMaster.query.filter_by(generic_name=generic_name).first()
+    if existing:
+        return jsonify({'success': False, 'error': 'Generic name already exists'}), 400
+    
+    item = GenericMaster(generic_name=generic_name)
+    db.session.add(item)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'id': item.id, 'name': item.generic_name})
+
 @masters_bp.route('/api/hsn-codes', methods=['POST'])
 @login_required
 def api_add_hsn():
