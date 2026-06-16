@@ -16,6 +16,7 @@
     </div>
     
     <form method="POST" action="{{ url_for('settings.save_user_rights', id=user.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="card border-0 shadow-sm">
             <div class="card-body">
                 <!-- Info Alert -->
