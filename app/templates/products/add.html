@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Add Product - {{ config.COMPANY_NAME }}{% endblock %}
+{% block title %}{{ 'Update' if is_edit else 'Add' }} Product - {{ config.COMPANY_NAME }}{% endblock %}
 
 {% block extra_head %}
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -11,7 +11,7 @@
     <!-- Page Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
         <div>
-            <h4 class="fw-bold mb-1">Add Product</h4>
+            <h4 class="fw-bold mb-1">{{ 'Update' if is_edit else 'Add' }} Product</h4>
             <p class="text-muted mb-0">Add a new product to inventory</p>
         </div>
         <div>
@@ -23,6 +23,8 @@
     
     <form method="POST" id="productForm">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <!-- Packaging data will be added here by JavaScript -->
+        <input type="hidden" name="packaging_json" id="packaging_json_hidden" value="[]"/>
         <div class="row g-4">
             <!-- Basic Information -->
             <div class="col-12 col-lg-8">
@@ -270,7 +272,7 @@
                 <!-- Submit -->
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-check-lg me-2"></i>Save Product
+                        <i class="bi bi-check-lg me-2"></i>{{ 'Update' if is_edit else 'Save' }} Product
                     </button>
                     <a href="{{ url_for('products.list') }}" class="btn btn-outline-secondary">
                         Cancel
@@ -626,35 +628,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    {% if is_edit and product %}
-    // For edit mode - load existing packaging
-    fetch('/products/api/{{ product.id }}/packaging')
-        .then(res => res.json())
-        .then(data => {
-            if (data.length > 0) {
-                data.forEach(pkg => {
-                    packagingData.push({
-                        pack_type: pkg.pack_type,
-                        pack_qty: pkg.pack_qty,
-                        is_default_sale: pkg.is_default_sale,
-                        is_default_purchase: pkg.is_default_purchase
-                    });
-                });
-                renderPackagingTable();
-            } else {
-                // No packaging - add a default row
-                packagingData.push({ pack_type: '', pack_qty: 1, is_default_sale: true, is_default_purchase: true });
-                renderPackagingTable();
-                const firstInput = document.querySelector('.pack-type-input');
-                if (firstInput) firstInput.focus();
-            }
-        })
-        .catch(() => {
-            packagingData.push({ pack_type: '', pack_qty: 1, is_default_sale: true, is_default_purchase: true });
-            renderPackagingTable();
-            const firstInput = document.querySelector('.pack-type-input');
-            if (firstInput) firstInput.focus();
-        });
+    {% if is_edit and all_packaging %}
+    // For edit mode - load packaging from server-rendered data
+    {% for pkg in all_packaging %}
+    packagingData.push({
+        pack_type: '{{ pkg.pack_type }}',
+        pack_qty: {{ pkg.pack_qty }},
+        is_default_sale: {{ 'true' if pkg.is_default_sale else 'false' }},
+        is_default_purchase: {{ 'true' if pkg.is_default_purchase else 'false' }}
+    });
+    {% endfor %}
+    renderPackagingTable();
+    {% elif is_edit %}
+    // No packaging exists - add a default row
+    packagingData.push({ pack_type: '', pack_qty: 1, is_default_sale: true, is_default_purchase: true });
+    renderPackagingTable();
+    const firstInput = document.querySelector('.pack-type-input');
+    if (firstInput) firstInput.focus();
     {% else %}
     // For new products - add a default row immediately
     packagingData.push({ pack_type: '', pack_qty: 1, is_default_sale: true, is_default_purchase: true });
@@ -662,51 +652,58 @@ document.addEventListener('DOMContentLoaded', function() {
     const firstInput = document.querySelector('.pack-type-input');
     if (firstInput) firstInput.focus();
     {% endif %}
-});
-
-// Form submit handler - attach AFTER variable is declared
-document.querySelector('form').addEventListener('submit', function(e) {
-    // Validate packaging - at least one valid row required
-    const validPackaging = packagingData.filter(p => p.pack_type && p.pack_type.trim() !== '');
-    if (validPackaging.length === 0) {
-        e.preventDefault();
-        alert('Please enter a Pack Type. At least one packaging configuration is required.');
-        // Focus on the first pack type input
-        const firstInput = document.querySelector('.pack-type-input');
-        if (firstInput) firstInput.focus();
-        return false;
+    
+    // Form submit handler - attach to the correct form
+    const productForm = document.getElementById('productForm');
+    if (productForm) {
+        productForm.addEventListener('submit', function(e) {
+            // Filter packaging data to only include valid rows (non-empty pack_type)
+            const validPackaging = packagingData.filter(p => p.pack_type && p.pack_type.trim() !== '');
+            
+            console.log('DEBUG JS: packagingData =', JSON.stringify(packagingData));
+            console.log('DEBUG JS: validPackaging =', JSON.stringify(validPackaging));
+            
+            if (validPackaging.length === 0) {
+                e.preventDefault();
+                alert('Please enter at least one Pack Type.');
+                const firstInput = document.querySelector('.pack-type-input');
+                if (firstInput) firstInput.focus();
+                return false;
+            }
+            
+            // Update the hidden field with packaging data
+            const packagingHiddenField = document.getElementById('packaging_json_hidden');
+            if (packagingHiddenField) {
+                packagingHiddenField.value = JSON.stringify(validPackaging);
+                console.log('DEBUG JS: Set packaging_json_hidden =', packagingHiddenField.value);
+            }
+            
+            // Add barcodes to form
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'barcodes_json';
+            hiddenField.value = JSON.stringify(tempBarcodes);
+            this.appendChild(hiddenField);
+            
+            console.log('DEBUG JS: Submitting form');
+            
+            // Debug: Show confirmation
+            const confirmMsg = `Submitting ${validPackaging.length} packaging items:\n` + 
+                validPackaging.map(p => `  - ${p.pack_type}: qty=${p.pack_qty}`).join('\n');
+            console.log('DEBUG JS: ' + confirmMsg);
+        });
     }
-    
-    // Check if all rows have valid pack types
-    const hasInvalidRows = packagingData.some(p => !p.pack_type || p.pack_type.trim() === '');
-    if (hasInvalidRows) {
-        e.preventDefault();
-        alert('All packaging rows must have a Pack Type entered.');
-        return false;
-    }
-    
-    // Filter out empty rows and add to form
-    const hiddenField = document.createElement('input');
-    hiddenField.type = 'hidden';
-    hiddenField.name = 'barcodes_json';
-    hiddenField.value = JSON.stringify(tempBarcodes);
-    this.appendChild(hiddenField);
-    
-    // Add packaging data (only valid entries)
-    const packagingField = document.createElement('input');
-    packagingField.type = 'hidden';
-    packagingField.name = 'packaging_json';
-    packagingField.value = JSON.stringify(packagingData);
-    this.appendChild(packagingField);
 });
 
 function addPackRow() {
-    // Add a new empty row inline for the user to enter details
+    // If this is the first row, make it the default for sale and purchase
+    const isFirst = packagingData.length === 0;
+    
     packagingData.push({
         pack_type: '',
         pack_qty: 1,
-        is_default_sale: false,
-        is_default_purchase: false
+        is_default_sale: isFirst,
+        is_default_purchase: isFirst
     });
     renderPackagingTable();
     
@@ -778,13 +775,14 @@ function setDefaultPurchase(index) {
 }
 
 function updatePackType(index, value) {
+    const trimmedValue = value.trim();
     // Check for duplicates
-    if (value && packagingData.some((p, i) => i !== index && p.pack_type.toLowerCase() === value.trim().toLowerCase())) {
+    if (trimmedValue && packagingData.some((p, i) => i !== index && p.pack_type && p.pack_type.toLowerCase() === trimmedValue.toLowerCase())) {
         alert('This pack type already exists!');
-        document.querySelectorAll('.pack-type-input')[index].value = packagingData[index].pack_type;
+        document.querySelectorAll('.pack-type-input')[index].value = packagingData[index].pack_type || '';
         return;
     }
-    packagingData[index].pack_type = value.trim();
+    packagingData[index].pack_type = trimmedValue;
 }
 
 function updatePackQty(index, value) {
@@ -798,6 +796,7 @@ function updatePackQty(index, value) {
 }
 
 function renderPackagingTable() {
+    console.log('DEBUG: renderPackagingTable called, packagingData length =', packagingData.length);
     const tbody = document.getElementById('packagingTableBody');
     const emptyMsg = document.getElementById('emptyPackagingMsg');
     
@@ -853,6 +852,7 @@ function renderPackagingTable() {
     });
     
     tbody.innerHTML = html;
+    console.log('DEBUG: Table rendered with', packagingData.length, 'rows');
 }
 
 // Set focus on Product Name field when page loads

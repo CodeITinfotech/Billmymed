@@ -4,12 +4,38 @@
 
 {% block extra_css %}
 <style>
+#searchResults {
+    border: 2px solid #0d6efd;
+}
 .product-list-item {
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #e9ecef;
 }
-.product-list-item:hover {
-    background-color: #f8f9fa;
+.product-list-item:hover,
+.product-list-item.selected {
+    background-color: #f0f4ff;
+}
+.product-list-item.selected {
+    background-color: #e7f1ff !important;
+    border-left: 4px solid #0d6efd;
+    font-weight: 500;
+}
+.product-list-item.selected .text-muted {
+    color: rgba(0,0,0,0.6) !important;
+}
+.product-highlight {
+    font-weight: 600;
+    color: var(--primary);
+}
+#productSearch:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-rgb), 0.15);
+}
+.search-hint {
+    font-size: 11px;
+    color: #6c757d;
 }
 .cart-item-row {
     display: flex;
@@ -81,23 +107,25 @@
                 </div>
                 
                 <!-- Product Search -->
-                <div class="card border-0 shadow-sm mb-3">
+                <div class="card border-0 shadow-sm mb-3" id="searchCard">
                     <div class="card-body py-2">
                         <div class="input-group">
-                            <input type="text" class="form-control border-end-0" id="productSearch" 
-                                   placeholder="Search by name, code, or scan barcode..." autofocus>
-                            <button type="button" class="input-group-text bg-white border-start-0" onclick="document.getElementById('productSearch').focus()">
+                            <span class="input-group-text bg-white border-end-0">
                                 <i class="bi bi-search text-muted"></i>
-                            </button>
+                            </span>
+                            <input type="text" class="form-control border-start-0 border-end-0" id="productSearch" 
+                                   placeholder="Type product name or code..." autofocus autocomplete="off">
                         </div>
-                        <small class="text-muted ms-2">Press Enter to search</small>
-                        
-                        <!-- Search Results Dropdown -->
-                        <div class="position-relative">
-                            <div id="searchResults" class="position-absolute w-100 shadow-sm bg-white rounded-bottom overflow-hidden" style="z-index: 1000; max-height: 300px; overflow-y: auto; display: none;">
-                            </div>
+                        <div class="d-flex justify-content-between search-hint mt-1">
+                            <span><i class="bi bi-arrow-up me-1"></i><i class="bi bi-arrow-down me-1"></i> Navigate</span>
+                            <span><kbd>Enter</kbd> Select</span>
+                            <span><kbd>Esc</kbd> Close</span>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Search Results Dropdown - Outside card to avoid overflow clipping -->
+                <div id="searchResults" class="position-fixed shadow-lg bg-white rounded-3 overflow-hidden" style="z-index: 9999; display: none; width: calc(100% - 1rem); max-height: 400px; overflow-y: auto; left: 0.5rem;">
                 </div>
                 
                 <!-- Cart Items -->
@@ -116,7 +144,7 @@
                             <div class="col-2">Action</div>
                         </div>
                     </div>
-                    <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                    <div class="card-body p-0" style="max-height: 400px; overflow-y: visible;">
                         <div id="cartItems">
                             <!-- Cart items will be rendered here -->
                             <div class="text-center py-5 text-muted" id="emptyCart">
@@ -243,8 +271,23 @@
 {% block extra_js %}
 <script>
 let cart = [];
-let selectedSupplier = null;
 let searchTimeout = null;
+let selectedIndex = -1;
+let currentProducts = [];
+let selectedSupplier = null;
+
+// Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
 function formatCurrency(amount) {
     return '₹' + parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
@@ -279,10 +322,8 @@ function generatePackTypeOptions(productData) {
 }
 
 function searchProducts(query) {
-    // Clear previous timeout
-    if (searchTimeout) {
-        clearTimeout(searchTimeout);
-    }
+    // Reset selection when query changes
+    selectedIndex = -1;
     
     // Hide if empty query
     if (!query || query.trim() === '') {
@@ -290,41 +331,64 @@ function searchProducts(query) {
         return;
     }
     
-    // Debounce search - wait 150ms after typing stops
-    searchTimeout = setTimeout(function() {
-        fetch('/api/all-products?q=' + encodeURIComponent(query))
-        .then(res => res.json())
-        .then(products => {
-            const container = document.getElementById('searchResults');
-            if (products.length === 0) {
-                container.innerHTML = '<div class="p-3 text-muted">No products found</div>';
-            } else {
-                container.innerHTML = products.map(p => `
-                    <div class="product-list-item p-2 border-bottom" onclick="selectProduct(${p.id}, '${p.product_code}', '${p.product_name.replace(/'/g, "\\'")}')">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <strong>${p.product_name}</strong>
-                                <br><small class="text-muted">${p.product_code}</small>
-                            </div>
-                            <div class="text-end">
-                                <small>MRP: ₹${parseFloat(p.mrp || 0).toFixed(2)}</small>
-                                <br><small class="text-muted">Stock: ${p.stock || 0}</small>
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-            }
+    // Search immediately (debounce is handled by input event)
+    doProductSearch(query);
+}
+
+function doProductSearch(query) {
+    fetch('/api/all-products?q=' + encodeURIComponent(query))
+    .then(res => res.json())
+    .then(products => {
+        currentProducts = products.slice(0, 10); // Limit to 10 items
+        const container = document.getElementById('searchResults');
+        
+        // Position dropdown below the search card
+        const searchCard = document.getElementById('searchCard');
+        if (searchCard) {
+            const rect = searchCard.getBoundingClientRect();
+            container.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+        }
+        
+        if (products.length === 0) {
+            container.innerHTML = '<div class="p-4 text-muted text-center"><i class="bi bi-search fs-4 d-block mb-2"></i>No products found<br><small class="text-secondary">Modify your search terms</small></div>';
             container.style.display = 'block';
-        })
-        .catch(err => {
-            console.error('Search error:', err);
-        });
-    }, 150);
+            return;
+        }
+        
+        // Highlight matching text
+        const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp('(' + escapeRegex(query) + ')', 'gi');
+        
+        container.innerHTML = products.slice(0, 10).map((p, index) => {
+            const highlightedName = p.product_name.replace(regex, '<span class="product-highlight">$1</span>');
+            const highlightedCode = p.product_code.replace(regex, '<span class="product-highlight">$1</span>');
+            return `
+            <div class="product-list-item" data-index="${index}" onclick="selectProduct(${p.id}, '${p.product_code}', '${p.product_name.replace(/'/g, "\\'")}')">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>${highlightedName}</strong>
+                        <small class="text-muted d-block">${highlightedCode}</small>
+                    </div>
+                    <div class="text-end">
+                        <small class="text-primary fw-bold">MRP: ₹${parseFloat(p.mrp || 0).toFixed(2)}</small>
+                        <small class="${(p.stock || 0) < 10 ? 'text-danger' : 'text-success'} d-block">Stock: ${p.stock || 0}</small>
+                    </div>
+                </div>
+            </div>
+        `}).join('');
+        
+        container.style.display = 'block';
+    })
+    .catch(err => {
+        console.error('Search error:', err);
+    });
 }
 
 function selectProduct(productId, productCode, productName) {
     document.getElementById('searchResults').style.display = 'none';
     document.getElementById('productSearch').value = '';
+    selectedIndex = -1;
+    currentProducts = [];
     
     console.log('selectProduct called:', productId, productCode, productName);
     
@@ -389,7 +453,7 @@ function showBatchModal(productId, productCode, productName, batches, productDat
                             </label>
                             <div class="position-relative">
                                 <input type="text" class="form-control" id="modalBatchNo" placeholder="Type or select batch" autocomplete="off">
-                                <div class="position-absolute w-100 bg-white border rounded-bottom shadow-sm" id="batchDropdown" style="z-index: 1000; max-height: 150px; overflow-y: auto; display: none;">
+                                <div class="position-absolute w-100 bg-white border rounded-bottom shadow-sm" id="batchDropdown" style="z-index: 2000; max-height: 150px; overflow-y: auto; display: none;">
                                 </div>
                             </div>
                             <small class="text-muted"><i class="bi bi-lightbulb me-1"></i>Type to search or enter new</small>
@@ -1092,23 +1156,78 @@ function clearCart() {
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('productSearch');
-    searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
     
-    // Handle Enter key in search input
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
+    // Debounced search function
+    const debouncedSearch = debounce((query) => searchProducts(query), 150);
+    searchInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+    
+    // Handle keyboard navigation in search input
+    searchInput.addEventListener('keydown', function(e) {
+        const results = document.getElementById('searchResults');
+        const items = results.querySelectorAll('.product-list-item');
+        
+        if (e.key === 'ArrowDown') {
             e.preventDefault();
-            const results = document.getElementById('searchResults');
-            const firstResult = results.querySelector('.product-list-item');
-            if (firstResult) {
-                firstResult.click();
+            if (items.length > 0) {
+                if (selectedIndex < items.length - 1) {
+                    selectedIndex++;
+                } else {
+                    selectedIndex = 0; // Loop to start
+                }
+                updateSelection(items);
+                scrollToSelected(items);
             }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (items.length > 0) {
+                if (selectedIndex > 0) {
+                    selectedIndex--;
+                } else {
+                    selectedIndex = items.length - 1; // Loop to end
+                }
+                updateSelection(items);
+                scrollToSelected(items);
+            }
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (selectedIndex >= 0 && items[selectedIndex]) {
+                items[selectedIndex].click();
+            } else if (items.length > 0) {
+                // If no selection, select first item
+                items[0].click();
+            }
+        } else if (e.key === 'Escape') {
+            results.style.display = 'none';
+            selectedIndex = -1;
         }
     });
+    
+    // Update selection visual
+    function updateSelection(items) {
+        items.forEach((item, index) => {
+            if (index === selectedIndex) {
+                item.classList.add('selected');
+                item.style.backgroundColor = 'var(--primary)';
+                item.style.color = 'white';
+            } else {
+                item.classList.remove('selected');
+                item.style.backgroundColor = '';
+                item.style.color = '';
+            }
+        });
+    }
+    
+    // Scroll selected item into view
+    function scrollToSelected(items) {
+        if (items[selectedIndex]) {
+            items[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
     
     document.addEventListener('click', (e) => {
         if (!e.target.closest('#productSearch') && !e.target.closest('#searchResults')) {
             document.getElementById('searchResults').style.display = 'none';
+            selectedIndex = -1;
         }
     });
     

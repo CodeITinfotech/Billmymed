@@ -8,16 +8,22 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
 }
+#searchResults {
+    border: 2px solid #0d6efd;
+}
 .product-list-item {
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s ease;
+    padding: 12px 16px !important;
+    border-bottom: 1px solid #e9ecef;
 }
 .product-list-item:hover {
     background-color: #f8f9fa;
 }
 .product-list-item.selected {
-    background-color: #e7f1ff;
-    border-left: 3px solid #0d6efd;
+    background-color: #e7f1ff !important;
+    border-left: 4px solid #0d6efd;
+    font-weight: 500;
 }
 .batch-selector {
     border: 2px solid #0d6efd;
@@ -191,21 +197,19 @@
                             </button>
                         </div>
                         <small class="text-muted ms-2">Press Enter to search</small>
-                        
-                        <!-- Search Results Dropdown -->
-                        <div class="position-relative">
-                            <div id="searchResults" class="position-absolute w-100 shadow-sm bg-white rounded-bottom overflow-hidden" style="z-index: 1000; max-height: 300px; overflow-y: auto; display: none;">
-                            </div>
-                        </div>
-                        
-                        <!-- Batch Selection Dropdown -->
-                        <div id="batchSelector" class="batch-selector position-absolute w-100 shadow bg-white rounded mt-1" style="z-index: 1001; display: none;">
-                            <div class="p-2 bg-light border-bottom">
-                                <strong>Select Batch (Use ↑↓ keys or click)</strong>
-                            </div>
-                            <div id="batchList"></div>
-                        </div>
                     </div>
+                </div>
+                
+                <!-- Search Results Dropdown - Outside the card to avoid overflow clipping -->
+                <div id="searchResults" class="position-fixed shadow-lg bg-white rounded-3 overflow-hidden" style="z-index: 9999; display: none; width: calc(100% - 1rem); max-height: 400px; overflow-y: auto; left: 0.5rem;">
+                </div>
+                
+                <!-- Batch Selection Dropdown -->
+                <div id="batchSelector" class="batch-selector position-fixed shadow bg-white rounded mt-1" style="z-index: 10000; display: none; width: calc(100% - 1rem); left: 0.5rem;">
+                    <div class="p-2 bg-light border-bottom">
+                        <strong>Select Batch (Use ↑↓ keys or click)</strong>
+                    </div>
+                    <div id="batchList"></div>
                 </div>
                 
                 <!-- Cart Items -->
@@ -220,7 +224,7 @@
                             <div class="col-2 text-end">Total</div>
                         </div>
                     </div>
-                    <div class="card-body p-0" style="max-height: 400px; overflow-y: auto;">
+                    <div class="card-body p-0" style="max-height: 400px; overflow-y: visible;">
                         <div id="cartItems">
                             <!-- Cart items will be rendered here -->
                             <div class="text-center py-5 text-muted" id="emptyCart">
@@ -480,22 +484,30 @@ function doProductSearch(query) {
     fetch(`/api/all-products?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
-            currentProductResults = data.slice(0, 15);
+            currentProductResults = data.slice(0, 10); // Limit to 10 items
             selectedProductIndex = currentProductResults.length > 0 ? 0 : -1;
             const resultsDiv = document.getElementById('searchResults');
+            
+            // Position dropdown below the search card
+            const searchCard = document.querySelector('.card.mb-3');
+            if (searchCard) {
+                const rect = searchCard.getBoundingClientRect();
+                resultsDiv.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+            }
+            
             if (currentProductResults.length > 0) {
                 resultsDiv.innerHTML = currentProductResults.map((p, index) => {
                     const highlightedName = highlightMatch(p.product_name, query);
                     const highlightedCode = highlightMatch(p.product_code, query);
                     return `
-                        <div class="product-list-item p-2 border-bottom ${index === selectedProductIndex ? 'selected' : ''}" data-index="${index}" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
-                            <div class="d-flex justify-content-between">
+                        <div class="product-list-item p-3 border-bottom ${index === selectedProductIndex ? 'selected' : ''}" data-index="${index}" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
+                            <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>${highlightedName}</strong>
                                     <small class="text-muted d-block">${highlightedCode}</small>
                                 </div>
                                 <div class="text-end">
-                                    <small class="text-muted">₹${p.mrp.toFixed(2)}</small>
+                                    <small class="text-primary fw-bold">₹${p.mrp.toFixed(2)}</small>
                                     <small class="${p.stock < 10 ? 'text-danger' : 'text-success'} d-block">Stock: ${p.stock}</small>
                                 </div>
                             </div>
@@ -504,7 +516,7 @@ function doProductSearch(query) {
                 }).join('');
                 resultsDiv.style.display = 'block';
             } else {
-                resultsDiv.innerHTML = '<div class="p-3 text-muted text-center">No products found. Try different search terms.</div>';
+                resultsDiv.innerHTML = '<div class="p-4 text-muted text-center"><i class="bi bi-search fs-4 d-block mb-2"></i>No products found<br><small class="text-secondary">Modify your search terms</small></div>';
                 resultsDiv.style.display = 'block';
             }
         });

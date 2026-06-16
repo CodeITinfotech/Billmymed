@@ -49,8 +49,9 @@ def list():
 def view(id):
     product = Product.query.get_or_404(id)
     batches = Batch.query.filter_by(product_id=id).filter(Batch.available_qty > 0).order_by(Batch.expiry_date).all()
+    packaging = ProductPackaging.query.filter_by(product_id=id, is_active=True).all()
     
-    return render_template('products/view.html', product=product, batches=batches)
+    return render_template('products/view.html', product=product, batches=batches, packaging=packaging)
 
 @products_bp.route('/add', methods=['GET', 'POST'])
 @login_required
@@ -142,8 +143,11 @@ def add():
         
         # Add packaging configurations
         packaging_json = request.form.get('packaging_json', '[]')
+        print(f"DEBUG add(): packaging_json = '{packaging_json}'")
+        print(f"DEBUG add(): Request form keys = {list(request.form.keys())}")
         try:
             packaging_data = json.loads(packaging_json)
+            print(f"DEBUG add(): packaging_data = {packaging_data}")
             for pkg in packaging_data:
                 pack_type = pkg.get('pack_type', '').strip()
                 pack_qty = int(pkg.get('pack_qty', 1))
@@ -156,7 +160,11 @@ def add():
                         is_default_purchase=pkg.get('is_default_purchase', False)
                     )
                     db.session.add(pp)
+                    print(f"DEBUG add(): Added packaging - {pack_type} x {pack_qty}")
         except Exception as e:
+            print(f"DEBUG ERROR add(): {str(e)}")
+            import traceback
+            traceback.print_exc()
             pass
         
         db.session.commit()
@@ -169,12 +177,18 @@ def add():
     generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
     manufacturers = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
     product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
-    return render_template('products/add.html', categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types)
+    return render_template('products/add.html', categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types, is_edit=False)
 
 @products_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(id):
     product = Product.query.get_or_404(id)
+    
+    # Load all packaging (including inactive) for the edit form
+    all_packaging = ProductPackaging.query.filter_by(product_id=id).all()
+    print(f"DEBUG edit(): Loading {len(all_packaging)} packaging records for product {id}")
+    for pkg in all_packaging:
+        print(f"DEBUG edit():   - {pkg.pack_type}: qty={pkg.pack_qty}")
     
     if request.method == 'POST':
         product.product_name = request.form.get('product_name', '').strip()
@@ -201,11 +215,16 @@ def edit(id):
         
         # Update packaging configurations
         packaging_json = request.form.get('packaging_json', '[]')
+        print(f"DEBUG edit POST: packaging_json = '{packaging_json}'")
+        print(f"DEBUG edit POST: Request form keys = {list(request.form.keys())}")
         try:
-            # Delete existing packaging and add new ones
-            ProductPackaging.query.filter_by(product_id=product.id).delete()
+            # Soft delete existing packaging
+            existing = ProductPackaging.query.filter_by(product_id=product.id).all()
+            for pkg in existing:
+                pkg.is_active = False
             
             packaging_data = json.loads(packaging_json)
+            print(f"DEBUG edit POST: packaging_data = {packaging_data}")
             for pkg in packaging_data:
                 pack_type = pkg.get('pack_type', '').strip()
                 pack_qty = int(pkg.get('pack_qty', 1))
@@ -215,10 +234,15 @@ def edit(id):
                         pack_type=pack_type,
                         pack_qty=pack_qty,
                         is_default_sale=pkg.get('is_default_sale', False),
-                        is_default_purchase=pkg.get('is_default_purchase', False)
+                        is_default_purchase=pkg.get('is_default_purchase', False),
+                        is_active=True
                     )
                     db.session.add(pp)
+                    print(f"DEBUG edit POST: Added packaging - {pack_type} x {pack_qty}")
         except Exception as e:
+            print(f"DEBUG ERROR edit POST: {str(e)}")
+            import traceback
+            traceback.print_exc()
             pass
         
         db.session.commit()
@@ -231,7 +255,7 @@ def edit(id):
     generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
     manufacturers = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
     product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
-    return render_template('products/add.html', product=product, categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types, is_edit=True)
+    return render_template('products/add.html', product=product, all_packaging=all_packaging, categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types, is_edit=True)
 
 @products_bp.route('/<int:id>/delete', methods=['POST'])
 @login_required
@@ -403,7 +427,8 @@ def update_tax(id):
 @login_required
 def get_product_packaging(product_id):
     """Get all packaging configurations for a product"""
-    packaging = ProductPackaging.query.filter_by(product_id=product_id, is_active=True).all()
+    # Don't filter by is_active for the edit page
+    packaging = ProductPackaging.query.filter_by(product_id=product_id).all()
     return jsonify([{
         'id': p.id,
         'pack_type': p.pack_type,
