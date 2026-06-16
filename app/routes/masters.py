@@ -276,7 +276,7 @@ def api_add_hsn():
 @masters_bp.route('/doctors')
 @login_required
 def doctors():
-    items = Doctor.query.filter_by(is_active=True).order_by(Doctor.name).all()
+    items = Doctor.query.filter_by(is_active=True).order_by(Doctor.doctor_name).all()
     return render_template('masters/doctors.html', items=items, page_title='Doctor Master')
 
 @masters_bp.route('/api/doctors/search')
@@ -285,12 +285,13 @@ def search_doctors():
     query = request.args.get('q', '')
     doctors = Doctor.query.filter(
         Doctor.is_active == True,
-        Doctor.name.ilike(f'%{query}%')
-    ).order_by(Doctor.name).limit(10).all()
+        Doctor.doctor_name.ilike(f'%{query}%')
+    ).order_by(Doctor.doctor_name).limit(10).all()
     return jsonify([{
         'id': d.id,
-        'name': d.name,
-        'specialty': d.specialty or '',
+        'name': d.doctor_name,
+        'specialty': d.specialization or '',
+        'degree': d.degree or '',
         'phone': d.phone or '',
         'address': d.address or ''
     } for d in doctors])
@@ -302,12 +303,13 @@ def search_doctors_compat():
     query = request.args.get('q', '')
     doctors = Doctor.query.filter(
         Doctor.is_active == True,
-        Doctor.name.ilike(f'%{query}%')
-    ).order_by(Doctor.name).limit(10).all()
+        Doctor.doctor_name.ilike(f'%{query}%')
+    ).order_by(Doctor.doctor_name).limit(10).all()
     return jsonify([{
         'id': d.id,
-        'name': d.name,
-        'specialty': d.specialty or '',
+        'name': d.doctor_name,
+        'specialty': d.specialization or '',
+        'degree': d.degree or '',
         'phone': d.phone or '',
         'address': d.address or ''
     } for d in doctors])
