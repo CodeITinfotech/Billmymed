@@ -13,7 +13,6 @@
 }
 .product-list-item {
     cursor: pointer;
-    transition: all 0.15s ease;
     padding: 12px 16px !important;
     border-bottom: 1px solid #e9ecef;
 }
@@ -118,7 +117,7 @@
                                 <div class="position-relative">
                                     <input type="text" class="form-control form-control-sm" id="patientName" 
                                            placeholder="Enter patient name" autocomplete="off"
-                                           onkeyup="searchPatient(this.value)">
+                                           oninput="searchPatient(this.value)" onkeydown="handlePatientKeydown(event)">
                                     <div id="patientDropdown" class="position-absolute w-100 shadow-sm bg-white rounded mt-1" 
                                          style="z-index: 1000; max-height: 200px; overflow-y: auto; display: none;">
                                     </div>
@@ -155,7 +154,7 @@
                                 <div class="input-group input-group-sm">
                                     <input type="text" class="form-control" id="doctorName" 
                                            placeholder="Search or enter doctor name" autocomplete="off"
-                                           onkeyup="searchDoctor(this.value)">
+                                           oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)">
                                     <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="visually-hidden">Toggle Dropdown</span>
                                     </button>
@@ -1183,21 +1182,31 @@ function printBill() {
     window.print();
 }
 
+// Patient dropdown state
+let selectedPatientIndex = -1;
+let currentPatientResults = [];
+
 // Search patient (customers with typeahead)
 function searchPatient(query) {
     const dropdown = document.getElementById('patientDropdown');
     
     if (query.length < 1) {
         dropdown.style.display = 'none';
+        selectedPatientIndex = -1;
         return;
     }
     
     fetch(`/api/customers?search=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
-            if (data.length > 0) {
-                dropdown.innerHTML = data.slice(0, 10).map(c => `
-                    <div class="patient-item p-2 border-bottom" style="cursor: pointer;" 
+            currentPatientResults = data.slice(0, 10);
+            selectedPatientIndex = -1;
+            
+            if (currentPatientResults.length > 0) {
+                dropdown.innerHTML = currentPatientResults.map((c, i) => `
+                    <div class="patient-item p-2 border-bottom ${i === selectedPatientIndex ? 'selected' : ''}" 
+                         style="cursor: pointer;"
+                         data-index="${i}"
                          onclick="selectPatient(${c.id}, '${c.account_name.replace(/'/g, "\\'")}', '${c.phone || ''}', '${c.address || ''}')">
                         <strong>${c.account_name}</strong>
                         <small class="text-muted d-block">${c.phone || 'No phone'} | ${c.city || 'No city'}</small>
@@ -1206,7 +1215,9 @@ function searchPatient(query) {
                 
                 // Add "Create New" option
                 dropdown.innerHTML += `
-                    <div class="patient-item p-2 border-bottom text-primary" style="cursor: pointer; background: #f8f9fa;" 
+                    <div class="patient-item p-2 border-bottom text-primary" 
+                         style="cursor: pointer; background: #f8f9fa;"
+                         data-create="true"
                          onclick="createNewPatient('${query.replace(/'/g, "\\'")}')">
                         <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
                     </div>
@@ -1216,14 +1227,73 @@ function searchPatient(query) {
                     <div class="p-3 text-muted text-center">
                         No patients found
                     </div>
-                    <div class="patient-item p-2 border-bottom text-primary" style="cursor: pointer; background: #f8f9fa;" 
+                    <div class="patient-item p-2 border-bottom text-primary" 
+                         style="cursor: pointer; background: #f8f9fa;"
+                         data-create="true"
                          onclick="createNewPatient('${query.replace(/'/g, "\\'")}')">
                         <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
                     </div>
                 `;
             }
             dropdown.style.display = 'block';
+            updatePatientSelection();
         });
+}
+
+// Handle keyboard navigation for patient dropdown
+function handlePatientKeydown(event) {
+    const dropdown = document.getElementById('patientDropdown');
+    const items = dropdown.querySelectorAll('.patient-item');
+    const totalItems = items.length;
+    
+    if (dropdown.style.display === 'none') {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            dropdown.style.display = 'block';
+            event.preventDefault();
+            return;
+        }
+        return;
+    }
+    
+    if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        selectedPatientIndex = (selectedPatientIndex + 1) % totalItems;
+        updatePatientSelection();
+    } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        selectedPatientIndex = selectedPatientIndex <= 0 ? totalItems - 1 : selectedPatientIndex - 1;
+        updatePatientSelection();
+    } else if (event.key === 'Enter') {
+        event.preventDefault();
+        if (selectedPatientIndex >= 0 && selectedPatientIndex < currentPatientResults.length) {
+            const c = currentPatientResults[selectedPatientIndex];
+            selectPatient(c.id, c.account_name, c.phone || '', c.address || '');
+        } else if (selectedPatientIndex === totalItems - 1) {
+            // Create new option selected
+            createNewPatient(document.getElementById('patientName').value);
+        }
+    } else if (event.key === 'Escape') {
+        dropdown.style.display = 'none';
+        selectedPatientIndex = -1;
+    }
+}
+
+// Update visual selection for patient dropdown
+function updatePatientSelection() {
+    const dropdown = document.getElementById('patientDropdown');
+    const items = dropdown.querySelectorAll('.patient-item');
+    items.forEach((item, i) => {
+        if (i === selectedPatientIndex) {
+            item.classList.add('selected');
+            item.style.backgroundColor = '#e7f1ff';
+            item.style.borderLeft = '4px solid #0d6efd';
+            item.scrollIntoView({ block: 'nearest' });
+        } else {
+            item.classList.remove('selected');
+            item.style.backgroundColor = '';
+            item.style.borderLeft = '';
+        }
+    });
 }
 
 // Select patient from dropdown
@@ -1295,21 +1365,31 @@ function createNewPatient(name) {
     document.getElementById('productSearch').focus();
 }
 
+// Doctor dropdown state
+let selectedDoctorIndex = -1;
+let currentDoctorResults = [];
+
 // Search doctor from dropdown
 function searchDoctor(query) {
     const dropdown = document.getElementById('doctorDropdown');
     
     if (query.length < 1) {
         dropdown.style.display = 'none';
+        selectedDoctorIndex = -1;
         return;
     }
     
     fetch(`/masters/api/doctors/search?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
-            if (data.length > 0) {
-                dropdown.innerHTML = data.slice(0, 10).map(d => `
-                    <div class="dropdown-item patient-item" style="cursor: pointer;" 
+            currentDoctorResults = data.slice(0, 10);
+            selectedDoctorIndex = -1;
+            
+            if (currentDoctorResults.length > 0) {
+                dropdown.innerHTML = currentDoctorResults.map((d, i) => `
+                    <div class="dropdown-item doctor-item ${i === selectedDoctorIndex ? 'selected' : ''}" 
+                         style="cursor: pointer; padding: 8px 12px; border-bottom: 1px solid #eee;"
+                         data-index="${i}"
                          onclick="selectDoctor(${d.id}, '${d.name.replace(/'/g, "\\'")}', '${d.specialization || ''}', '${d.degree || ''}', '${d.phone || ''}', '${d.address || ''}')">
                         <strong>${d.name}</strong>
                         ${d.specialization ? '<small class="text-muted"> | ' + d.specialization + (d.degree ? ' - ' + d.degree : '') + '</small>' : ''}
@@ -1318,24 +1398,85 @@ function searchDoctor(query) {
                 
                 // Add "Create New" option
                 dropdown.innerHTML += `
-                    <div class="dropdown-item patient-item text-primary" style="cursor: pointer;" 
+                    <div class="dropdown-item doctor-item text-primary" 
+                         style="cursor: pointer; padding: 8px 12px;"
+                         data-create="true"
                          onclick="createNewDoctor('${query.replace(/'/g, "\\'")}')">
                         <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
                     </div>
                 `;
             } else {
                 dropdown.innerHTML = `
-                    <div class="dropdown-item text-muted text-center">
+                    <div class="dropdown-item text-muted text-center" style="padding: 8px 12px;">
                         No doctors found
                     </div>
-                    <div class="dropdown-item patient-item text-primary" style="cursor: pointer;" 
+                    <div class="dropdown-item doctor-item text-primary" 
+                         style="cursor: pointer; padding: 8px 12px;"
+                         data-create="true"
                          onclick="createNewDoctor('${query.replace(/'/g, "\\'")}')">
                         <i class="bi bi-plus-circle me-1"></i> Create New: "${query}"
                     </div>
                 `;
             }
             dropdown.style.display = 'block';
+            updateDoctorSelection();
         });
+}
+
+// Handle keyboard navigation for doctor dropdown
+function handleDoctorKeydown(event) {
+    const dropdown = document.getElementById('doctorDropdown');
+    const items = dropdown.querySelectorAll('.doctor-item');
+    const totalItems = items.length;
+    
+    if (dropdown.style.display === 'none') {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+            dropdown.style.display = 'block';
+            event.preventDefault();
+            return;
+        }
+        return;
+    }
+    
+    if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        selectedDoctorIndex = (selectedDoctorIndex + 1) % totalItems;
+        updateDoctorSelection();
+    } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        selectedDoctorIndex = selectedDoctorIndex <= 0 ? totalItems - 1 : selectedDoctorIndex - 1;
+        updateDoctorSelection();
+    } else if (event.key === 'Enter') {
+        event.preventDefault();
+        if (selectedDoctorIndex >= 0 && selectedDoctorIndex < currentDoctorResults.length) {
+            const d = currentDoctorResults[selectedDoctorIndex];
+            selectDoctor(d.id, d.name, d.specialization || '', d.degree || '', d.phone || '', d.address || '');
+        } else if (selectedDoctorIndex === totalItems - 1) {
+            // Create new option selected
+            createNewDoctor(document.getElementById('doctorName').value);
+        }
+    } else if (event.key === 'Escape') {
+        dropdown.style.display = 'none';
+        selectedDoctorIndex = -1;
+    }
+}
+
+// Update visual selection for doctor dropdown
+function updateDoctorSelection() {
+    const dropdown = document.getElementById('doctorDropdown');
+    const items = dropdown.querySelectorAll('.doctor-item');
+    items.forEach((item, i) => {
+        if (i === selectedDoctorIndex) {
+            item.classList.add('selected');
+            item.style.backgroundColor = '#e7f1ff';
+            item.style.borderLeft = '4px solid #0d6efd';
+            item.scrollIntoView({ block: 'nearest' });
+        } else {
+            item.classList.remove('selected');
+            item.style.backgroundColor = '';
+            item.style.borderLeft = '';
+        }
+    });
 }
 
 // Select doctor from dropdown
@@ -1439,10 +1580,28 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('salesType').addEventListener('change', handleSalesTypeChange);
     
     // Close dropdowns when clicking outside
+    let clickTimeout = null;
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('#productSearch') && !e.target.closest('#searchResults') && !e.target.closest('#batchSelector')) {
+        // Debounce to prevent flickering
+        if (clickTimeout) return;
+        clickTimeout = setTimeout(() => {
+            clickTimeout = null;
+        }, 100);
+        
+        // Don't close if clicking inside dropdowns or search fields
+        const inSearchResults = e.target.closest('#searchResults');
+        const inProductSearch = e.target.closest('#productSearch');
+        const inBatchSelector = e.target.closest('#batchSelector');
+        const inDoctorDropdown = e.target.closest('#doctorDropdown');
+        const inPatientDropdown = e.target.closest('#patientDropdown');
+        const inDoctorName = e.target.closest('#doctorName');
+        const inPatientName = e.target.closest('#patientName');
+        
+        if (!inSearchResults && !inProductSearch && !inBatchSelector && !inDoctorDropdown && !inPatientDropdown && !inDoctorName && !inPatientName) {
             document.getElementById('searchResults').style.display = 'none';
             hideBatchSelector();
+            document.getElementById('doctorDropdown').style.display = 'none';
+            document.getElementById('patientDropdown').style.display = 'none';
         }
     });
     
