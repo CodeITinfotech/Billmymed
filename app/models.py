@@ -422,6 +422,47 @@ class InvoiceItem(db.Model):
     def __repr__(self):
         return f'<InvoiceItem {self.product_id} x {self.quantity}>'
 
+class HoldInvoice(db.Model):
+    """Temporary storage for multi-tab billing - preserves unsaved cart data"""
+    __tablename__ = 'hold_invoices'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    session_id = db.Column(db.String(64), nullable=False, index=True)  # Browser session ID
+    tab_id = db.Column(db.String(32), nullable=False, index=True)  # Unique tab identifier
+    invoice_no = db.Column(db.String(20), unique=True, nullable=False)  # Pre-allocated invoice number
+    invoice_type = db.Column(db.String(20), default='sale')
+    
+    # Customer/Patient info
+    customer_id = db.Column(db.Integer)
+    customer_name = db.Column(db.String(200))
+    patient_id = db.Column(db.Integer)
+    patient_name = db.Column(db.String(200))
+    patient_phone = db.Column(db.String(20))
+    patient_place = db.Column(db.String(100))
+    doctor_id = db.Column(db.Integer)
+    doctor_name = db.Column(db.String(200))
+    
+    # Sale details
+    sales_type = db.Column(db.String(10), default='cash')
+    prescription_no = db.Column(db.String(50))
+    
+    # Cart data stored as JSON
+    cart_data = db.Column(db.Text)  # JSON string of cart items
+    
+    # Status
+    status = db.Column(db.String(20), default='active')  # active, saved, abandoned
+    tab_title = db.Column(db.String(100))  # Display title (patient name or first product)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_activity = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    
+    def __repr__(self):
+        return f'<HoldInvoice {self.invoice_no} ({self.tab_title})>'
+
 class Purchase(db.Model):
     __tablename__ = 'purchases'
     

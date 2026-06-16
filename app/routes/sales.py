@@ -1,10 +1,11 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, session
 from flask_login import login_required, current_user
 from app import db
-from app.models import Invoice, InvoiceItem, Product, Batch, AccountMaster, Ledger, Doctor, Prescription, Tax
+from app.models import Invoice, InvoiceItem, Product, Batch, AccountMaster, Ledger, Doctor, Prescription, Tax, HoldInvoice
 from sqlalchemy import func, and_
 from datetime import datetime, timedelta
 import uuid
+import json
 
 sales_bp = Blueprint('sales', __name__)
 
@@ -15,23 +16,305 @@ def generate_invoice_no(invoice_type='sale'):
     elif invoice_type == 'emergency':
         prefix = 'ES'
     
-    # Get last invoice number with same prefix
+    # Get last invoice number with same prefix (from actual invoices)
     last_invoice = Invoice.query.filter(
         Invoice.invoice_no.like(f'{prefix}-%')
     ).order_by(Invoice.id.desc()).first()
     
+    # Also check hold invoices for pre-allocated numbers
+    last_hold = HoldInvoice.query.filter(
+        HoldInvoice.invoice_no.like(f'{prefix}-%'),
+        HoldInvoice.status == 'active'
+    ).order_by(HoldInvoice.id.desc()).first()
+    
+    # Find the maximum number
+    max_num = 0
     if last_invoice:
         try:
-            last_num = int(last_invoice.invoice_no.split('-')[-1])
-            new_num = last_num + 1
-            if new_num > 9999999999:  # Max 10 digits
-                new_num = 1
+            num = int(last_invoice.invoice_no.split('-')[-1])
+            max_num = max(max_num, num)
         except:
-            new_num = 1
-    else:
+            pass
+    
+    if last_hold:
+        try:
+            num = int(last_hold.invoice_no.split('-')[-1])
+            max_num = max(max_num, num)
+        except:
+            pass
+    
+    new_num = max_num + 1
+    if new_num > 9999999999:
         new_num = 1
     
     return f'{prefix}-{new_num}'
+
+# ============= MULTI-TAB BILLING ROUTES =============
+
+@sales_bp.route('/tabs')
+@login_required
+def get_tabs():
+    """Get all active tabs for current user"""
+    session_id = session.get('session_id') or str(uuid.uuid4())
+    session['session_id'] = session_id
+    
+    tabs = HoldInvoice.query.filter_by(
+        session_id=session_id,
+        status='active'
+    ).order_by(HoldInvoice.created_at).all()
+    
+    return jsonify([{
+        'id': t.tab_id,
+        'invoice_no': t.invoice_no,
+        'tab_title': t.tab_title or f'Invoice {t.invoice_no}',
+        'patient_name': t.patient_name,
+        'item_count': len(json.loads(t.cart_data)) if t.cart_data else 0,
+        'has_items': bool(t.cart_data and json.loads(t.cart_data))
+    } for t in tabs])
+
+@sales_bp.route('/tab/create', methods=['POST'])
+@login_required
+def create_tab():
+    """Create a new billing tab with pre-allocated invoice number"""
+    session_id = session.get('session_id') or str(uuid.uuid4())
+    session['session_id'] = session_id
+    
+    # Check max tabs limit (10)
+    active_tabs = HoldInvoice.query.filter_by(
+        session_id=session_id,
+        status='active'
+    ).count()
+    
+    if active_tabs >= 10:
+        return jsonify({'success': False, 'error': 'Maximum 10 tabs allowed'}), 400
+    
+    # Generate invoice number
+    invoice_no = generate_invoice_no()
+    tab_id = str(uuid.uuid4())[:8]
+    
+    hold = HoldInvoice(
+        session_id=session_id,
+        tab_id=tab_id,
+        invoice_no=invoice_no,
+        status='active',
+        user_id=current_user.id
+    )
+    db.session.add(hold)
+    db.session.commit()
+    
+    return jsonify({
+        'success': True,
+        'tab_id': tab_id,
+        'invoice_no': invoice_no
+    })
+
+@sales_bp.route('/tab/<tab_id>')
+@login_required
+def get_tab(tab_id):
+    """Get tab data for loading"""
+    session_id = session.get('session_id')
+    
+    hold = HoldInvoice.query.filter_by(
+        tab_id=tab_id,
+        session_id=session_id,
+        status='active'
+    ).first()
+    
+    if not hold:
+        return jsonify({'success': False, 'error': 'Tab not found'}), 404
+    
+    return jsonify({
+        'success': True,
+        'tab_id': hold.tab_id,
+        'invoice_no': hold.invoice_no,
+        'patient_id': hold.patient_id,
+        'patient_name': hold.patient_name,
+        'patient_phone': hold.patient_phone,
+        'patient_place': hold.patient_place,
+        'doctor_id': hold.doctor_id,
+        'doctor_name': hold.doctor_name,
+        'sales_type': hold.sales_type,
+        'prescription_no': hold.prescription_no,
+        'cart_data': json.loads(hold.cart_data) if hold.cart_data else [],
+        'tab_title': hold.tab_title
+    })
+
+@sales_bp.route('/tab/<tab_id>/save', methods=['POST'])
+@login_required
+def save_tab(tab_id):
+    """Auto-save tab data (called periodically)"""
+    session_id = session.get('session_id')
+    
+    hold = HoldInvoice.query.filter_by(
+        tab_id=tab_id,
+        session_id=session_id,
+        status='active'
+    ).first()
+    
+    if not hold:
+        return jsonify({'success': False, 'error': 'Tab not found'}), 404
+    
+    data = request.get_json()
+    
+    # Update fields
+    hold.patient_id = data.get('patient_id')
+    hold.patient_name = data.get('patient_name', '')
+    hold.patient_phone = data.get('patient_phone', '')
+    hold.patient_place = data.get('patient_place', '')
+    hold.doctor_id = data.get('doctor_id')
+    hold.doctor_name = data.get('doctor_name', '')
+    hold.sales_type = data.get('sales_type', 'cash')
+    hold.prescription_no = data.get('prescription_no', '')
+    hold.cart_data = json.dumps(data.get('cart_data', []))
+    hold.last_activity = datetime.utcnow()
+    
+    # Update tab title based on patient/product
+    cart = data.get('cart_data', [])
+    if data.get('patient_name'):
+        hold.tab_title = data.get('patient_name')
+    elif cart and len(cart) > 0:
+        hold.tab_title = cart[0].get('product_name', 'Untitled')[:30]
+    else:
+        hold.tab_title = f'Invoice {hold.invoice_no}'
+    
+    db.session.commit()
+    
+    return jsonify({'success': True})
+
+@sales_bp.route('/tab/<tab_id>/close', methods=['POST'])
+@login_required
+def close_tab(tab_id):
+    """Close/abandon a tab"""
+    session_id = session.get('session_id')
+    
+    hold = HoldInvoice.query.filter_by(
+        tab_id=tab_id,
+        session_id=session_id,
+        status='active'
+    ).first()
+    
+    if hold:
+        hold.status = 'abandoned'
+        db.session.commit()
+    
+    return jsonify({'success': True})
+
+@sales_bp.route('/tab/<tab_id>/submit', methods=['POST'])
+@login_required
+def submit_tab(tab_id):
+    """Submit tab data to create actual invoice and delete hold"""
+    session_id = session.get('session_id')
+    
+    hold = HoldInvoice.query.filter_by(
+        tab_id=tab_id,
+        session_id=session_id,
+        status='active'
+    ).first()
+    
+    if not hold:
+        return jsonify({'success': False, 'error': 'Tab not found'}), 404
+    
+    try:
+        cart = json.loads(hold.cart_data) if hold.cart_data else []
+        
+        if not cart:
+            return jsonify({'success': False, 'error': 'No items in cart'}), 400
+        
+        # Use the pre-allocated invoice number
+        invoice_no = hold.invoice_no
+        sales_type = hold.sales_type or 'cash'
+        
+        # Get customer (for credit sales)
+        customer_id = hold.customer_id
+        if not customer_id:
+            customer = AccountMaster.query.filter_by(account_code='WALKIN').first()
+            if not customer:
+                customer = AccountMaster(
+                    account_code='WALKIN',
+                    account_name='Walk-in Customer',
+                    account_type='customer',
+                    is_active=True
+                )
+                db.session.add(customer)
+                db.session.commit()
+            customer_id = customer.id
+        
+        # Create invoice
+        invoice = Invoice(
+            invoice_no=invoice_no,
+            invoice_type='sale',
+            invoice_date=datetime.utcnow(),
+            customer_id=customer_id,
+            sales_type=sales_type,
+            patient_id=hold.patient_id,
+            patient_name=hold.patient_name,
+            patient_phone=hold.patient_phone,
+            patient_address=hold.patient_place,
+            doctor_id=hold.doctor_id,
+            doctor_name=hold.doctor_name,
+            prescription_no=hold.prescription_no,
+            subtotal=0,
+            discount_perc=0,
+            discount_amt=0,
+            tax_amt=0,
+            round_off=0,
+            total_amount=0,
+            payment_status='paid' if sales_type == 'cash' else 'credit',
+            user_id=current_user.id
+        )
+        
+        db.session.add(invoice)
+        db.session.flush()
+        
+        subtotal = 0
+        for item_data in cart:
+            batch_id = item_data.get('batch_id')
+            batch = Batch.query.get(batch_id) if batch_id else None
+            
+            expiry = None
+            if item_data.get('expiry_date'):
+                try:
+                    expiry = datetime.strptime(item_data['expiry_date'], '%Y-%m-%d').date()
+                except:
+                    pass
+            
+            item = InvoiceItem(
+                invoice_id=invoice.id,
+                product_id=item_data['product_id'],
+                batch_id=batch_id,
+                batch_no=item_data.get('batch_no', ''),
+                expiry_date=expiry,
+                quantity=item_data.get('quantity', 1),
+                free_qty=item_data.get('free_qty', 0),
+                unit_rate=item_data.get('unit_rate', 0),
+                mrp=item_data.get('mrp'),
+                discount_perc=item_data.get('discount_perc', 0),
+                tax_perc=item_data.get('tax_perc', 0),
+                amount=item_data.get('amount', 0)
+            )
+            db.session.add(item)
+            subtotal += item_data.get('amount', 0)
+            
+            # Update batch
+            if batch:
+                batch.available_qty -= item_data.get('quantity', 1)
+        
+        invoice.subtotal = subtotal
+        invoice.total_amount = subtotal  # Simplified calculation
+        
+        # Delete hold record
+        db.session.delete(hold)
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'invoice_id': invoice.id,
+            'invoice_no': invoice_no
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @sales_bp.route('/')
 @login_required

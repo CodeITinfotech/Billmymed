@@ -87,24 +87,33 @@
 
 {% block content %}
 <div class="container-fluid px-2 px-lg-3 py-3">
-    <!-- Header -->
+    <!-- Tab Header -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-        <div>
-            <h5 class="fw-bold mb-1">New Sale</h5>
-            <small class="text-muted">Invoice: <code>{{ invoice_no }}</code></small>
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="fw-bold mb-0">Sales</h5>
+            <!-- Tabs Container -->
+            <div class="d-flex gap-1 ms-3" id="tabsContainer" style="max-width: 70%; overflow-x: auto;">
+                <!-- Tabs will be dynamically added here -->
+            </div>
+            <!-- New Tab Button -->
+            <button type="button" class="btn btn-sm btn-outline-primary rounded-pill" onclick="createNewTab()" title="New Tab" style="flex-shrink: 0;">
+                <i class="bi bi-plus"></i>
+            </button>
         </div>
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearCart()">
                 <i class="bi bi-trash me-1"></i> Clear
             </button>
-            <button type="button" class="btn btn-primary btn-sm" onclick="holdBill()">
-                <i class="bi bi-pause me-1"></i> Hold
+            <button type="button" class="btn btn-success btn-sm" onclick="submitSale()">
+                <i class="bi bi-check-lg me-1"></i> Submit
             </button>
         </div>
     </div>
     
-    <form id="saleForm" method="POST" action="{{ url_for('sales.create') }}">
+    <form id="saleForm">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" id="currentTabId" value="">
+        <input type="hidden" id="currentInvoiceNo" value="{{ invoice_no }}">
         <div class="row g-3">
             <!-- Left Column - Product Selection -->
             <div class="col-12 col-lg-8">
@@ -116,23 +125,23 @@
                                 <label class="form-label small mb-0">Patient Name *</label>
                                 <input type="text" class="form-control form-control-sm" id="patientName" 
                                        placeholder="Enter patient name" autocomplete="off"
-                                       oninput="searchPatient(this.value)" onkeydown="handlePatientKeydown(event)"
+                                       oninput="searchPatient(this.value); autoSaveTab();" onkeydown="handlePatientKeydown(event)"
                                        tabindex="5">
                                 <input type="hidden" id="patientId" name="patient_id" value="">
                             </div>
                             <div class="col-6 col-md-2">
                                 <label class="form-label small mb-0">Phone</label>
                                 <input type="text" class="form-control form-control-sm" id="patientPhone" 
-                                       name="patient_phone" placeholder="Phone number">
+                                       name="patient_phone" placeholder="Phone number" onchange="autoSaveTab()">
                             </div>
                             <div class="col-6 col-md-2">
                                 <label class="form-label small mb-0">Place</label>
-                                <input type="text" class="form-control form-control-sm" id="patientPlace" 
-                                       name="patient_place" placeholder="Place">
+                                <input type="text" class="form-control form-control-sm" id="patientPlace"
+                                       name="patient_place" placeholder="Place" onchange="autoSaveTab()">
                             </div>
                             <div class="col-6 col-md-2">
                                 <label class="form-label small mb-0">Sales Type</label>
-                                <select class="form-select form-select-sm" name="sales_type" id="salesType">
+                                <select class="form-select form-select-sm" name="sales_type" id="salesType" onchange="autoSaveTab();">
                                     <option value="cash">Cash</option>
                                     <option value="credit">Credit</option>
                                     <option value="emergency">Emergency</option>
@@ -1989,5 +1998,342 @@ function saveNewDoctor() {
             </div>
         </div>
     </div>
-</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ============= MULTI-TAB BILLING SYSTEM =============
+
+let currentTabId = null;
+let autoSaveTimer = null;
+const AUTO_SAVE_INTERVAL = 30000; // Auto-save every 30 seconds
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadTabs();
+    
+    // Set up beforeunload to save data
+    window.addEventListener('beforeunload', function(e) {
+        if (currentTabId && cart.length > 0) {
+            autoSaveTab();
+        }
+    });
+});
+
+// Load existing tabs
+async function loadTabs() {
+    try {
+        const response = await fetch('/sales/tabs');
+        const tabs = await response.json();
+        
+        if (tabs.length === 0) {
+            // Create first tab
+            createNewTab();
+        } else {
+            // Load all tabs and activate the first one with items, or last active
+            tabs.forEach(tab => addTabButton(tab));
+            
+            // Find tab with items or last created
+            const activeTab = tabs.find(t => t.has_items) || tabs[0];
+            if (activeTab) {
+                switchTab(activeTab.id);
+            }
+        }
+    } catch (err) {
+        console.error('Error loading tabs:', err);
+        createNewTab();
+    }
+}
+
+// Create new tab
+async function createNewTab() {
+    // Check if current tab has items before creating new
+    if (currentTabId && cart.length === 0) {
+        showToast('Complete or clear current tab before creating new one', 'info');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/sales/tab/create', { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success) {
+            addTabButton({
+                id: data.tab_id,
+                invoice_no: data.invoice_no,
+                tab_title: `Invoice ${data.invoice_no}`,
+                has_items: false
+            });
+            switchTab(data.tab_id);
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (err) {
+        console.error('Error creating tab:', err);
+        showToast('Error creating new tab', 'error');
+    }
+}
+
+// Add tab button to UI
+function addTabButton(tab) {
+    const container = document.getElementById('tabsContainer');
+    
+    // Check if tab already exists
+    if (document.getElementById(`tab-${tab.id}`)) return;
+    
+    const tabEl = document.createElement('div');
+    tabEl.id = `tab-${tab.id}`;
+    tabEl.className = `tab-pill btn btn-sm ${tab.has_items ? 'btn-primary' : 'btn-outline-secondary'} d-flex align-items-center gap-1`;
+    tabEl.style.cursor = 'pointer';
+    tabEl.style.minWidth = '100px';
+    tabEl.style.maxWidth = '180px';
+    tabEl.onclick = () => switchTab(tab.id);
+    
+    const title = tab.tab_title || tab.invoice_no;
+    const shortTitle = title.length > 15 ? title.substring(0, 15) + '...' : title;
+    const itemCount = tab.item_count || 0;
+    
+    tabEl.innerHTML = `
+        <span class="flex-grow-1 text-truncate" title="${title}">${shortTitle}</span>
+        ${itemCount > 0 ? `<span class="badge bg-light text-dark">${itemCount}</span>` : ''}
+        <button type="button" class="btn-close btn-close-white" style="font-size: 8px; opacity: 0.8;" onclick="event.stopPropagation(); closeTab('${tab.id}')"></button>
+    `;
+    
+    container.appendChild(tabEl);
+}
+
+// Switch to a tab
+async function switchTab(tabId) {
+    // Save current tab before switching
+    if (currentTabId) {
+        await saveCurrentTab();
+    }
+    
+    try {
+        const response = await fetch(`/sales/tab/${tabId}`);
+        const data = await response.json();
+        
+        if (data.success) {
+            // Update current tab styling
+            document.querySelectorAll('.tab-pill').forEach(el => {
+                el.classList.remove('btn-primary');
+                el.classList.add('btn-outline-secondary');
+            });
+            
+            const currentTabEl = document.getElementById(`tab-${tabId}`);
+            if (currentTabEl) {
+                currentTabEl.classList.remove('btn-outline-secondary');
+                currentTabEl.classList.add('btn-primary');
+            }
+            
+            // Load tab data
+            currentTabId = tabId;
+            document.getElementById('currentTabId').value = tabId;
+            document.getElementById('currentInvoiceNo').value = data.invoice_no;
+            
+            // Load patient info
+            document.getElementById('patientId').value = data.patient_id || '';
+            document.getElementById('patientName').value = data.patient_name || '';
+            document.getElementById('patientPhone').value = data.patient_phone || '';
+            document.getElementById('patientPlace').value = data.patient_place || '';
+            document.getElementById('salesType').value = data.sales_type || 'cash';
+            document.getElementById('prescription_no').value = data.prescription_no || '';
+            
+            // Load doctor info
+            document.getElementById('doctorId').value = data.doctor_id || '';
+            document.getElementById('doctorName').value = data.doctor_name || '';
+            
+            // Load cart
+            cart = data.cart_data || [];
+            renderCart();
+            updateTabButton(tabId);
+            
+            // Update header
+            document.querySelector('.page-header h5 small').textContent = `Invoice: ${data.invoice_no}`;
+            
+        } else {
+            showToast('Error loading tab data', 'error');
+        }
+    } catch (err) {
+        console.error('Error switching tab:', err);
+        showToast('Error loading tab', 'error');
+    }
+}
+
+// Save current tab data
+async function saveCurrentTab() {
+    if (!currentTabId) return;
+    
+    const data = {
+        patient_id: document.getElementById('patientId').value || null,
+        patient_name: document.getElementById('patientName').value,
+        patient_phone: document.getElementById('patientPhone').value,
+        patient_place: document.getElementById('patientPlace').value,
+        doctor_id: document.getElementById('doctorId').value || null,
+        doctor_name: document.getElementById('doctorName').value,
+        sales_type: document.getElementById('salesType').value,
+        prescription_no: document.getElementById('prescription_no').value,
+        cart_data: cart
+    };
+    
+    try {
+        await fetch(`/sales/tab/${currentTabId}/save`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+    } catch (err) {
+        console.error('Error saving tab:', err);
+    }
+}
+
+// Auto-save function
+function autoSaveTab() {
+    clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(saveCurrentTab, 2000); // Save after 2 seconds of inactivity
+}
+
+// Update tab button to reflect current state
+function updateTabButton(tabId) {
+    const tabEl = document.getElementById(`tab-${tabId}`);
+    if (!tabEl) return;
+    
+    const patientName = document.getElementById('patientName').value;
+    const productName = cart.length > 0 ? cart[0].product_name : '';
+    const itemCount = cart.length;
+    
+    let title = patientName || productName || `Invoice ${document.getElementById('currentInvoiceNo').value}`;
+    if (title.length > 15) title = title.substring(0, 15) + '...';
+    
+    tabEl.querySelector('span').textContent = title;
+    tabEl.title = patientName || productName || `Invoice ${document.getElementById('currentInvoiceNo').value}`;
+    
+    // Update badge
+    let badge = tabEl.querySelector('.badge');
+    if (itemCount > 0) {
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'badge bg-light text-dark';
+            tabEl.insertBefore(badge, tabEl.lastElementChild);
+        }
+        badge.textContent = itemCount;
+    } else if (badge) {
+        badge.remove();
+    }
+    
+    // Update styling based on content
+    if (itemCount > 0 || patientName) {
+        tabEl.classList.remove('btn-outline-secondary');
+        tabEl.classList.add('btn-primary');
+    }
+}
+
+// Close a tab
+async function closeTab(tabId) {
+    if (!confirm('Are you sure you want to close this tab? Unsaved items will be lost.')) {
+        return;
+    }
+    
+    try {
+        await fetch(`/sales/tab/${tabId}/close`, { method: 'POST' });
+        
+        const tabEl = document.getElementById(`tab-${tabId}`);
+        if (tabEl) tabEl.remove();
+        
+        // If closing current tab, switch to another or create new
+        if (tabId === currentTabId) {
+            const tabs = document.querySelectorAll('.tab-pill');
+            if (tabs.length > 0) {
+                const tabId = tabs[0].id.replace('tab-', '');
+                switchTab(tabId);
+            } else {
+                createNewTab();
+            }
+        }
+    } catch (err) {
+        console.error('Error closing tab:', err);
+    }
+}
+
+// Submit sale (save and clear)
+async function submitSale() {
+    if (!currentTabId) {
+        showToast('No active tab', 'error');
+        return;
+    }
+    
+    if (cart.length === 0) {
+        showToast('No items in cart', 'error');
+        return;
+    }
+    
+    if (!confirm('Submit this sale? This will finalize the invoice.')) {
+        return;
+    }
+    
+    try {
+        // Save first
+        await saveCurrentTab();
+        
+        const response = await fetch(`/sales/tab/${currentTabId}/submit`, { method: 'POST' });
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast(`Invoice ${data.invoice_no} created successfully!`, 'success');
+            
+            // Remove tab
+            const tabEl = document.getElementById(`tab-${currentTabId}`);
+            if (tabEl) tabEl.remove();
+            
+            // Create new tab
+            clearCart();
+            createNewTab();
+            
+            // Optionally redirect to view invoice
+            // window.location.href = `/sales/view/${data.invoice_id}`;
+        } else {
+            showToast(data.error, 'error');
+        }
+    } catch (err) {
+        console.error('Error submitting sale:', err);
+        showToast('Error submitting sale', 'error');
+    }
+}
+
+// Clear cart for current tab
+function clearCart() {
+    cart = [];
+    renderCart();
+    updateTabButton(currentTabId);
+    calculateTotal();
+}
+
+// Modify existing functions to auto-save
+const originalAddItemToCart = window.addItemToCart;
+window.addItemToCart = function(item) {
+    originalAddItemToCart(item);
+    updateTabButton(currentTabId);
+    autoSaveTab();
+};
+
+const originalRemoveFromCart = window.removeFromCart;
+window.removeFromCart = function(index) {
+    originalRemoveFromCart(index);
+    updateTabButton(currentTabId);
+    autoSaveTab();
+};
+
+const originalUpdateQuantity = window.updateQuantity;
+window.updateQuantity = function(index, qty) {
+    originalUpdateQuantity(index, qty);
+    updateTabButton(currentTabId);
+    autoSaveTab();
+};
+
+const originalCalculateTotal = window.calculateTotal;
+window.calculateTotal = function() {
+    originalCalculateTotal();
+    updateTabButton(currentTabId);
+};
+</script>
 {% endblock %}
