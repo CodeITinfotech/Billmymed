@@ -110,22 +110,20 @@
                                                value="{{ settings.get('default_discount', '0') }}" min="0" max="100" step="0.5">
                                     </div>
                                     <div class="col-12">
-                                        <div class="form-check form-switch">
+                                        <div class="form-check form-switch mb-3">
                                             <input class="form-check-input" type="checkbox" id="print_after_sale" name="print_after_sale" 
                                                    value="true" {% if settings.get('print_after_sale', 'true') == 'true' %}checked{% endif %}>
                                             <label class="form-check-label" for="print_after_sale">
                                                 Auto-print after sale completion
                                             </label>
                                         </div>
-                                    </div>
-                                    <div class="col-12">
                                         <div class="form-check form-switch">
                                             <input class="form-check-input" type="checkbox" id="allow_non_stock_billing" name="allow_non_stock_billing" 
                                                    value="true" {% if settings.get('allow_non_stock_billing', 'false') == 'true' %}checked{% endif %}>
                                             <label class="form-check-label" for="allow_non_stock_billing">
                                                 <strong>Allow Non-Stock Billing</strong>
                                             </label>
-                                            <small class="text-muted d-block">When enabled, products with zero stock can be billed. When disabled, only products with stock > 0 can be sold.</small>
+                                            <small class="text-muted d-block mt-1">When enabled, products with zero stock can be billed. When disabled, only products with stock > 0 can be sold.</small>
                                         </div>
                                     </div>
                                 </div>
