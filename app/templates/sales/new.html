@@ -1415,7 +1415,7 @@ function searchDoctor(query) {
                 `;
             } else {
                 dropdown.innerHTML = `
-                    <div class="dropdown-item text-muted text-center" style="padding: 8px 12px;">
+                    <div class="dropdown-item text-muted text-center" style="padding: 8px 12px; cursor: default;" onclick="event.stopPropagation()">
                         No doctors found
                     </div>
                     <div class="dropdown-item doctor-item text-primary" 
@@ -1596,14 +1596,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('salesType').addEventListener('change', handleSalesTypeChange);
     
     // Close dropdowns when clicking outside
-    let clickTimeout = null;
     document.addEventListener('click', (e) => {
-        // Debounce to prevent flickering
-        if (clickTimeout) return;
-        clickTimeout = setTimeout(() => {
-            clickTimeout = null;
-        }, 100);
-        
         // Don't close if clicking inside dropdowns or search fields
         const inSearchResults = e.target.closest('#searchResults');
         const inProductSearch = e.target.closest('#productSearch');
