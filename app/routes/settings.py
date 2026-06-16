@@ -119,20 +119,37 @@ def user_rights(id):
     
     user = User.query.get_or_404(id)
     
-    modules = [
-        ('products', 'Products'),
-        ('customers', 'Customers'),
-        ('suppliers', 'Suppliers'),
-        ('sales', 'Sales'),
-        ('purchase', 'Purchase'),
-        ('inventory', 'Inventory'),
-        ('reports', 'Reports'),
-        ('settings', 'Settings')
+    # Define user rights modules
+    rights = [
+        {'key': 'dashboard', 'label': 'Dashboard'},
+        {'key': 'reports', 'label': 'Reports (Main)'},
+        {'key': 'edit_product', 'label': 'Edit Product'},
+        {'key': 'edit_stock', 'label': 'Edit Stock'},
+        {'key': 'edit_price', 'label': 'Edit Price'},
+        {'key': 'edit_company', 'label': 'Edit Company / Manufacturer'},
+        {'key': 'show_customer', 'label': 'Show Customer'},
+        {'key': 'show_purchase', 'label': 'Show Purchase'},
+        {'key': 'edit_sale_bill', 'label': 'Edit Sale Bill'},
+        {'key': 'cancel_sale_bill', 'label': 'Cancel Sale Bill'},
+        {'key': 'show_supplier', 'label': 'Show Supplier'},
+        {'key': 'edit_payment', 'label': 'Edit Payment'},
+        {'key': 'edit_purchase_return', 'label': 'Edit Purchase Return'},
+        {'key': 'add_purchase_return', 'label': 'Add Purchase Return'},
+        {'key': 'add_purchase', 'label': 'Add Purchase'},
+        {'key': 'edit_purchase', 'label': 'Edit Purchase'},
+        {'key': 'add_sales_return', 'label': 'Add Sales Return'},
+        {'key': 'edit_sales_return', 'label': 'Edit Sales Return'},
+        {'key': 'add_sales', 'label': 'Add Sales'},
+        {'key': 'edit_sales', 'label': 'Edit Sales'},
     ]
     
-    actions = ['view', 'add', 'edit', 'delete', 'print']
+    # Get existing rights for this user
+    user_rights_list = UserRights.query.filter_by(user_id=id).all()
+    granted_rights = set()
+    for ur in user_rights_list:
+        granted_rights.add(ur.module)
     
-    return render_template('settings/user_rights.html', user=user, modules=modules, actions=actions)
+    return render_template('settings/user_rights.html', user=user, rights=rights, granted_rights=granted_rights)
 
 @settings_bp.route('/users/<int:id>/rights/save', methods=['POST'])
 @login_required
@@ -145,14 +162,19 @@ def save_user_rights(id):
     # Clear existing rights
     UserRights.query.filter_by(user_id=id).delete()
     
-    modules = ['products', 'customers', 'suppliers', 'sales', 'purchase', 'inventory', 'reports', 'settings']
-    actions = ['view', 'add', 'edit', 'delete', 'print']
+    # Save new rights
+    rights_keys = [
+        'dashboard', 'reports', 'edit_product', 'edit_stock', 'edit_price',
+        'edit_company', 'show_customer', 'show_purchase', 'edit_sale_bill',
+        'cancel_sale_bill', 'show_supplier', 'edit_payment', 'edit_purchase_return',
+        'add_purchase_return', 'add_purchase', 'edit_purchase', 'add_sales_return',
+        'edit_sales_return', 'add_sales', 'edit_sales'
+    ]
     
-    for module in modules:
-        for action in actions:
-            if request.form.get(f'{module}_{action}'):
-                right = UserRights(user_id=id, module=module, action=action)
-                db.session.add(right)
+    for right_key in rights_keys:
+        if request.form.get(right_key):
+            right = UserRights(user_id=id, module=right_key, action='access')
+            db.session.add(right)
     
     db.session.commit()
     flash('User rights updated successfully.', 'success')

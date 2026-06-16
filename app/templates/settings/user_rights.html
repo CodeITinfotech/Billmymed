@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+
+{% block title %}User Rights - {{ user.username }} - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1 page-title"><i class="bi bi-shield-lock me-2"></i>User Rights</h4>
+            <p class="text-muted mb-0">Configure permissions for <strong>{{ user.full_name }}</strong> ({{ user.username }})</p>
+        </div>
+        <a href="{{ url_for('settings.users') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Back to Users
+        </a>
+    </div>
+    
+    <form method="POST" action="{{ url_for('settings.save_user_rights', id=user.id) }}">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body">
+                <!-- Info Alert -->
+                <div class="alert alert-info mb-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Admin Note:</strong> Grant or deny specific permissions to this user. Unchecked permissions will be restricted.
+                </div>
+                
+                <!-- User Rights Grid -->
+                <div class="row g-4">
+                    <!-- Core Access -->
+                    <div class="col-12">
+                        <h6 class="text-primary mb-3 border-bottom pb-2">
+                            <i class="bi bi-grid-1x2 me-1"></i> Core Access
+                        </h6>
+                        <div class="row g-3">
+                            {% for right in rights[:2] %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="{{ right.key }}" id="{{ right.key }}"
+                                           {% if right.key in granted_rights %}checked{% endif %}>
+                                    <label class="form-check-label" for="{{ right.key }}">
+                                        {{ right.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Product & Inventory -->
+                    <div class="col-12">
+                        <h6 class="text-success mb-3 border-bottom pb-2">
+                            <i class="bi bi-box-seam me-1"></i> Product & Inventory
+                        </h6>
+                        <div class="row g-3">
+                            {% for right in rights[2:6] %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="{{ right.key }}" id="{{ right.key }}"
+                                           {% if right.key in granted_rights %}checked{% endif %}>
+                                    <label class="form-check-label" for="{{ right.key }}">
+                                        {{ right.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Customer & Sales -->
+                    <div class="col-12">
+                        <h6 class="text-warning mb-3 border-bottom pb-2">
+                            <i class="bi bi-cart-plus me-1"></i> Customer & Sales
+                        </h6>
+                        <div class="row g-3">
+                            {% for right in rights[6:10] %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="{{ right.key }}" id="{{ right.key }}"
+                                           {% if right.key in granted_rights %}checked{% endif %}>
+                                    <label class="form-check-label" for="{{ right.key }}">
+                                        {{ right.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Supplier & Purchase -->
+                    <div class="col-12">
+                        <h6 class="text-info mb-3 border-bottom pb-2">
+                            <i class="bi bi-truck me-1"></i> Supplier & Purchase
+                        </h6>
+                        <div class="row g-3">
+                            {% for right in rights[10:15] %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="{{ right.key }}" id="{{ right.key }}"
+                                           {% if right.key in granted_rights %}checked{% endif %}>
+                                    <label class="form-check-label" for="{{ right.key }}">
+                                        {{ right.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Sales Returns -->
+                    <div class="col-12">
+                        <h6 class="text-danger mb-3 border-bottom pb-2">
+                            <i class="bi bi-arrow-return-left me-1"></i> Sales Returns
+                        </h6>
+                        <div class="row g-3">
+                            {% for right in rights[15:18] %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="{{ right.key }}" id="{{ right.key }}"
+                                           {% if right.key in granted_rights %}checked{% endif %}>
+                                    <label class="form-check-label" for="{{ right.key }}">
+                                        {{ right.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <!-- Sales -->
+                    <div class="col-12">
+                        <h6 class="text-primary mb-3 border-bottom pb-2">
+                            <i class="bi bi-receipt me-1"></i> Sales
+                        </h6>
+                        <div class="row g-3">
+                            {% for right in rights[18:] %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" 
+                                           name="{{ right.key }}" id="{{ right.key }}"
+                                           {% if right.key in granted_rights %}checked{% endif %}>
+                                    <label class="form-check-label" for="{{ right.key }}">
+                                        {{ right.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAll" onclick="toggleAll(this)">
+                        <label class="form-check-label fw-bold" for="selectAll">
+                            Select All / Deselect All
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-lg me-1"></i> Save User Rights
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+function toggleAll(source) {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(function(checkbox) {
+        if (checkbox.id !== 'selectAll') {
+            checkbox.checked = source.checked;
+        }
+    });
+}
+</script>
+{% endblock %}
