@@ -152,15 +152,15 @@
                             <div class="col-12 col-md-4">
                                 <label class="form-label small mb-0">Doctor (Prescribed By)</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" id="doctorName" 
+                                    <input type="text" class="form-control form-control-sm" id="doctorName" 
                                            placeholder="Search or enter doctor name" autocomplete="off"
                                            oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)">
                                     <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
                                         <span class="visually-hidden">Toggle Dropdown</span>
                                     </button>
-                                    <a href="{{ url_for('masters.doctors') }}" class="btn btn-outline-secondary" title="Add Doctor">
+                                    <button type="button" class="btn btn-outline-secondary" title="Add Doctor" onclick="openAddDoctorModal()">
                                         <i class="bi bi-plus"></i>
-                                    </a>
+                                    </button>
                                 </div>
                                 <div id="doctorDropdown" class="position-fixed shadow-sm bg-white rounded mt-1" 
                                      style="z-index: 9999; max-height: 200px; overflow-y: auto; display: none;">
@@ -1688,5 +1688,94 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     });
 });
+
+// Add Doctor Modal
+function openAddDoctorModal() {
+    document.getElementById('addDoctorModal').style.display = 'flex';
+    document.getElementById('newDoctorName').focus();
+}
+
+function closeAddDoctorModal() {
+    document.getElementById('addDoctorModal').style.display = 'none';
+    document.getElementById('newDoctorName').value = '';
+    document.getElementById('newDoctorSpecialization').value = '';
+    document.getElementById('newDoctorDegree').value = '';
+    document.getElementById('newDoctorPhone').value = '';
+    document.getElementById('newDoctorAddress').value = '';
+}
+
+function saveNewDoctor() {
+    const name = document.getElementById('newDoctorName').value.trim();
+    const specialization = document.getElementById('newDoctorSpecialization').value.trim();
+    const degree = document.getElementById('newDoctorDegree').value.trim();
+    const phone = document.getElementById('newDoctorPhone').value.trim();
+    const address = document.getElementById('newDoctorAddress').value.trim();
+    
+    if (!name) {
+        showToast('Please enter doctor name', 'error');
+        return;
+    }
+    
+    fetch('/masters/doctors/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: `doctor_name=${encodeURIComponent(name)}&specialization=${encodeURIComponent(specialization)}&degree=${encodeURIComponent(degree)}&phone=${encodeURIComponent(phone)}&address=${encodeURIComponent(address)}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success || data.id) {
+            // Select the newly created doctor
+            document.getElementById('doctorId').value = data.id || data.doctor_id;
+            document.getElementById('doctorName').value = name;
+            document.getElementById('doctorPhone').value = phone;
+            document.getElementById('doctorAddress').value = address;
+            document.getElementById('doctorDropdown').style.display = 'none';
+            showToast('Doctor added successfully', 'success');
+            closeAddDoctorModal();
+        } else {
+            showToast(data.error || 'Failed to add doctor', 'error');
+        }
+    })
+    .catch(err => {
+        showToast('Error adding doctor', 'error');
+    });
+}
 </script>
+
+<!-- Add Doctor Modal -->
+<div id="addDoctorModal" class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.5); z-index: 10000; display: none;">
+    <div class="position-absolute top-50 start-50 translate-middle bg-white rounded shadow p-4" style="width: 400px; max-width: 90%;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Add New Doctor</h5>
+            <button type="button" class="btn-close" onclick="closeAddDoctorModal()"></button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Doctor Name *</label>
+            <input type="text" class="form-control form-control-sm" id="newDoctorName" placeholder="Enter doctor name">
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Specialization</label>
+            <input type="text" class="form-control form-control-sm" id="newDoctorSpecialization" placeholder="e.g., General Physician">
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Degree</label>
+            <input type="text" class="form-control form-control-sm" id="newDoctorDegree" placeholder="e.g., MBBS, MD">
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Phone</label>
+            <input type="text" class="form-control form-control-sm" id="newDoctorPhone" placeholder="Phone number">
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Address</label>
+            <input type="text" class="form-control form-control-sm" id="newDoctorAddress" placeholder="Address">
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm flex-grow-1" onclick="saveNewDoctor()">Save Doctor</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeAddDoctorModal()">Cancel</button>
+        </div>
+    </div>
+</div>
 {% endblock %}
