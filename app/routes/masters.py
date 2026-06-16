@@ -270,6 +270,39 @@ def search_generics():
     
     return jsonify([{'id': i.id, 'name': i.generic_name} for i in generics])
 
+@masters_bp.route('/api/product-types/search')
+@login_required
+def search_product_types():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    types = ProductTypeMaster.query.filter(
+        ProductTypeMaster.type_name.ilike(f'%{term}%'),
+        ProductTypeMaster.is_active == True
+    ).order_by(ProductTypeMaster.type_name).limit(20).all()
+    
+    return jsonify([{'id': i.id, 'name': i.type_name} for i in types])
+
+@masters_bp.route('/api/product-types', methods=['POST'])
+@login_required
+def api_add_product_type():
+    data = request.get_json()
+    type_name = data.get('type_name', '').strip()
+    
+    if not type_name:
+        return jsonify({'success': False, 'error': 'Product type is required'}), 400
+    
+    existing = ProductTypeMaster.query.filter_by(type_name=type_name).first()
+    if existing:
+        return jsonify({'success': False, 'error': 'Product type already exists'}), 400
+    
+    item = ProductTypeMaster(type_name=type_name)
+    db.session.add(item)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'id': item.id, 'name': item.type_name})
+
 @masters_bp.route('/api/generics', methods=['POST'])
 @login_required
 def api_add_generic():

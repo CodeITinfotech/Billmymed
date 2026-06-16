@@ -350,6 +350,26 @@ def add_category():
     flash('Category added successfully.', 'success')
     return redirect(url_for('products.categories'))
 
+@products_bp.route('/api/categories', methods=['POST'])
+@login_required
+def api_add_category():
+    data = request.get_json()
+    category_code = data.get('category_code', '').strip()
+    category_name = data.get('category_name', '').strip()
+    
+    if not category_code or not category_name:
+        return jsonify({'success': False, 'error': 'Category code and name are required'}), 400
+    
+    existing = Category.query.filter_by(category_code=category_code).first()
+    if existing:
+        return jsonify({'success': False, 'error': 'Category code already exists'}), 400
+    
+    category = Category(category_code=category_code, category_name=category_name)
+    db.session.add(category)
+    db.session.commit()
+    
+    return jsonify({'success': True, 'id': category.id, 'code': category.category_code, 'name': category.category_name})
+
 @products_bp.route('/categories/<int:id>/delete', methods=['POST'])
 @login_required
 def delete_category(id):
