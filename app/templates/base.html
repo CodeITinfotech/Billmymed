@@ -395,6 +395,74 @@
             }, 2000);
         }
     });
+    
+    // Dropdown submenu fix - keep menu open when hovering on submenu
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle dropdown submenus
+        document.querySelectorAll('.dropdown-submenu > a').forEach(function(trigger) {
+            trigger.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const parent = this.parentElement;
+                const submenu = parent.querySelector('.dropdown-menu');
+                
+                // Close other open submenus
+                document.querySelectorAll('.dropdown-submenu .show').forEach(function(openMenu) {
+                    if (openMenu !== submenu) {
+                        openMenu.classList.remove('show');
+                    }
+                });
+                
+                // Toggle this submenu
+                submenu.classList.toggle('show');
+            });
+        });
+        
+        // Keep submenu open when hovering over it
+        document.querySelectorAll('.dropdown-submenu .dropdown-menu').forEach(function(submenu) {
+            let hoverTimeout;
+            
+            submenu.addEventListener('mouseenter', function() {
+                clearTimeout(hoverTimeout);
+                this.classList.add('show');
+            });
+            
+            submenu.addEventListener('mouseleave', function() {
+                const parent = this.parentElement;
+                hoverTimeout = setTimeout(function() {
+                    parent.querySelector('.dropdown-menu').classList.remove('show');
+                }, 150);
+            });
+        });
+        
+        // Close submenus when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-submenu')) {
+                document.querySelectorAll('.dropdown-submenu .dropdown-menu.show').forEach(function(menu) {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    });
     </script>
+    <style>
+    /* Dropdown submenu styles */
+    .dropdown-submenu {
+        position: relative;
+    }
+    .dropdown-submenu > .dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -1px;
+        display: none;
+        position: absolute;
+    }
+    .dropdown-submenu > .dropdown-menu.show {
+        display: block;
+    }
+    .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+    }
+    </style>
 </body>
 </html>

@@ -14,7 +14,10 @@
             <h4 class="fw-bold mb-1">{{ 'Update' if is_edit else 'Add' }} Product</h4>
             <p class="text-muted mb-0">Add a new product to inventory</p>
         </div>
-        <div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-warning" onclick="clearForm()">
+                <i class="bi bi-x-circle me-1"></i> Clear
+            </button>
             <a href="{{ url_for('products.list') }}" class="btn btn-outline-secondary">
                 <i class="bi bi-arrow-left me-1"></i> Back
             </a>
@@ -884,6 +887,37 @@ function updateTaxFromHSN() {
             }
         }
     }
+}
+
+// Clear form function
+function clearForm() {
+    if (!confirm('Are you sure you want to clear all form data?')) return;
+    
+    const form = document.getElementById('productForm');
+    const inputs = form.querySelectorAll('input[type="text"], input[type="number"], input[type="email"], textarea, select');
+    inputs.forEach(input => {
+        if (input.type === 'checkbox') {
+            input.checked = false;
+        } else if (input.id !== 'product_code') {
+            input.value = '';
+        }
+    });
+    
+    // Reset Select2 dropdowns
+    $('select').each(function() {
+        if ($(this).hasClass('select2-hidden-accessible')) {
+            $(this).val(null).trigger('change');
+        }
+    });
+    
+    // Clear barcodes
+    document.getElementById('barcodes_list').innerHTML = '';
+    window.linkedBarcodes = [];
+    
+    // Clear packaging table
+    const tbody = document.getElementById('packagingBody');
+    if (tbody) tbody.innerHTML = '';
+    document.getElementById('packaging_json_hidden').value = '[]';
 }
 
 </script>
