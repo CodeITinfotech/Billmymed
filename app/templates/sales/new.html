@@ -114,15 +114,10 @@
                         <div class="row g-2 align-items-end">
                             <div class="col-12 col-md-4">
                                 <label class="form-label small mb-0">Patient Name *</label>
-                                <div class="position-relative">
-                                    <input type="text" class="form-control form-control-sm" id="patientName" 
-                                           placeholder="Enter patient name" autocomplete="off"
-                                           oninput="searchPatient(this.value)" onkeydown="handlePatientKeydown(event)"
-                                           tabindex="5">
-                                    <div id="patientDropdown" class="position-fixed shadow-sm bg-white rounded mt-1" 
-                                         style="z-index: 10001; max-height: 200px; overflow-y: auto; display: none; width: 350px;">
-                                    </div>
-                                </div>
+                                <input type="text" class="form-control form-control-sm" id="patientName" 
+                                       placeholder="Enter patient name" autocomplete="off"
+                                       oninput="searchPatient(this.value)" onkeydown="handlePatientKeydown(event)"
+                                       tabindex="5">
                                 <input type="hidden" id="patientId" name="patient_id" value="">
                             </div>
                             <div class="col-6 col-md-2">
@@ -203,6 +198,10 @@
                 
                 <!-- Search Results Dropdown - Outside the card to avoid overflow clipping -->
                 <div id="searchResults" class="position-fixed shadow-lg bg-white rounded-3 overflow-hidden" style="z-index: 9999; display: none; width: calc(100% - 1rem); max-height: 400px; overflow-y: auto; left: 0.5rem;">
+                </div>
+                
+                <!-- Patient Dropdown - Outside card for proper z-index -->
+                <div id="patientDropdown" class="position-fixed shadow-sm bg-white rounded" style="z-index: 10002; max-height: 200px; overflow-y: auto; display: none; width: 300px;">
                 </div>
                 
                 <!-- Batch Selection Dropdown -->
@@ -1306,9 +1305,18 @@ function searchPatient(query) {
             const rect = input.getBoundingClientRect();
             dropdown.style.left = rect.left + 'px';
             dropdown.style.top = (rect.bottom + window.scrollY + 2) + 'px';
-            dropdown.style.width = rect.width + 'px';
+            dropdown.style.width = Math.max(300, rect.width) + 'px';
             
             dropdown.style.display = 'block';
+            
+            // Ensure dropdown stays within viewport
+            const dropdownRect = dropdown.getBoundingClientRect();
+            if (dropdownRect.right > window.innerWidth) {
+                dropdown.style.left = (window.innerWidth - dropdownRect.width - 10) + 'px';
+            }
+            if (dropdownRect.bottom > window.innerHeight) {
+                dropdown.style.top = (rect.top + window.scrollY - dropdownRect.height - 2) + 'px';
+            }
             updatePatientSelection();
         });
 }
