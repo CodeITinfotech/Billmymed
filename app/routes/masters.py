@@ -127,6 +127,68 @@ def delete_manufacturer(id):
     flash('Manufacturer deleted successfully', 'success')
     return redirect(url_for('masters.manufacturers'))
 
+# ==================== COMPANY MASTER (Alias for Manufacturers) ====================
+@masters_bp.route('/companies')
+@login_required
+def companies():
+    items = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
+    return render_template('masters/manufacturers.html', items=items, page_title='Company Master')
+
+@masters_bp.route('/companies/add', methods=['POST'])
+@login_required
+def add_company():
+    manufacturer_name = request.form.get('manufacturer_name', '').strip()
+    short_name = request.form.get('short_name', '').strip()
+    contact_person = request.form.get('contact_person', '').strip()
+    phone = request.form.get('phone', '').strip()
+    email = request.form.get('email', '').strip()
+    address = request.form.get('address', '').strip()
+    
+    if not manufacturer_name:
+        flash('Company name is required', 'danger')
+        return redirect(url_for('masters.companies'))
+    
+    existing = ManufacturerMaster.query.filter_by(manufacturer_name=manufacturer_name).first()
+    if existing:
+        flash('Company name already exists', 'warning')
+        return redirect(url_for('masters.companies'))
+    
+    item = ManufacturerMaster(
+        manufacturer_name=manufacturer_name,
+        short_name=short_name,
+        contact_person=contact_person,
+        phone=phone,
+        email=email,
+        address=address
+    )
+    db.session.add(item)
+    db.session.commit()
+    flash('Company added successfully', 'success')
+    return redirect(url_for('masters.companies'))
+
+@masters_bp.route('/companies/edit/<int:id>', methods=['POST'])
+@login_required
+def edit_company_master(id):
+    item = ManufacturerMaster.query.get_or_404(id)
+    item.manufacturer_name = request.form.get('manufacturer_name', '').strip()
+    item.short_name = request.form.get('short_name', '').strip()
+    item.contact_person = request.form.get('contact_person', '').strip()
+    item.phone = request.form.get('phone', '').strip()
+    item.email = request.form.get('email', '').strip()
+    item.address = request.form.get('address', '').strip()
+    db.session.commit()
+    flash('Company updated successfully', 'success')
+    return redirect(url_for('masters.companies'))
+
+@masters_bp.route('/companies/delete/<int:id>', methods=['POST'])
+@login_required
+def delete_company_master(id):
+    item = ManufacturerMaster.query.get_or_404(id)
+    item.is_active = False
+    db.session.commit()
+    flash('Company deleted successfully', 'success')
+    return redirect(url_for('masters.companies'))
+
 # ==================== PRODUCT TYPE MASTER ====================
 @masters_bp.route('/product-types')
 @login_required

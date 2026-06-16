@@ -109,12 +109,14 @@ def get_product(id):
         'product_code': product.product_code,
         'product_name': product.product_name,
         'generic_name': product.generic_name,
-        'manufacturer': product.manufacturer,
+        'company_id': product.company_id,
+        'company_name': product.company.manufacturer_name if product.company else None,
         'mrp': float(product.mrp) if product.mrp else 0,
         'rate': float(product.rate) if product.rate else 0,
         'tax_perc': float(product.tax_perc) if product.tax_perc else 0,
         'discount_perc': float(product.discount_perc) if product.discount_perc else 0,
         'stock': product.current_stock,
+        'favorite_supplier': None,
         'batches': [{
             'id': b.id,
             'batch_no': b.batch_no,
@@ -505,6 +507,96 @@ def add_manufacturer():
     if not name:
         return jsonify({'error': 'Name is required'}), 400
     return jsonify({'success': True, 'name': name})
+
+# Company APIs
+@api_bp.route('/companies/search')
+@login_required
+def search_companies():
+    term = request.args.get('q', '').strip()
+    if len(term) < 1:
+        return jsonify([])
+    
+    companies = ManufacturerMaster.query.filter(
+        ManufacturerMaster.manufacturer_name.ilike(f'%{term}%'),
+        ManufacturerMaster.is_active == True
+    ).limit(20).all()
+    
+    return jsonify([{'id': c.id, 'name': c.manufacturer_name} for c in companies])
+
+@api_bp.route('/companies', methods=['POST'])
+@login_required
+def add_company():
+    from app.models import ManufacturerMaster
+    data = request.get_json()
+    name = data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'Company name is required'}), 400
+    
+    existing = ManufacturerMaster.query.filter_by(manufacturer_name=name).first()
+    if existing:
+        return jsonify({'error': 'Company already exists', 'id': existing.id}), 400
+    
+    company = ManufacturerMaster(manufacturer_name=name)
+    db.session.add(company)
+    db.session.commit()
+    return jsonify({'success': True, 'id': company.id, 'name': company.manufacturer_name})
+
+# Product Supplier APIs
+@api_bp.route('/products/<int:product_id>/suppliers')
+@login_required
+def get_product_suppliers(product_id):
+    """Get all suppliers for a product, with favorite supplier info"""
+    from app.models import ProductSupplier
+    
+    suppliers = ProductSupplier.query.filter_by(product_id=product_id).order_by(
+        ProductSupplier.purchase_count.desc()
+    ).all()
+    
+    return jsonify([{
+        'id': ps.id,
+        'supplier_id': ps.supplier_id,
+        'supplier_name': ps.supplier.account_name,
+        'purchase_count': ps.purchase_count,
+        'last_purchase_date': ps.last_purchase_date.isoformat() if ps.last_purchase_date else None,
+        'is_favorite': ps.is_favorite,
+        'is_auto_favorite': ps.is_auto_favorite
+    } for ps in suppliers])
+
+@api_bp.route('/products/<int:product_id>/suppliers/<int:supplier_id>/favorite', methods=['POST'])
+@login_required
+def set_favorite_supplier(product_id, supplier_id):
+    """Set a supplier as favorite for a product"""
+    from app.models import ProductSupplier
+    
+    ps = ProductSupplier.query.filter_by(product_id=product_id, supplier_id=supplier_id).first()
+    if not ps:
+        return jsonify({'error': 'Supplier not linked to this product'}), 404
+    
+    # Clear other favorites for this product
+    ProductSupplier.query.filter_by(product_id=product_id, is_favorite=True).update({'is_favorite': False})
+    
+    # Set this as favorite
+    ps.is_favorite = True
+    ps.is_auto_favorite = False
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Supplier set as favorite'})
+
+@api_bp.route('/products/<int:product_id>/suppliers/<int:supplier_id>/unfavorite', methods=['POST'])
+@login_required
+def unset_favorite_supplier(product_id, supplier_id):
+    """Remove favorite status from a supplier for a product"""
+    from app.models import ProductSupplier
+    
+    ps = ProductSupplier.query.filter_by(product_id=product_id, supplier_id=supplier_id).first()
+    if not ps:
+        return jsonify({'error': 'Supplier not linked to this product'}), 404
+    
+    ps.is_favorite = False
+    ps.is_auto_favorite = False
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Supplier removed from favorites'})
 
 # Product Type APIs
 @api_bp.route('/product-types/search')

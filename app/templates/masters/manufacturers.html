@@ -7,11 +7,11 @@
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
         <div>
             <h5 class="fw-bold mb-1">{{ page_title }}</h5>
-            <small class="text-muted">Manage manufacturers for products</small>
+            <small class="text-muted">{% if page_title == 'Company Master' %}Manage companies that manufacture products{% else %}Manage manufacturers for products{% endif %}</small>
         </div>
         <div>
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i class="bi bi-plus-lg me-1"></i> Add Manufacturer
+                <i class="bi bi-plus-lg me-1"></i> {% if page_title == 'Company Master' %}Add Company{% else %}Add Manufacturer{% endif %}
             </button>
         </div>
     </div>
@@ -23,7 +23,7 @@
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
-                            <th class="ps-3">Manufacturer Name</th>
+                            <th class="ps-3">{% if page_title == 'Company Master' %}Company Name{% else %}Manufacturer Name{% endif %}</th>
                             <th>Short Name</th>
                             <th>Contact Person</th>
                             <th>Phone</th>
@@ -58,8 +58,8 @@
             {% else %}
             <div class="text-center py-5 text-muted">
                 <i class="bi bi-building fs-1"></i>
-                <p class="mt-2 mb-0">No manufacturers found</p>
-                <small>Click "Add Manufacturer" to create one</small>
+                <p class="mt-2 mb-0">No {% if page_title == 'Company Master' %}companies{% else %}manufacturers{% endif %} found</p>
+                <small>Click "Add {% if page_title == 'Company Master' %}Company{% else %}Manufacturer{% endif %}" to create one</small>
             </div>
             {% endif %}
         </div>
@@ -71,15 +71,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="bi bi-building me-2"></i>Add Manufacturer</h5>
+                <h5 class="modal-title"><i class="bi bi-building me-2"></i>{% if page_title == 'Company Master' %}Add Company{% else %}Add Manufacturer{% endif %}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="{{ url_for('masters.add_manufacturer') }}">
+            <form method="POST" action="{{ url_for('masters.companies') if page_title == 'Company Master' else url_for('masters.add_manufacturer') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Manufacturer Name <span class="text-danger">*</span></label>
+                            <label class="form-label">{% if page_title == 'Company Master' %}Company{% else %}Manufacturer{% endif %} Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="manufacturer_name" required>
                         </div>
                         <div class="col-md-6">
@@ -118,7 +118,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="bi bi-building me-2"></i>Edit Manufacturer</h5>
+                <h5 class="modal-title"><i class="bi bi-building me-2"></i>{% if page_title == 'Company Master' %}Edit Company{% else %}Edit Manufacturer{% endif %}</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" id="editForm">
@@ -126,7 +126,7 @@
                 <div class="modal-body">
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label class="form-label">Manufacturer Name <span class="text-danger">*</span></label>
+                            <label class="form-label">{% if page_title == 'Company Master' %}Company{% else %}Manufacturer{% endif %} Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="manufacturer_name" id="edit_manufacturer_name" required>
                         </div>
                         <div class="col-md-6">
@@ -188,7 +188,9 @@ function editItem(id) {
     document.getElementById('edit_phone').value = item.phone || '';
     document.getElementById('edit_email').value = item.email || '';
     document.getElementById('edit_address').value = item.address || '';
-    document.getElementById('editForm').action = '/masters/manufacturers/edit/' + id;
+    // Use different edit URLs for Company vs Manufacturer
+    const editUrl = "{{ 'masters.edit_company_master' if page_title == 'Company Master' else 'masters.edit_manufacturer' }}";
+    document.getElementById('editForm').action = '/masters/companies/edit/' + id;
     new bootstrap.Modal(document.getElementById('editModal')).show();
 }
 </script>

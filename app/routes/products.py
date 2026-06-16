@@ -101,7 +101,7 @@ def add():
             product_code=product_code,
             product_name=product_name,
             generic_name=request.form.get('generic_name', '').strip(),
-            manufacturer=request.form.get('manufacturer', '').strip(),
+            company_id=request.form.get('company_id', type=int),
             schedule=request.form.get('schedule', ''),
             product_type=request.form.get('product_type', ''),
             pack_type=request.form.get('pack_type', ''),
@@ -175,9 +175,9 @@ def add():
     taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
     hsn_codes = HSNCodeMaster.query.order_by(HSNCodeMaster.hsn_code).all()
     generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
-    manufacturers = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
+    companies = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
     product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
-    return render_template('products/add.html', categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types, is_edit=False)
+    return render_template('products/add.html', categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, companies=companies, product_types=product_types, is_edit=False)
 
 @products_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -193,7 +193,7 @@ def edit(id):
     if request.method == 'POST':
         product.product_name = request.form.get('product_name', '').strip()
         product.generic_name = request.form.get('generic_name', '').strip()
-        product.manufacturer = request.form.get('manufacturer', '').strip()
+        product.company_id = request.form.get('company_id', type=int)
         product.schedule = request.form.get('schedule', '')
         product.product_type = request.form.get('product_type', '')
         product.pack_type = request.form.get('pack_type', '')
@@ -253,9 +253,9 @@ def edit(id):
     taxes = Tax.query.filter_by(is_active=True).order_by(Tax.tax_perc).all()
     hsn_codes = HSNCodeMaster.query.order_by(HSNCodeMaster.hsn_code).all()
     generics = GenericMaster.query.filter_by(is_active=True).order_by(GenericMaster.generic_name).all()
-    manufacturers = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
+    companies = ManufacturerMaster.query.filter_by(is_active=True).order_by(ManufacturerMaster.manufacturer_name).all()
     product_types = ProductTypeMaster.query.filter_by(is_active=True).order_by(ProductTypeMaster.type_name).all()
-    return render_template('products/add.html', product=product, all_packaging=all_packaging, categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, manufacturers=manufacturers, product_types=product_types, is_edit=True)
+    return render_template('products/add.html', product=product, all_packaging=all_packaging, categories=categories, taxes=taxes, hsn_codes=hsn_codes, generics=generics, companies=companies, product_types=product_types, is_edit=True)
 
 @products_bp.route('/<int:id>/delete', methods=['POST'])
 @login_required

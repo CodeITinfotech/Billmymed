@@ -70,15 +70,15 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="manufacturer" class="form-label">Manufacturer</label>
+                                <label for="company_id" class="form-label">Company</label>
                                 <div class="input-group">
-                                    <select class="form-select" id="manufacturer" name="manufacturer">
-                                        <option value="">Select Manufacturer</option>
-                                        {% for m in manufacturers %}
-                                        <option value="{{ m.manufacturer_name }}" {% if is_edit and product.manufacturer and m.manufacturer_name == product.manufacturer %}selected{% endif %}>{{ m.manufacturer_name }}{% if m.short_name %} ({{ m.short_name }}){% endif %}</option>
+                                    <select class="form-select" id="company_id" name="company_id">
+                                        <option value="">Select Company</option>
+                                        {% for c in companies %}
+                                        <option value="{{ c.id }}" {% if is_edit and product.company_id == c.id %}selected{% endif %}>{{ c.manufacturer_name }}{% if c.short_name %} ({{ c.short_name }}){% endif %}</option>
                                         {% endfor %}
                                     </select>
-                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('manufacturer', 'Manufacturer')">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="openAddModal('company', 'Company')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -498,6 +498,39 @@ function addNewItem() {
     
     if (!name) {
         alert('Please enter a name');
+        return;
+    }
+    
+    // For Company, save to database
+    if (fieldId === 'company') {
+        fetch('/api/companies', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            },
+            body: JSON.stringify({ name: name })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                // Add new option to dropdown
+                const select = document.getElementById('company_id');
+                const option = document.createElement('option');
+                option.value = data.id;
+                option.text = data.name;
+                option.selected = true;
+                select.appendChild(option);
+                bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
+                showToast('success', `Company added: ${name}`);
+            } else {
+                showToast('danger', data.error || 'Failed to add Company');
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showToast('danger', 'Error adding Company');
+        });
         return;
     }
     

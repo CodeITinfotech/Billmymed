@@ -92,7 +92,8 @@ class Product(db.Model):
     product_code = db.Column(db.String(20), unique=True, nullable=False, index=True)
     product_name = db.Column(db.String(200), nullable=False, index=True)
     generic_name = db.Column(db.String(200))
-    manufacturer = db.Column(db.String(200))
+    manufacturer = db.Column(db.String(200))  # Legacy field - kept for backwards compatibility
+    company_id = db.Column(db.Integer, db.ForeignKey('manufacturer_master.id'))  # New company field
     schedule = db.Column(db.String(10))  # H, Sch-H, Sch-X, OTC
     product_type = db.Column(db.String(20))  # Tablet, Syrup, Injection, etc.
     pack_type = db.Column(db.String(50))
@@ -118,6 +119,7 @@ class Product(db.Model):
     barcodes = db.relationship('ProductBarcode', backref='product', lazy='dynamic', cascade='all, delete-orphan')
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
     category = db.relationship('Category', backref='products')
+    product_suppliers = db.relationship('ProductSupplier', backref='product', lazy='dynamic', cascade='all, delete-orphan')
     
     def __repr__(self):
         return f'<Product {self.product_code}: {self.product_name}>'
@@ -125,6 +127,15 @@ class Product(db.Model):
     @property
     def current_stock(self):
         return sum(b.available_qty for b in self.batches if b.available_qty > 0)
+    
+    def get_favorite_supplier(self):
+        """Get the most frequently used supplier for this product"""
+        favorite = ProductSupplier.query.filter_by(product_id=self.id, is_favorite=True).first()
+        if favorite:
+            return favorite.supplier
+        # Fallback to most purchased supplier
+        most_purchased = ProductSupplier.query.filter_by(product_id=self.id).order_by(ProductSupplier.purchase_count.desc()).first()
+        return most_purchased.supplier if most_purchased else None
 
 class ProductBarcode(db.Model):
     """Multiple barcodes can be linked to one product"""
@@ -712,6 +723,7 @@ class GenericMaster(db.Model):
         return f'<GenericMaster {self.generic_name}>'
 
 class ManufacturerMaster(db.Model):
+    """Company Master - Manufacturer/Company information"""
     __tablename__ = 'manufacturer_master'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -726,7 +738,31 @@ class ManufacturerMaster(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
-        return f'<ManufacturerMaster {self.manufacturer_name}>'
+        return f'<CompanyMaster {self.manufacturer_name}>'
+
+
+class ProductSupplier(db.Model):
+    """Track which suppliers have supplied which products"""
+    __tablename__ = 'product_suppliers'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    supplier_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'), nullable=False)
+    purchase_count = db.Column(db.Integer, default=0)
+    last_purchase_date = db.Column(db.DateTime)
+    is_favorite = db.Column(db.Boolean, default=False)  # Manual favorite
+    is_auto_favorite = db.Column(db.Boolean, default=False)  # Auto-set based on most purchases
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    supplier = db.relationship('AccountMaster', backref='product_supplies')
+    
+    __table_args__ = (db.UniqueConstraint('product_id', 'supplier_id', name='uq_product_supplier'),)
+    
+    def __repr__(self):
+        return f'<ProductSupplier {self.product_id}: {self.supplier_id}>'
+
 
 class ProductTypeMaster(db.Model):
     __tablename__ = 'product_type_master'

@@ -55,6 +55,7 @@
                             <li><a class="dropdown-item" href="{{ url_for('products.list') }}"><i class="bi bi-box-seam me-2"></i>Products</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('customers.list') }}"><i class="bi bi-people me-2"></i>Customers</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('suppliers.list') }}"><i class="bi bi-truck me-2"></i>Suppliers</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('masters.companies') }}"><i class="bi bi-building me-2"></i>Company</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('products.categories') }}"><i class="bi bi-tags me-2"></i>Categories</a></li>
                             <li><a class="dropdown-item" href="{{ url_for('products.tax_rates') }}"><i class="bi bi-percent me-2"></i>Tax Rates</a></li>
@@ -63,7 +64,6 @@
                                 <a class="dropdown-item dropdown-toggle" href="#"><i class="bi bi-three-dots me-2"></i>Others</a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" href="{{ url_for('products.generics') }}"><i class="bi bi-capsule me-2"></i>Generic Master</a></li>
-                                    <li><a class="dropdown-item" href="{{ url_for('products.manufacturers') }}"><i class="bi bi-building me-2"></i>Manufacturer Master</a></li>
                                     <li><a class="dropdown-item" href="{{ url_for('products.product_types') }}"><i class="bi bi-grid-3x3-gap me-2"></i>Product Type</a></li>
                                     <li><a class="dropdown-item" href="{{ url_for('products.categories') }}"><i class="bi bi-tag me-2"></i>Product Category</a></li>
                                     <li><a class="dropdown-item" href="{{ url_for('products.hsn_codes') }}"><i class="bi bi-upc me-2"></i>HSN Code Master</a></li>

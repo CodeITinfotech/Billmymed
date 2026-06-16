@@ -155,6 +155,22 @@ def create():
             
             db.session.add(item)
             subtotal += amounts[i] if i < len(amounts) else 0
+            
+            # Track product-supplier relationship
+            from app.models import ProductSupplier
+            qty = quantities[i] + (free_qtys[i] if i < len(free_qtys) else 0)
+            ps = ProductSupplier.query.filter_by(product_id=product_id, supplier_id=supplier_id).first()
+            if ps:
+                ps.purchase_count += qty
+                ps.last_purchase_date = datetime.utcnow()
+            else:
+                ps = ProductSupplier(
+                    product_id=product_id,
+                    supplier_id=supplier_id,
+                    purchase_count=qty,
+                    last_purchase_date=datetime.utcnow()
+                )
+                db.session.add(ps)
         
         purchase.subtotal = subtotal
         db.session.commit()
