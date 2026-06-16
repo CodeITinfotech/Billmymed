@@ -369,18 +369,16 @@ class Invoice(db.Model):
     payment_status = db.Column(db.String(20), default='paid')  # paid, partial, credit
     due_date = db.Column(db.Date)
     sales_type = db.Column(db.String(10), default='cash')  # cash, credit, emergency
-    # Patient Information (linked to Patient Master)
-    patient_id = db.Column(db.Integer, db.ForeignKey('patients.id'))
+    # Patient Information (patient_id stored as integer, links to Patient Master)
+    patient_id = db.Column(db.Integer)  # Links to Patient Master
     patient_name = db.Column(db.String(200))
     patient_phone = db.Column(db.String(20))
     patient_address = db.Column(db.Text)
     # Credit Customer Information (for credit sales)
-    credit_customer_id = db.Column(db.Integer, db.ForeignKey('account_masters.id'))
-    credit_customer = db.relationship('AccountMaster', foreign_keys=[credit_customer_id])
+    credit_customer_id = db.Column(db.Integer)  # Links to AccountMaster
     credit_customer_name = db.Column(db.String(200))  # Store name if no customer selected
-    # Doctor Information
-    doctor_id = db.Column(db.Integer, db.ForeignKey('doctors.id'))
-    doctor = db.relationship('Doctor', foreign_keys=[doctor_id])
+    # Doctor Information (doctor_id stored as integer, links to Doctor Master)
+    doctor_id = db.Column(db.Integer)  # Links to Doctor Master
     doctor_name = db.Column(db.String(200))  # Store doctor name directly
     doctor_address = db.Column(db.Text)
     prescription_no = db.Column(db.String(50))
