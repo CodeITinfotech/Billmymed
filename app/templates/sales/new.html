@@ -1334,46 +1334,57 @@ function selectPatient(id, name, phone, address) {
 
 // Create new patient
 function createNewPatient(name) {
-    const phone = prompt('Enter phone number (optional):', document.getElementById('patientPhone').value);
-    const address = prompt('Enter address (optional):', document.getElementById('patientPlace').value);
+    // Store the name and open modal
+    document.getElementById('newPatientName').value = name || document.getElementById('patientName').value;
+    document.getElementById('newPatientPhone').value = document.getElementById('patientPhone').value || '';
+    document.getElementById('newPatientAddress').value = document.getElementById('patientPlace').value || '';
+    document.getElementById('addPatientModal').style.display = 'flex';
+    document.getElementById('newPatientName').focus();
+}
+
+function closeAddPatientModal() {
+    document.getElementById('addPatientModal').style.display = 'none';
+    document.getElementById('newPatientName').value = '';
+    document.getElementById('newPatientPhone').value = '';
+    document.getElementById('newPatientAddress').value = '';
+}
+
+function saveNewPatient() {
+    const name = document.getElementById('newPatientName').value.trim();
+    const phone = document.getElementById('newPatientPhone').value.trim();
+    const address = document.getElementById('newPatientAddress').value.trim();
     
-    if (name && name.trim()) {
-        // Create patient via API
-        fetch('/customers/create_quick', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
-            },
-            body: JSON.stringify({
-                account_name: name,
-                account_type: 'customer',
-                phone: phone || '',
-                address: address || ''
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                selectPatient(data.id, name, phone || '', address || '');
-                alert('Patient created successfully!');
-            } else {
-                alert('Error creating patient: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(err => {
-            // Fallback: just set the values locally
-            document.getElementById('patientId').value = '';
-            document.getElementById('patientName').value = name;
-            document.getElementById('patientPhone').value = phone || '';
-            document.getElementById('patientPlace').value = address || '';
-            document.getElementById('patientDropdown').style.display = 'none';
-            alert('Patient saved locally. Will be created when sale is completed.');
-        });
+    if (!name) {
+        showToast('Please enter patient name', 'error');
+        return;
     }
     
-    document.getElementById('patientDropdown').style.display = 'none';
-    document.getElementById('productSearch').focus();
+    fetch('/customers/create_quick', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+        },
+        body: JSON.stringify({
+            account_name: name,
+            account_type: 'customer',
+            phone: phone || '',
+            address: address || ''
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            selectPatient(data.id, name, phone || '', address || '');
+            showToast('Patient created successfully', 'success');
+            closeAddPatientModal();
+        } else {
+            showToast(data.error || 'Failed to create patient', 'error');
+        }
+    })
+    .catch(err => {
+        showToast('Error creating patient', 'error');
+    });
 }
 
 // Doctor dropdown state
@@ -1781,6 +1792,32 @@ function saveNewDoctor() {
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-primary btn-sm flex-grow-1" onclick="saveNewDoctor()">Save Doctor</button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="closeAddDoctorModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add Patient Modal -->
+<div id="addPatientModal" class="position-fixed top-0 start-0 w-100 h-100" style="background: rgba(0,0,0,0.5); z-index: 10002; display: none;">
+    <div class="position-absolute top-50 start-50 translate-middle bg-white rounded shadow p-4" style="width: 400px; max-width: 90%;">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Add New Patient</h5>
+            <button type="button" class="btn-close" onclick="closeAddPatientModal()"></button>
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Patient Name *</label>
+            <input type="text" class="form-control form-control-sm" id="newPatientName" placeholder="Enter patient name">
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Phone</label>
+            <input type="text" class="form-control form-control-sm" id="newPatientPhone" placeholder="Phone number">
+        </div>
+        <div class="mb-3">
+            <label class="form-label small">Address</label>
+            <input type="text" class="form-control form-control-sm" id="newPatientAddress" placeholder="Address">
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-primary btn-sm flex-grow-1" onclick="saveNewPatient()">Save Patient</button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="closeAddPatientModal()">Cancel</button>
         </div>
     </div>
 </div>
