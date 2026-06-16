@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app import db
-from app.models import Product, Batch, AccountMaster, AccountGroup, Invoice, InvoiceItem, ProductBarcode, ProductPackaging, Settings
+from app.models import Product, Batch, AccountMaster, AccountGroup, Invoice, InvoiceItem, ProductBarcode, ProductPackaging, Settings, ShortList
 from sqlalchemy import or_
 
 api_bp = Blueprint('api', __name__)
@@ -55,7 +55,14 @@ def get_products():
 def get_all_products():
     """Get all products for autocomplete (purchase/sales)"""
     search = request.args.get('q', '')
+    hide_zero = request.args.get('hide_zero', 'false')
     query = Product.query.filter_by(is_active=True)
+    
+    # Filter out zero stock if setting is enabled
+    if hide_zero == 'true':
+        query = query.filter(Product.id.in_(
+            db.session.query(Batch.product_id).filter(Batch.available_qty > 0).distinct()
+        ))
     
     if search:
         # Check if user is using wildcards
@@ -768,3 +775,92 @@ def delete_barcode(id):
 def get_product_barcodes(product_id):
     barcodes = ProductBarcode.query.filter_by(product_id=product_id).order_by(ProductBarcode.is_primary.desc()).all()
     return jsonify([{"id": b.id, "barcode": b.barcode, "is_primary": b.is_primary, "created_at": b.created_at.strftime("%d-%m-%Y")} for b in barcodes])
+
+# ============ ShortList APIs ============
+
+@api_bp.route("/shortlist")
+@login_required
+def get_shortlist():
+    """Get all short-listed items"""
+    items = db.session.query(ShortList, Product).join(Product, ShortList.product_id == Product.id).filter(
+        ShortList.is_ordered == False
+    ).order_by(ShortList.created_at.desc()).all()
+    
+    return jsonify([{
+        'id': item.ShortList.id,
+        'product_id': item.Product.id,
+        'product_name': item.Product.product_name,
+        'product_code': item.Product.product_code,
+        'quantity': item.ShortList.quantity,
+        'mrp': float(item.Product.mrp) if item.Product.mrp else 0,
+        'current_stock': item.Product.current_stock,
+        'notes': item.ShortList.notes,
+        'created_at': item.ShortList.created_at.strftime("%d-%m-%Y %H:%M") if item.ShortList.created_at else ''
+    } for item in items])
+
+@api_bp.route("/shortlist/add", methods=["POST"])
+@login_required
+def add_to_shortlist():
+    """Add a product to shortlist"""
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity', 1)
+    notes = data.get('notes', '')
+    
+    if not product_id:
+        return jsonify({"success": False, "error": "Product ID is required"}), 400
+    
+    # Check if already in shortlist
+    existing = ShortList.query.filter_by(product_id=product_id, is_ordered=False).first()
+    if existing:
+        return jsonify({"success": False, "error": "Product already in shortlist"}), 400
+    
+    item = ShortList(
+        product_id=product_id,
+        quantity=quantity,
+        notes=notes,
+        created_by=current_user.id
+    )
+    db.session.add(item)
+    db.session.commit()
+    
+    return jsonify({"success": True, "message": "Added to shortlist"})
+
+@api_bp.route("/shortlist/update/<int:id>", methods=["PUT"])
+@login_required
+def update_shortlist_item(id):
+    """Update a shortlist item"""
+    data = request.get_json()
+    item = ShortList.query.get_or_404(id)
+    
+    if 'quantity' in data:
+        item.quantity = data['quantity']
+    if 'notes' in data:
+        item.notes = data['notes']
+    
+    db.session.commit()
+    return jsonify({"success": True, "message": "Updated"})
+
+@api_bp.route("/shortlist/remove/<int:id>", methods=["DELETE"])
+@login_required
+def remove_from_shortlist(id):
+    """Remove a product from shortlist"""
+    item = ShortList.query.get_or_404(id)
+    db.session.delete(item)
+    db.session.commit()
+    return jsonify({"success": True, "message": "Removed from shortlist"})
+
+@api_bp.route("/shortlist/mark-ordered", methods=["POST"])
+@login_required
+def mark_shortlist_ordered():
+    """Mark shortlist items as ordered"""
+    data = request.get_json()
+    item_ids = data.get('item_ids', [])
+    
+    for item_id in item_ids:
+        item = ShortList.query.get(item_id)
+        if item:
+            item.is_ordered = True
+    
+    db.session.commit()
+    return jsonify({"success": True, "message": f"{len(item_ids)} items marked as ordered"})

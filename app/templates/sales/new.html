@@ -405,6 +405,7 @@ let selectedBatchIndex = -1;
 let pendingProductId = null;
 let pendingProductData = null;
 let allowNonStockBilling = false;
+let hideZeroStockSale = false;
 
 // Load settings on page load
 async function loadSettings() {
@@ -412,6 +413,7 @@ async function loadSettings() {
         const response = await fetch('/api/settings');
         const settings = await response.json();
         allowNonStockBilling = settings.allow_non_stock_billing === 'true';
+        hideZeroStockSale = settings.hide_zero_stock_sale === 'true';
     } catch (err) {
         console.error('Error loading settings:', err);
     }
@@ -494,7 +496,8 @@ const searchProducts = debounce(function(query) {
 });
 
 function doProductSearch(query) {
-    fetch(`/api/all-products?q=${encodeURIComponent(query)}`)
+    const hideZero = hideZeroStockSale ? '&hide_zero=true' : '';
+    fetch(`/api/all-products?q=${encodeURIComponent(query)}${hideZero}`)
         .then(res => res.json())
         .then(data => {
             currentProductResults = data.slice(0, 10); // Limit to 10 items
@@ -573,9 +576,8 @@ function selectProduct(productId, productCode) {
             const hasStock = product.batches && product.batches.length > 0 && product.batches.some(b => b.available_qty > 0);
             
             if (!hasStock && !allowNonStockBilling) {
-                showToast(`${product.product_name} is out of stock`, 'error');
-                pendingProductData = null;
-                document.getElementById('productSearch').focus();
+                // Show modal to add to shortlist
+                showShortlistModal(product);
                 return;
             }
             
@@ -645,6 +647,44 @@ function focusOnProductSearch() {
         searchInput.value = '';
         searchInput.focus();
     }
+}
+
+// Show shortlist modal for out-of-stock products
+function showShortlistModal(product) {
+    const modal = new bootstrap.Modal(document.getElementById('shortlistModal'));
+    document.getElementById('shortlistProductName').textContent = product.product_name;
+    document.getElementById('shortlistProductId').value = product.id;
+    document.getElementById('shortlistQty').value = 1;
+    document.getElementById('shortlistNotes').value = '';
+    modal.show();
+}
+
+// Add to shortlist
+async function addToShortlist() {
+    const productId = document.getElementById('shortlistProductId').value;
+    const qty = document.getElementById('shortlistQty').value;
+    const notes = document.getElementById('shortlistNotes').value;
+    
+    try {
+        const res = await fetch('/api/shortlist/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({product_id: parseInt(productId), quantity: parseInt(qty), notes})
+        });
+        const data = await res.json();
+        if (data.success) {
+            showToast('Added to Short List', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('shortlistModal')).hide();
+        } else {
+            showToast(data.error || 'Failed to add to shortlist', 'error');
+        }
+    } catch (err) {
+        showToast('Error adding to shortlist', 'error');
+    }
+    
+    // Clear and focus product search
+    document.getElementById('productSearch').focus();
+    pendingProductData = null;
 }
 
 // Show batch selector with keyboard navigation
@@ -1843,6 +1883,37 @@ function saveNewDoctor() {
         <div class="d-flex gap-2">
             <button type="button" class="btn btn-primary btn-sm flex-grow-1" onclick="saveNewPatient()">Save Patient</button>
             <button type="button" class="btn btn-secondary btn-sm" onclick="closeAddPatientModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Shortlist Modal for Out of Stock Products -->
+<div id="shortlistModal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Out of Stock</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2"><strong id="shortlistProductName"></strong> is out of stock.</p>
+                <p class="text-muted small mb-3">Would you like to add it to your Short List for future purchase?</p>
+                <input type="hidden" id="shortlistProductId">
+                <div class="mb-3">
+                    <label class="form-label small">Quantity Needed</label>
+                    <input type="number" class="form-control form-control-sm" id="shortlistQty" value="1" min="1">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label small">Notes (Optional)</label>
+                    <input type="text" class="form-control form-control-sm" id="shortlistNotes" placeholder="Add any notes">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning btn-sm" onclick="addToShortlist()">
+                    <i class="bi bi-bookmark-plus me-1"></i>Add to Short List
+                </button>
+            </div>
         </div>
     </div>
 </div>

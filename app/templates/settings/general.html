@@ -118,13 +118,21 @@
                                                 Auto-print after sale completion
                                             </label>
                                         </div>
-                                        <div class="form-check form-switch">
+                                        <div class="form-check form-switch mb-3">
                                             <input class="form-check-input" type="checkbox" id="allow_non_stock_billing" name="allow_non_stock_billing" 
                                                    value="true" {% if settings.get('allow_non_stock_billing', 'false') == 'true' %}checked{% endif %}>
                                             <label class="form-check-label" for="allow_non_stock_billing">
                                                 <strong>Allow Non-Stock Billing</strong>
                                             </label>
                                             <small class="text-muted d-block mt-1">When enabled, products with zero stock can be billed. When disabled, only products with stock > 0 can be sold.</small>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="hide_zero_stock_sale" name="hide_zero_stock_sale" 
+                                                   value="true" {% if settings.get('hide_zero_stock_sale', 'false') == 'true' %}checked{% endif %}>
+                                            <label class="form-check-label" for="hide_zero_stock_sale">
+                                                <strong>Hide Zero Stock Products in Sale</strong>
+                                            </label>
+                                            <small class="text-muted d-block mt-1">When enabled, products with zero stock will not appear in the sales product search dropdown.</small>
                                         </div>
                                     </div>
                                 </div>

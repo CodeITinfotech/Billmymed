@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, make_response
 from flask_login import login_required
 from app import db
-from app.models import Invoice, InvoiceItem, Purchase, PurchaseItem, Product, Batch, AccountMaster, Ledger, Payment
+from app.models import Invoice, InvoiceItem, Purchase, PurchaseItem, Product, Batch, AccountMaster, Ledger, Payment, ShortList
 from sqlalchemy import func, and_, or_, extract
 from datetime import datetime, timedelta
 from collections import defaultdict
@@ -1028,3 +1028,14 @@ def dashboard_stats():
         'month_sales': float(month_sales),
         'low_stock': low_stock
     })
+
+@reports_bp.route('/shortlist')
+@login_required
+def shortlist_report():
+    """Short Listed Items Report"""
+    items = db.session.query(ShortList, Product).join(
+        Product, ShortList.product_id == Product.id
+    ).filter(ShortList.is_ordered == False).order_by(ShortList.created_at.desc()).all()
+    
+    shortlist_count = len(items)
+    return render_template('reports/shortlist.html', items=items, shortlist_count=shortlist_count)

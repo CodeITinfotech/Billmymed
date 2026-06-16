@@ -234,6 +234,26 @@ class Batch(db.Model):
     def __repr__(self):
         return f'<Batch {self.batch_no} of {self.product_id}>'
 
+class ShortList(db.Model):
+    """Products short-listed for future purchase"""
+    __tablename__ = 'shortlist'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    quantity = db.Column(db.Integer, default=1)
+    notes = db.Column(db.Text)
+    is_ordered = db.Column(db.Boolean, default=False)
+    created_by = db.Column(db.Integer, db.ForeignKey('users.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    product = db.relationship('Product', backref='shortlist_items')
+    creator = db.relationship('User', backref='shortlist_items')
+    
+    __table_args__ = (db.UniqueConstraint('product_id', name='uq_shortlist_product'),)
+    
+    def __repr__(self):
+        return f'<ShortList {self.product_id}>'
+
 class Rack(db.Model):
     __tablename__ = 'racks'
     
