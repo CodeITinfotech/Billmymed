@@ -110,7 +110,7 @@ def get_product(id):
         'product_name': product.product_name,
         'generic_name': product.generic_name,
         'company_id': product.company_id,
-        'company_name': product.company.manufacturer_name if product.company else None,
+        'company_name': product.company.company_name if product.company else None,
         'mrp': float(product.mrp) if product.mrp else 0,
         'rate': float(product.rate) if product.rate else 0,
         'tax_perc': float(product.tax_perc) if product.tax_perc else 0,
@@ -477,31 +477,6 @@ def search_generic_names():
 @api_bp.route('/generic-names', methods=['POST'])
 @login_required
 def add_generic_name():
-    data = request.get_json()
-    name = data.get('name', '').strip()
-    if not name:
-        return jsonify({'error': 'Name is required'}), 400
-    return jsonify({'success': True, 'name': name})
-
-# Manufacturer APIs
-@api_bp.route('/manufacturers/search')
-@login_required
-def search_manufacturers():
-    term = request.args.get('q', '').strip()
-    if len(term) < 1:
-        return jsonify([])
-    
-    mans = db.session.query(Product.manufacturer).distinct().filter(
-        Product.manufacturer.ilike(f'%{term}%'),
-        Product.manufacturer != None,
-        Product.manufacturer != ''
-    ).limit(20).all()
-    
-    return jsonify([m[0] for m in mans if m[0]])
-
-@api_bp.route('/manufacturers', methods=['POST'])
-@login_required
-def add_manufacturer():
     data = request.get_json()
     name = data.get('name', '').strip()
     if not name:

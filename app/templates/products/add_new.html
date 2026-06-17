@@ -58,10 +58,15 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                <label for="manufacturer" class="form-label">Manufacturer</label>
+                                <label for="company_id" class="form-label">Company</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control typeahead" id="manufacturer" name="manufacturer" autocomplete="off">
-                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('manufacturer', 'Manufacturer')">
+                                    <select class="form-select" id="company_id" name="company_id">
+                                        <option value="">Select Company</option>
+                                        {% for company in companies %}
+                                        <option value="{{ company.id }}">{{ company.company_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" onclick="openAddModal('company', 'Company')">
                                         <i class="bi bi-plus"></i>
                                     </button>
                                 </div>
@@ -365,7 +370,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const typeaheadFields = {
         'generic_name': '/api/generic-names/search',
-        'manufacturer': '/api/manufacturers/search',
         'hsn_code': '/api/hsn-codes/search',
         'location': '/api/locations/search',
         'pack_type': '/api/pack-types/search'

@@ -42,8 +42,8 @@
                             <p class="mb-1">{{ product.generic_name or '-' }}</p>
                         </div>
                         <div class="col-6 mb-3">
-                            <label class="text-muted small">Manufacturer</label>
-                            <p class="mb-1">{{ product.manufacturer or '-' }}</p>
+                            <label class="text-muted small">Company</label>
+                            <p class="mb-1">{{ product.company.company_name if product.company else '-' }}</p>
                         </div>
                         <div class="col-6 mb-3">
                             <label class="text-muted small">HSN Code</label>
