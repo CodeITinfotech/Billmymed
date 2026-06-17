@@ -959,7 +959,7 @@ function renderCart() {
                            onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnProductSearch(); } else if(event.key === 'Tab' && !event.shiftKey) { /* Let Tab work naturally to next field */ }">
                 </div>
                 <div class="col-2">
-                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2" disabled>
+                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2">
                         ${packOptionsHtml}
                     </select>
                 </div>
