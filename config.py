@@ -1,8 +1,8 @@
 import os
 from datetime import timedelta
 
-# Get base directory
-basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+# Get base directory (Billmymed folder)
+basedir = os.path.dirname(os.path.abspath(__file__))
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'billmymed-secret-key-2024'
