@@ -35,7 +35,13 @@
                         </div>
                         <div class="col-6 mb-3">
                             <label class="text-muted small">Pack Type</label>
-                            <p class="mb-1">{{ product.pack_type or '-' }}</p>
+                            <p class="mb-1">
+                                {% if packaging %}
+                                    {{ packaging[0].pack_type if packaging[0] else '-' }} ({{ packaging[0].pack_qty if packaging[0] else '' }})
+                                {% else %}
+                                    {{ product.pack_type or '-' }}
+                                {% endif %}
+                            </p>
                         </div>
                         <div class="col-6 mb-3">
                             <label class="text-muted small">Generic Name</label>

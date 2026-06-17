@@ -247,6 +247,7 @@
                 </div>
                 
                 <!-- Hidden Fields -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" id="discountPercHidden" name="discount_perc" value="0">
                 <input type="hidden" id="discountAmtHidden" name="discount_amt" value="0">
                 <input type="hidden" id="taxAmtHidden" name="tax_amt" value="0">

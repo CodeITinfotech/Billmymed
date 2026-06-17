@@ -94,6 +94,11 @@
                                     <a href="{{ url_for('purchase.view', id=purchase.id) }}" class="btn btn-outline-primary" title="View">
                                         <i class="bi bi-eye"></i>
                                     </a>
+                                    {% if not purchase.is_cancelled %}
+                                    <a href="{{ url_for('purchase.edit', id=purchase.id) }}" class="btn btn-outline-success" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    {% endif %}
                                     <a href="{{ url_for('purchase.print_purchase', id=purchase.id) }}" class="btn btn-outline-secondary" title="Print" target="_blank">
                                         <i class="bi bi-printer"></i>
                                     </a>

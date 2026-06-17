@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Purchase {{ purchase.purchase_no }} - {{ config.COMPANY_NAME }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3">
+    <!-- Page Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">
+                Edit Purchase <code>{{ purchase.purchase_no }}</code>
+            </h4>
+            <p class="text-muted mb-0">{{ purchase.purchase_date.strftime('%d %B %Y') }}</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('purchase.view', id=purchase.id) }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Back
+            </a>
+        </div>
+    </div>
+    
+    <form method="POST" id="editPurchaseForm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        
+        <div class="row g-4">
+            <!-- Supplier Info -->
+            <div class="col-12 col-lg-4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h6 class="mb-0 fw-bold">Supplier Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Supplier</label>
+                            <select name="supplier_id" class="form-select" disabled>
+                                <option value="{{ purchase.supplier_id }}">{{ purchase.supplier.account_name if purchase.supplier else 'N/A' }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Invoice Number</label>
+                            <input type="text" name="invoice_no" class="form-control" value="{{ purchase.invoice_no or '' }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bill Type</label>
+                            <select name="bill_type" class="form-select">
+                                <option value="GST" {{ 'selected' if purchase.bill_type == 'GST' else '' }}>GST</option>
+                                <option value="IGST" {{ 'selected' if purchase.bill_type == 'IGST' else '' }}>IGST</option>
+                                <option value="N/A" {{ 'selected' if purchase.bill_type == 'N/A' else '' }}>N/A</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Remarks</label>
+                            <textarea name="remarks" class="form-control" rows="2">{{ purchase.remarks or '' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Items Table -->
+            <div class="col-12 col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0 fw-bold">Items</h6>
+                        <span class="badge bg-primary">{{ purchase.items.count() }} items</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Product</th>
+                                        <th class="text-center">Batch</th>
+                                        <th class="text-center">Expiry</th>
+                                        <th class="text-center">Pur. Rate</th>
+                                        <th class="text-center">Sell Rate</th>
+                                        <th class="text-center">MRP</th>
+                                        <th class="text-center">Qty</th>
+                                        <th class="text-center">Free</th>
+                                        <th class="text-center">Tax %</th>
+                                        <th class="text-end">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in purchase.items %}
+                                    <tr data-item-id="{{ item.id }}">
+                                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                                        <td>{{ loop.index }}</td>
+                                        <td>
+                                            <strong>{{ item.product.product_name if item.product else 'N/A' }}</strong>
+                                            <br><small class="text-muted">{{ item.product.product_code if item.product else '' }}</small>
+                                        </td>
+                                        <td class="text-center"><code>{{ item.batch_no or '-' }}</code></td>
+                                        <td class="text-center">{{ item.expiry_date.strftime('%m/%y') if item.expiry_date else '-' }}</td>
+                                        <td class="text-center">
+                                            <input type="number" name="purchase_rate" class="form-control form-control-sm text-center" 
+                                                   value="{{ item.purchase_rate }}" step="0.01" min="0" style="width: 80px;"
+                                                   onchange="updateItemAmount(this)">
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="number" name="sale_rate" class="form-control form-control-sm text-center" 
+                                                   value="{{ item.sale_rate or '' }}" step="0.01" min="0" style="width: 80px;">
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="number" name="mrp" class="form-control form-control-sm text-center" 
+                                                   value="{{ item.mrp or '' }}" step="0.01" min="0" style="width: 80px;">
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="number" name="quantity" class="form-control form-control-sm text-center" 
+                                                   value="{{ item.quantity }}" min="1" style="width: 60px;"
+                                                   onchange="updateItemAmount(this)">
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="number" name="free_qty" class="form-control form-control-sm text-center" 
+                                                   value="{{ item.free_qty or 0 }}" min="0" style="width: 50px;">
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="number" name="tax_perc" class="form-control form-control-sm text-center" 
+                                                   value="{{ item.tax_perc }}" step="0.1" min="0" max="100" style="width: 60px;"
+                                                   onchange="updateItemAmount(this)">
+                                        </td>
+                                        <td class="text-end fw-bold item-amount">₹{{ "{:,.2f}".format(item.amount) }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="10" class="text-end"><strong>Total:</strong></td>
+                                        <td class="text-end fw-bold" id="totalAmount">₹{{ "{:,.2f}".format(purchase.total_amount) }}</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle me-1"></i> Update Purchase
+                        </button>
+                        <a href="{{ url_for('purchase.view', id=purchase.id) }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+function updateItemAmount(input) {
+    const row = input.closest('tr');
+    const purchaseRate = parseFloat(row.querySelector('[name="purchase_rate"]').value) || 0;
+    const quantity = parseInt(row.querySelector('[name="quantity"]').value) || 0;
+    const taxPerc = parseFloat(row.querySelector('[name="tax_perc"]').value) || 0;
+    
+    const baseAmount = purchaseRate * quantity;
+    const taxAmount = baseAmount * (taxPerc / 100);
+    const totalAmount = baseAmount + taxAmount;
+    
+    row.querySelector('.item-amount').textContent = '₹' + totalAmount.toFixed(2);
+    
+    // Update total
+    let total = 0;
+    document.querySelectorAll('.item-amount').forEach(el => {
+        const val = parseFloat(el.textContent.replace(/[₹,]/g, '')) || 0;
+        total += val;
+    });
+    document.getElementById('totalAmount').textContent = '₹' + total.toFixed(2);
+}
+</script>
+{% endblock %}

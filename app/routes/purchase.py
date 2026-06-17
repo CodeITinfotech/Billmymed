@@ -231,6 +231,67 @@ def cancel(id):
     flash('Purchase cancelled successfully.', 'success')
     return redirect(url_for('purchase.view', id=id))
 
+@purchase_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit(id):
+    purchase = Purchase.query.get_or_404(id)
+    
+    if purchase.is_cancelled:
+        flash('Cannot edit cancelled purchase.', 'error')
+        return redirect(url_for('purchase.view', id=id))
+    
+    if request.method == 'POST':
+        try:
+            # Update purchase header
+            purchase.supplier_id = request.form.get('supplier_id', type=int) or purchase.supplier_id
+            purchase.invoice_no = request.form.get('invoice_no', purchase.invoice_no)
+            purchase.bill_type = request.form.get('bill_type', purchase.bill_type)
+            purchase.remarks = request.form.get('remarks', purchase.remarks)
+            
+            # Update items
+            item_ids = request.form.getlist('item_id')
+            purchase_rates = request.form.getlist('purchase_rate')
+            sale_rates = request.form.getlist('sale_rate')
+            mrps = request.form.getlist('mrp')
+            qtys = request.form.getlist('quantity')
+            free_qtys = request.form.getlist('free_qty')
+            tax_percs = request.form.getlist('tax_perc')
+            
+            for i, item_id in enumerate(item_ids):
+                item = PurchaseItem.query.get(int(item_id))
+                if item:
+                    item.purchase_rate = float(purchase_rates[i]) if purchase_rates[i] else item.purchase_rate
+                    item.sale_rate = float(sale_rates[i]) if sale_rates[i] else item.sale_rate
+                    item.mrp = float(mrps[i]) if mrps[i] else item.mrp
+                    item.quantity = int(qtys[i]) if qtys[i] else item.quantity
+                    item.free_qty = int(free_qtys[i]) if free_qtys[i] else 0
+                    item.tax_perc = float(tax_percs[i]) if tax_percs[i] else item.tax_perc
+                    
+                    # Recalculate amount
+                    item_amount = item.purchase_rate * item.quantity
+                    item_tax = item_amount * (item.tax_perc / 100)
+                    item.amount = item_amount + item_tax
+                    
+                    # Update batch if exists
+                    if item.batch_id:
+                        item.batch.purchase_rate = item.purchase_rate
+                        item.batch.sale_rate = item.sale_rate
+                        item.batch.mrp = item.mrp
+            
+            # Recalculate total
+            purchase.total_amount = sum(item.amount for item in purchase.items)
+            purchase.tax_amount = sum(item.amount - (item.purchase_rate * item.quantity) for item in purchase.items)
+            purchase.updated_at = datetime.utcnow()
+            
+            db.session.commit()
+            flash('Purchase updated successfully.', 'success')
+            return redirect(url_for('purchase.view', id=id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating purchase: {str(e)}', 'error')
+    
+    return render_template('purchase/edit.html', purchase=purchase)
+
 # Purchase Returns
 @purchase_bp.route('/returns')
 @login_required
