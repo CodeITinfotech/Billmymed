@@ -246,6 +246,34 @@
                     </div>
                 </div>
                 
+                <!-- Profit Margin Summary -->
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3">Profit Margin</h6>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Total Cost</span>
+                            <span id="totalCost" class="fw-medium">₹0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Total Sale Value</span>
+                            <span id="totalSaleValue" class="fw-medium">₹0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Free Qty Value</span>
+                            <span id="freeQtyValue" class="fw-medium text-warning">₹0.00</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">Net Profit</span>
+                            <span id="netProfit" class="fw-bold text-success">₹0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Margin %</span>
+                            <span id="marginPerc" class="text-muted">0%</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Hidden Fields -->
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <input type="hidden" id="discountPercHidden" name="discount_perc" value="0">
@@ -944,7 +972,7 @@ function updateCartItem() {
     const index = window._editingCartIndex;
     if (index === undefined || index < 0 || index >= cart.length) return;
     
-    const batchNo = document.getElementById('modalBatchNo').value;
+    const batchNo = document.getElementById('modalBatchNo').value.trim();
     const expiry = document.getElementById('modalExpiry').value;
     const mrp = parseFloat(document.getElementById('modalMrp').value) || 0;
     const rate = parseFloat(document.getElementById('modalRate').value) || 0;
@@ -954,8 +982,10 @@ function updateCartItem() {
     const freeQty = parseInt(document.getElementById('modalFreeQty').value) || 0;
     const packType = document.getElementById('modalPackType').value;
     
-    if (!batchNo) {
-        alert('Please enter batch number');
+    // Validate batch number: only alphanumeric, numbers, or dash allowed
+    if (batchNo && !/^[A-Za-z0-9-]+$/.test(batchNo)) {
+        alert('Batch number can only contain letters, numbers, and dash (-)');
+        document.getElementById('modalBatchNo').focus();
         return;
     }
     
@@ -1005,12 +1035,25 @@ function removeFromCart(index) {
 function calculateTotal() {
     let subtotal = 0;
     let totalTax = 0;
+    let totalCost = 0;
+    let totalSaleValue = 0;
+    let totalFreeQtyValue = 0;
     
     cart.forEach(item => {
         const taxableAmount = item.quantity * item.rate;
         const itemTax = taxableAmount * ((item.tax_perc || 18) / 100);
         subtotal += item.amount;
         totalTax += itemTax;
+        
+        // Profit margin calculation
+        const qty = item.quantity || 0;
+        const freeQty = item.free_qty || 0;
+        const purchaseRate = item.rate || 0;
+        const saleRate = item.sale_rate || 0;
+        
+        totalCost += (qty + freeQty) * purchaseRate;
+        totalSaleValue += (qty + freeQty) * saleRate;
+        totalFreeQtyValue += freeQty * purchaseRate;
     });
     
     const discountPerc = parseFloat(document.getElementById('discountPerc').value) || 0;
@@ -1033,6 +1076,17 @@ function calculateTotal() {
     document.getElementById('taxAmtHidden').value = taxAmount.toFixed(2);
     document.getElementById('roundOffHidden').value = roundOff.toFixed(2);
     document.getElementById('totalAmountHidden').value = Math.round(total).toFixed(2);
+    
+    // Update profit margin
+    const netProfit = totalSaleValue - totalCost;
+    const marginPerc = totalCost > 0 ? ((netProfit / totalCost) * 100).toFixed(2) : 0;
+    
+    document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+    document.getElementById('totalSaleValue').textContent = formatCurrency(totalSaleValue);
+    document.getElementById('freeQtyValue').textContent = formatCurrency(totalFreeQtyValue);
+    document.getElementById('netProfit').textContent = formatCurrency(netProfit);
+    document.getElementById('netProfit').className = netProfit >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+    document.getElementById('marginPerc').textContent = marginPerc + '%';
     
     calculatePayment();
 }
@@ -1057,6 +1111,36 @@ function calculatePayment() {
     } else {
         document.getElementById('paymentStatus').value = 'pending';
     }
+    
+    // Calculate profit margin
+    calculateProfitMargin();
+}
+
+function calculateProfitMargin() {
+    let totalCost = 0;
+    let totalSaleValue = 0;
+    let totalFreeQty = 0;
+    
+    cart.forEach(item => {
+        const qty = item.quantity || 0;
+        const freeQty = item.free_qty || 0;
+        const purchaseRate = item.rate || 0;
+        const saleRate = item.sale_rate || 0;
+        
+        totalCost += (qty + freeQty) * purchaseRate;
+        totalSaleValue += (qty + freeQty) * saleRate;
+        totalFreeQty += freeQty * purchaseRate;
+    });
+    
+    const netProfit = totalSaleValue - totalCost;
+    const marginPerc = totalCost > 0 ? ((netProfit / totalCost) * 100).toFixed(2) : 0;
+    
+    document.getElementById('totalCost').textContent = formatCurrency(totalCost);
+    document.getElementById('totalSaleValue').textContent = formatCurrency(totalSaleValue);
+    document.getElementById('freeQtyValue').textContent = formatCurrency(totalFreeQty);
+    document.getElementById('netProfit').textContent = formatCurrency(netProfit);
+    document.getElementById('netProfit').className = netProfit >= 0 ? 'fw-bold text-success' : 'fw-bold text-danger';
+    document.getElementById('marginPerc').textContent = marginPerc + '%';
 }
 
 function completePurchase() {

@@ -234,6 +234,8 @@ def cancel(id):
 @purchase_bp.route('/<int:id>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(id):
+    from app.models import Product, Batch
+    
     purchase = Purchase.query.get_or_404(id)
     
     if purchase.is_cancelled:
@@ -248,7 +250,7 @@ def edit(id):
             purchase.bill_type = request.form.get('bill_type', purchase.bill_type)
             purchase.remarks = request.form.get('remarks', purchase.remarks)
             
-            # Update items
+            # Get all form data
             item_ids = request.form.getlist('item_id')
             purchase_rates = request.form.getlist('purchase_rate')
             sale_rates = request.form.getlist('sale_rate')
@@ -257,30 +259,102 @@ def edit(id):
             free_qtys = request.form.getlist('free_qty')
             tax_percs = request.form.getlist('tax_perc')
             
+            # Get new items data
+            new_product_ids = request.form.getlist('new_product_id')
+            new_batch_nos = request.form.getlist('new_batch_no')
+            new_expiry_dates = request.form.getlist('new_expiry_date')
+            
+            # Track which items to keep
+            existing_item_ids = []
+            
             for i, item_id in enumerate(item_ids):
-                item = PurchaseItem.query.get(int(item_id))
-                if item:
-                    item.purchase_rate = float(purchase_rates[i]) if purchase_rates[i] else item.purchase_rate
-                    item.sale_rate = float(sale_rates[i]) if sale_rates[i] else item.sale_rate
-                    item.mrp = float(mrps[i]) if mrps[i] else item.mrp
-                    item.quantity = int(qtys[i]) if qtys[i] else item.quantity
-                    item.free_qty = int(free_qtys[i]) if free_qtys[i] else 0
-                    item.tax_perc = float(tax_percs[i]) if tax_percs[i] else item.tax_perc
+                # Check if this is a new item (starts with 'new_')
+                if str(item_id).startswith('new_'):
+                    # This is a new item - add it
+                    product_id = int(new_product_ids[i]) if i < len(new_product_ids) else None
+                    if not product_id:
+                        continue
                     
-                    # Recalculate amount
-                    item_amount = item.purchase_rate * item.quantity
-                    item_tax = item_amount * (item.tax_perc / 100)
-                    item.amount = item_amount + item_tax
+                    product = Product.query.get(product_id)
+                    batch_no = new_batch_nos[i] if i < len(new_batch_nos) else ''
+                    expiry_str = new_expiry_dates[i] if i < len(new_expiry_dates) else ''
                     
-                    # Update batch if exists
-                    if item.batch_id:
-                        item.batch.purchase_rate = item.purchase_rate
-                        item.batch.sale_rate = item.sale_rate
-                        item.batch.mrp = item.mrp
+                    # Parse expiry date
+                    expiry_date = None
+                    if expiry_str:
+                        try:
+                            expiry_date = datetime.strptime(expiry_str + '-01', '%Y-%m-%d')
+                        except:
+                            pass
+                    
+                    # Create or find batch
+                    batch = None
+                    if batch_no:
+                        batch = Batch.query.filter_by(product_id=product_id, batch_no=batch_no).first()
+                        if not batch:
+                            batch = Batch(
+                                product_id=product_id,
+                                batch_no=batch_no,
+                                expiry_date=expiry_date,
+                                purchase_rate=float(purchase_rates[i]) if purchase_rates[i] else 0,
+                                sale_rate=float(sale_rates[i]) if sale_rates[i] else 0,
+                                mrp=float(mrps[i]) if mrps[i] else 0,
+                                available_qty=int(qtys[i]) if qtys[i] else 0
+                            )
+                            db.session.add(batch)
+                    
+                    qty = int(qtys[i]) if qtys[i] else 0
+                    free = int(free_qtys[i]) if free_qtys[i] else 0
+                    rate = float(purchase_rates[i]) if purchase_rates[i] else 0
+                    tax = float(tax_percs[i]) if tax_percs[i] else 18
+                    
+                    new_item = PurchaseItem(
+                        purchase_id=purchase.id,
+                        product_id=product_id,
+                        batch_id=batch.id if batch else None,
+                        batch_no=batch_no,
+                        expiry_date=expiry_date,
+                        quantity=qty,
+                        free_qty=free,
+                        purchase_rate=rate,
+                        sale_rate=float(sale_rates[i]) if sale_rates[i] else 0,
+                        mrp=float(mrps[i]) if mrps[i] else 0,
+                        tax_perc=tax,
+                        amount=qty * rate * (1 + tax / 100)
+                    )
+                    db.session.add(new_item)
+                    existing_item_ids.append(new_item.id)
+                else:
+                    # Existing item - update it
+                    item = PurchaseItem.query.get(int(item_id))
+                    if item:
+                        existing_item_ids.append(item.id)
+                        item.purchase_rate = float(purchase_rates[i]) if purchase_rates[i] else item.purchase_rate
+                        item.sale_rate = float(sale_rates[i]) if sale_rates[i] else item.sale_rate
+                        item.mrp = float(mrps[i]) if mrps[i] else item.mrp
+                        item.quantity = int(qtys[i]) if qtys[i] else item.quantity
+                        item.free_qty = int(free_qtys[i]) if free_qtys[i] else 0
+                        item.tax_perc = float(tax_percs[i]) if tax_percs[i] else item.tax_perc
+                        
+                        # Recalculate amount (including free qty)
+                        item_amount = item.purchase_rate * (item.quantity + item.free_qty)
+                        item_tax = item_amount * (item.tax_perc / 100)
+                        item.amount = item_amount + item_tax
+                        
+                        # Update batch if exists
+                        if item.batch_id:
+                            item.batch.purchase_rate = item.purchase_rate
+                            item.batch.sale_rate = item.sale_rate
+                            item.batch.mrp = item.mrp
+            
+            # Remove items that were deleted
+            for item in purchase.items:
+                if item.id not in existing_item_ids:
+                    db.session.delete(item)
             
             # Recalculate total
             purchase.total_amount = sum(item.amount for item in purchase.items)
-            purchase.tax_amount = sum(item.amount - (item.purchase_rate * item.quantity) for item in purchase.items)
+            purchase.tax_amount = sum(item.amount - (item.purchase_rate * (item.quantity + item.free_qty)) for item in purchase.items)
             purchase.updated_at = datetime.utcnow()
             
             db.session.commit()
