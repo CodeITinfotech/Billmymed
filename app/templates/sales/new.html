@@ -562,14 +562,17 @@ function doProductSearch(query) {
                 resultsDiv.innerHTML = currentProductResults.map((p, index) => {
                     const highlightedName = highlightMatch(p.product_name, query);
                     const highlightedCode = highlightMatch(p.product_code, query);
+                    const highlightedGeneric = p.generic_name ? highlightMatch(p.generic_name, query) : '';
+                    const barcode = p.barcode ? `<small class="text-muted"> | <i class="bi bi-upc"></i> ${p.barcode}</small>` : '';
                     return `
                         <div class="product-list-item p-3 border-bottom ${index === selectedProductIndex ? 'selected' : ''}" data-index="${index}" onclick="selectProduct(${p.id}, '${p.product_code.replace(/'/g, "\\'")}')">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
                                     <strong>${highlightedName}</strong>
-                                    <small class="text-muted d-block">${highlightedCode}</small>
+                                    <small class="text-muted d-block">${highlightedCode}${barcode}</small>
+                                    ${highlightedGeneric ? `<small class="text-secondary fst-italic d-block">${highlightedGeneric}</small>` : ''}
                                 </div>
-                                <div class="text-end">
+                                <div class="text-end ms-3">
                                     <small class="text-primary fw-bold">₹${p.mrp.toFixed(2)}</small>
                                     <small class="${p.stock < 10 ? 'text-danger' : 'text-success'} d-block">Stock: ${p.stock}</small>
                                 </div>
@@ -769,20 +772,34 @@ function showBatchSelector(product) {
     
     batchList.innerHTML = product.batches.map((batch, index) => {
         const isAlreadySelected = selectedBatches.includes(batch.id);
+        const expiryDate = batch.expiry_date ? new Date(batch.expiry_date) : null;
+        const isExpired = expiryDate && expiryDate < new Date();
+        const isExpiringSoon = expiryDate && !isExpired && (expiryDate - new Date()) < 30 * 24 * 60 * 60 * 1000; // 30 days
+        const expiryClass = isExpired ? 'text-danger' : isExpiringSoon ? 'text-warning' : 'text-muted';
+        
         return `
-        <div class="batch-item ${isAlreadySelected ? 'text-muted opacity-50' : ''}" 
+        <div class="batch-item p-2 border-bottom ${isAlreadySelected ? 'text-muted opacity-50' : ''}" 
              data-index="${index}" 
              onclick="${isAlreadySelected ? '' : `selectBatch(${index})`}"
              style="${isAlreadySelected ? 'pointer-events: none;' : 'cursor: pointer;'}">
-            <div class="batch-info">
-                <div>
-                    <strong>${batch.batch_no}</strong>
-                    ${isAlreadySelected ? '<small class="text-success"> (Added)</small>' : ''}
-                    <small class="text-muted"> | Exp: ${batch.expiry_date ? new Date(batch.expiry_date).toLocaleDateString('en-GB') : 'N/A'}</small>
+            <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2">
+                        <strong class="text-primary">${batch.batch_no || 'N/A'}</strong>
+                        ${isAlreadySelected ? '<span class="badge bg-success">Added</span>' : ''}
+                        ${isExpired ? '<span class="badge bg-danger">Expired</span>' : ''}
+                        ${isExpiringSoon ? '<span class="badge bg-warning text-dark">Expiring Soon</span>' : ''}
+                    </div>
+                    <div class="mt-1">
+                        <small class="text-muted"><i class="bi bi-calendar me-1"></i>Exp: ${batch.expiry_date ? expiryDate.toLocaleDateString('en-GB') : 'N/A'}</small>
+                        ${batch.mrp ? `<small class="text-muted ms-2"><i class="bi bi-tag me-1"></i>MRP: ₹${parseFloat(batch.mrp).toFixed(2)}</small>` : ''}
+                    </div>
                 </div>
                 <div class="text-end">
-                    <span class="fw-bold">₹${batch.sale_rate.toFixed(2)}</span>
-                    <small class="text-muted d-block">Qty: ${batch.available_qty}</small>
+                    <div class="fw-bold text-primary">₹${parseFloat(batch.sale_rate || 0).toFixed(2)}</div>
+                    <small class="${batch.available_qty < 10 ? 'text-danger' : 'text-success'}">
+                        <i class="bi bi-box-seam me-1"></i>Qty: ${batch.available_qty}
+                    </small>
                 </div>
             </div>
         </div>
