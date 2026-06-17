@@ -2397,7 +2397,12 @@ async function closeTab(tabId) {
     }
     
     try {
-        await fetch(`/sales/tab/${tabId}/close`, { method: 'POST' });
+        await fetch(`/sales/tab/${tabId}/close`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]')?.value || ''
+            }
+        });
         
         const tabEl = document.getElementById(`tab-${tabId}`);
         if (tabEl) tabEl.remove();

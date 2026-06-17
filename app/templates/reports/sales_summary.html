@@ -177,7 +177,19 @@ $(document).ready(function() {
         pageLength: 25,
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         order: [[1, 'desc']],
-        responsive: true
+        responsive: true,
+        columns: [
+            null,  // Invoice #
+            null,  // Date
+            null,  // Customer
+            null,  // Sales Type
+            null,  // Subtotal
+            null,  // Discount
+            null,  // Tax
+            null,  // Total
+            null,  // Payment
+            { orderable: false }  // Actions
+        ]
     });
 });
 </script>

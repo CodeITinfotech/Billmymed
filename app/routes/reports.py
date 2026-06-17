@@ -825,11 +825,18 @@ def gst_pdf():
 @reports_bp.route('/profit')
 @login_required
 def profit():
+    from app.models import Category
+    
     from_date = request.args.get('from_date', (datetime.utcnow().replace(day=1)).strftime('%Y-%m-%d'))
     to_date = request.args.get('to_date', datetime.utcnow().strftime('%Y-%m-%d'))
+    category_id = request.args.get('category_id', '')
+    group_by = request.args.get('group_by', 'product')
     
     from_dt = datetime.strptime(from_date, '%Y-%m-%d')
     to_dt = datetime.strptime(to_date, '%Y-%m-%d') + timedelta(days=1)
+    
+    # Get categories for filter dropdown
+    categories = Category.query.filter_by(is_active=True).order_by(Category.category_name).all()
     
     # Calculate profit from sales - cost
     results = db.session.query(
@@ -880,7 +887,10 @@ def profit():
                          total_sales=total_sales,
                          total_profit=total_profit,
                          summary=summary,
-                         profit_data=profit_data)
+                         profit_data=profit_data,
+                         categories=categories,
+                         category_id=category_id,
+                         group_by=group_by)
 
 
 @reports_bp.route('/profit/pdf')
