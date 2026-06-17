@@ -1894,17 +1894,18 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof $.fn.select2 !== 'undefined') {
     $('#customerSelect').select2({
         ajax: {
-            url: '/api/customers',
+            url: '/customers/search-json',
             dataType: 'json',
             delay: 250,
             data: function(params) {
-                return { search: params.term };
+                return { q: params.term };
             },
             processResults: function(data) {
                 return {
                     results: data.map(c => ({
                         id: c.id,
-                        text: c.account_name + ' (' + c.account_code + ')'
+                        text: c.account_name + ' (' + c.account_code + ')',
+                        mobile: c.mobile
                     }))
                 };
             }
@@ -1915,15 +1916,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     $('#customerSelect').on('select2:select', function(e) {
         const customerId = e.params.data.id;
-        fetch('/api/customers/' + customerId)
+        fetch('/customers/' + customerId)
             .then(res => res.json())
             .then(data => {
                 selectedCustomer = data;
-                document.getElementById('customerInfoCard').style.display = 'block';
-                document.getElementById('selectedCustomerName').textContent = data.account_name;
-                document.getElementById('selectedCustomerBalance').textContent = formatCurrency(Math.abs(data.balance));
-                document.getElementById('customerId').value = customerId;
+                document.getElementById('creditCustomerName').value = data.account_name;
             });
+    });
+    
+    $('#customerSelect').on('select2:clear', function(e) {
+        document.getElementById('creditCustomerName').value = '';
+        selectedCustomer = null;
     });
     } // end if select2 available
 });
