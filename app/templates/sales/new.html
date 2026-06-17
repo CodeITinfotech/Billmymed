@@ -584,7 +584,16 @@ function doProductSearch(query) {
                 }).join('');
                 resultsDiv.style.display = 'block';
             } else {
-                resultsDiv.innerHTML = '<div class="p-4 text-muted text-center"><i class="bi bi-inbox fs-4 d-block mb-2"></i>No products found</div>';
+                resultsDiv.innerHTML = `
+                    <div class="p-4 text-muted text-center">
+                        <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                        No products found
+                    </div>
+                    <div class="p-2 border-top text-center">
+                        <a href="/products/new" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-plus-circle me-1"></i> Add New Product
+                        </a>
+                    </div>`;
                 resultsDiv.style.display = 'block';
             }
         });
