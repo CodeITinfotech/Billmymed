@@ -1901,7 +1901,11 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             completeSale();
         } else if (e.key === 'Escape') {
-            clearCart();
+            // Don't clear cart - just close any open dropdowns
+            document.getElementById('searchResults').style.display = 'none';
+            hideBatchSelector();
+            document.getElementById('doctorDropdown').style.display = 'none';
+            document.getElementById('patientDropdown').style.display = 'none';
         }
     });
     
