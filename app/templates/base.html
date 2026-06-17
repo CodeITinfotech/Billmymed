@@ -32,7 +32,7 @@
 <body class="d-flex flex-column min-vh-100">
     {% if current_user.is_authenticated %}
     <!-- Navigation - Modern Glass Effect -->
-    <nav class="navbar navbar-expand-lg sticky-top" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color);">
+    <nav class="navbar navbar-expand-lg sticky-top" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); z-index: 1050;">
         <div class="container-fluid px-2 px-lg-3">
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('main.dashboard') }}" style="color: var(--primary);">
                 <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="Logo" height="36" class="me-2">

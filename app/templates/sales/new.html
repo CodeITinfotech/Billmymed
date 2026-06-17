@@ -83,10 +83,21 @@
     font-size: 20px;
 }
 
-/* Tabs container - higher z-index to stay above dropdowns */
+/* Tabs container - lower z-index than navbar dropdowns */
 #tabsContainer {
     position: relative;
-    z-index: 9998;
+    z-index: 1000;
+}
+
+/* Main content area - below navbar dropdowns */
+.container-fluid {
+    position: relative;
+    z-index: 1000;
+}
+
+/* Ensure navbar dropdowns are always on top */
+.navbar .dropdown-menu {
+    z-index: 1051 !important;
 }
 </style>
 {% endblock %}
