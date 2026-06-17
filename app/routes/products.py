@@ -215,7 +215,6 @@ def edit(id):
         # Update packaging configurations
         packaging_json = request.form.get('packaging_json', '[]')
         print(f"DEBUG edit POST: packaging_json = '{packaging_json}'")
-        print(f"DEBUG edit POST: Request form keys = {list(request.form.keys())}")
         try:
             # Soft delete existing packaging
             existing = ProductPackaging.query.filter_by(product_id=product.id).all()
