@@ -247,16 +247,16 @@
                     </div>
                     
                     <!-- Batch Selection Dropdown - Positioned below product search -->
-                    <div id="batchSelector" class="batch-selector position-absolute shadow bg-white rounded mt-1 w-100" style="z-index: 10000; display: none; left: 0;">
+                    <div id="batchSelector" class="batch-selector position-absolute shadow bg-white rounded mt-1 w-100" style="z-index: 10001; display: none; left: 0;">
                         <div class="p-2 bg-light border-bottom">
                             <strong>Select Batch (Use ↑↓ keys or click)</strong>
                         </div>
                         <div id="batchList"></div>
                     </div>
-                </div>
-                
-                <!-- Search Results Dropdown - Outside the card to avoid overflow clipping -->
-                <div id="searchResults" class="position-fixed shadow-lg bg-white rounded-3 overflow-hidden" style="z-index: 9999; display: none; width: calc(100% - 1rem); max-height: 400px; overflow-y: auto; left: 0.5rem;">
+                    
+                    <!-- Search Results Dropdown - Positioned below product search -->
+                    <div id="searchResults" class="position-absolute shadow-lg bg-white rounded-3 overflow-hidden w-100" style="z-index: 10000; display: none; left: 0; max-height: 400px; overflow-y: auto;">
+                    </div>
                 </div>
                 
                 <!-- Patient Dropdown - Outside card for proper z-index -->
@@ -557,13 +557,6 @@ function doProductSearch(query) {
             currentProductResults = data.slice(0, 10); // Limit to 10 items
             selectedProductIndex = currentProductResults.length > 0 ? 0 : -1;
             const resultsDiv = document.getElementById('searchResults');
-            
-            // Position dropdown below the search card
-            const searchCard = document.querySelector('.card.mb-3');
-            if (searchCard) {
-                const rect = searchCard.getBoundingClientRect();
-                resultsDiv.style.top = (rect.bottom + window.scrollY + 5) + 'px';
-            }
             
             if (currentProductResults.length > 0) {
                 resultsDiv.innerHTML = currentProductResults.map((p, index) => {
