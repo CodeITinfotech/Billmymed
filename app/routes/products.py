@@ -215,15 +215,12 @@ def edit(id):
         
         # Update packaging configurations
         packaging_json = request.form.get('packaging_json', '[]')
-        print(f"DEBUG edit POST: packaging_json = '{packaging_json}'")
         try:
-            # Soft delete existing packaging
-            existing = ProductPackaging.query.filter_by(product_id=product.id).all()
-            for pkg in existing:
-                pkg.is_active = False
+            # Hard delete existing packaging (to avoid unique constraint issues)
+            ProductPackaging.query.filter_by(product_id=product.id).delete()
+            db.session.flush()  # Commit the delete before adding new records
             
             packaging_data = json.loads(packaging_json)
-            print(f"DEBUG edit POST: packaging_data = {packaging_data}")
             for pkg in packaging_data:
                 pack_type = pkg.get('pack_type', '').strip()
                 pack_qty = int(pkg.get('pack_qty', 1))
@@ -237,7 +234,6 @@ def edit(id):
                         is_active=True
                     )
                     db.session.add(pp)
-                    print(f"DEBUG edit POST: Added packaging - {pack_type} x {pack_qty}")
         except Exception as e:
             print(f"DEBUG ERROR edit POST: {str(e)}")
             import traceback
