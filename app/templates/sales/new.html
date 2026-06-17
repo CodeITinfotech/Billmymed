@@ -137,7 +137,7 @@
                 <!-- Customer/Patient Selection -->
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body py-2">
-                        <!-- Row 1: Sales Type and Rx No -->
+                        <!-- Row 1: Sales Type, Credit Customer, and Rx No -->
                         <div class="row g-2 align-items-end mb-2">
                             <div class="col-6 col-md-2">
                                 <label class="form-label small mb-0">Sales Type</label>
@@ -146,6 +146,15 @@
                                     <option value="credit">Credit</option>
                                     <option value="emergency">Emergency</option>
                                 </select>
+                            </div>
+                            <div class="col-6 col-md-3" id="creditCustomerCol" style="display: none;">
+                                <label class="form-label small mb-0">
+                                    <i class="bi bi-person me-1"></i>Credit Customer *
+                                </label>
+                                <select class="form-select form-select-sm" id="customerSelect" name="credit_customer_id">
+                                    <option value="">Walk-in Customer</option>
+                                </select>
+                                <input type="hidden" name="credit_customer_name" id="creditCustomerName" value="">
                             </div>
                             <div class="col-6 col-md-2">
                                 <label class="form-label small mb-0" title="Enter Prescription Number">Rx No.</label>
@@ -177,35 +186,6 @@
                                 <label class="form-label small mb-0">Place</label>
                                 <input type="text" class="form-control form-control-sm" id="patientPlace"
                                        name="patient_place" placeholder="Place" onchange="autoSaveTab()">
-                            </div>
-                        </div>
-                        
-                        <!-- Credit Customer Row - Only shown for credit sales -->
-                        <div class="row g-2 mt-2" id="creditCustomerRow" style="display: none;">
-                            <div class="col-12 col-md-4">
-                                <label class="form-label small mb-0">
-                                    <i class="bi bi-person me-1"></i>Credit Customer *
-                                </label>
-                                <select class="form-select form-select-sm" id="customerSelect" name="credit_customer_id">
-                                    <option value="">Walk-in Customer</option>
-                                </select>
-                                <input type="hidden" name="credit_customer_name" id="creditCustomerName" value="">
-                            </div>
-                            <div class="col-12 col-md-2 d-flex align-items-end">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="sameAsPatient" onchange="handleSameAsPatient(this.checked)">
-                                    <label class="form-check-label small" for="sameAsPatient">
-                                        Same as Patient
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-3">
-                                <label class="form-label small mb-0">Credit Customer Phone</label>
-                                <input type="text" class="form-control form-control-sm" id="creditCustomerPhone" placeholder="Phone" readonly>
-                            </div>
-                            <div class="col-12 col-md-3">
-                                <label class="form-label small mb-0">Credit Customer Balance</label>
-                                <input type="text" class="form-control form-control-sm" id="creditCustomerBalance" placeholder="Balance" readonly>
                             </div>
                         </div>
                         
@@ -1280,54 +1260,23 @@ function handleSalesTypeChange() {
     const salesType = document.getElementById('salesType').value;
     const customerSelect = document.getElementById('customerSelect');
     const customerCard = document.getElementById('customerInfoCard');
-    const creditCustomerRow = document.getElementById('creditCustomerRow');
+    const creditCustomerCol = document.getElementById('creditCustomerCol');
     
     if (salesType === 'credit') {
-        // Show credit customer row for credit sales
-        creditCustomerRow.style.display = 'flex';
+        // Show credit customer column for credit sales
+        creditCustomerCol.style.display = 'block';
         // Focus on customer selection
         customerSelect.focus();
     } else {
-        // Hide credit customer row for cash/emergency sales
-        creditCustomerRow.style.display = 'none';
+        // Hide credit customer column for cash/emergency sales
+        creditCustomerCol.style.display = 'none';
         // Reset customer selection
         customerSelect.value = '';
         document.getElementById('creditCustomerName').value = '';
-        document.getElementById('creditCustomerPhone').value = '';
-        document.getElementById('creditCustomerBalance').value = '';
-        document.getElementById('sameAsPatient').checked = false;
     }
     
     // Recalculate payment display
     calculatePayment();
-}
-
-// Handle "Same as Patient" checkbox
-function handleSameAsPatient(checked) {
-    if (checked) {
-        // Copy patient info to credit customer fields
-        const patientName = document.getElementById('patientName').value.trim();
-        const patientPhone = document.getElementById('patientPhone').value.trim();
-        
-        if (!patientName) {
-            showToast('Please enter patient name first', 'error');
-            document.getElementById('sameAsPatient').checked = false;
-            return;
-        }
-        
-        // Set the hidden field with patient name for credit
-        document.getElementById('creditCustomerName').value = patientName;
-        document.getElementById('creditCustomerPhone').value = patientPhone;
-        document.getElementById('creditCustomerBalance').value = '';
-        
-        // For display, we show it but don't create a customer - the sale will record patient name as credit customer
-        showToast('Credit will be recorded under: ' + patientName, 'info');
-    } else {
-        // Clear the credit customer name
-        document.getElementById('creditCustomerName').value = '';
-        document.getElementById('creditCustomerPhone').value = '';
-        document.getElementById('creditCustomerBalance').value = '';
-    }
 }
 
 // Complete sale
@@ -1540,12 +1489,6 @@ function selectPatient(id, name, phone, address) {
     document.getElementById('patientPhone').value = phone || '';
     document.getElementById('patientPlace').value = address || '';
     document.getElementById('patientDropdown').style.display = 'none';
-    
-    // If "Same as Patient" is checked, update credit customer info
-    if (document.getElementById('sameAsPatient').checked) {
-        document.getElementById('creditCustomerName').value = name;
-        document.getElementById('creditCustomerPhone').value = phone || '';
-    }
     
     // Focus on Doctor field next
     document.getElementById('doctorName').focus();
