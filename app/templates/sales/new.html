@@ -228,20 +228,30 @@
                 </div>
                 
                 <!-- Product Search -->
-                <div class="card border-0 shadow-sm mb-3">
-                    <div class="card-body py-2">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-search text-muted"></i>
-                            </span>
-                            <input type="text" class="form-control border-start-0 ps-0" id="productSearch" 
-                                   placeholder="Search by name, code, barcode, or batch number..." autofocus
-                                   autocomplete="off" tabindex="1">
-                            <button type="button" class="btn btn-outline-secondary border-start-0" onclick="document.getElementById('productSearch').focus()" tabindex="2">
-                                <i class="bi bi-caret-right"></i>
-                            </button>
+                <div class="position-relative">
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body py-2">
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="bi bi-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="productSearch" 
+                                       placeholder="Search by name, code, barcode, or batch number..." autofocus
+                                       autocomplete="off" tabindex="1">
+                                <button type="button" class="btn btn-outline-secondary border-start-0" onclick="document.getElementById('productSearch').focus()" tabindex="2">
+                                    <i class="bi bi-caret-right"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted ms-2">Press Enter to search</small>
                         </div>
-                        <small class="text-muted ms-2">Press Enter to search</small>
+                    </div>
+                    
+                    <!-- Batch Selection Dropdown - Positioned below product search -->
+                    <div id="batchSelector" class="batch-selector position-absolute shadow bg-white rounded mt-1 w-100" style="z-index: 10000; display: none; left: 0;">
+                        <div class="p-2 bg-light border-bottom">
+                            <strong>Select Batch (Use ↑↓ keys or click)</strong>
+                        </div>
+                        <div id="batchList"></div>
                     </div>
                 </div>
                 
@@ -251,14 +261,6 @@
                 
                 <!-- Patient Dropdown - Outside card for proper z-index -->
                 <div id="patientDropdown" class="position-fixed shadow-sm bg-white rounded" style="z-index: 10002; max-height: 200px; overflow-y: auto; display: none; width: 300px;">
-                </div>
-                
-                <!-- Batch Selection Dropdown -->
-                <div id="batchSelector" class="batch-selector position-fixed shadow bg-white rounded mt-1" style="z-index: 10000; display: none; width: calc(100% - 1rem); left: 0.5rem;">
-                    <div class="p-2 bg-light border-bottom">
-                        <strong>Select Batch (Use ↑↓ keys or click)</strong>
-                    </div>
-                    <div id="batchList"></div>
                 </div>
                 
                 <!-- Doctor Dropdown - Outside card for proper z-index -->
