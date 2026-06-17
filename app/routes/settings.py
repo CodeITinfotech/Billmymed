@@ -258,23 +258,32 @@ def create_backup():
         return jsonify({'success': False, 'error': 'Access denied'}), 403
     
     try:
-        from app import create_app
-        app = create_app()
-        
         # Create backup directory
-        backup_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'backups')
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+        backup_dir = os.path.join(base_dir, 'backups')
         os.makedirs(backup_dir, exist_ok=True)
         
         timestamp = datetime.utcnow().strftime('%Y%m%d_%H%M%S')
         backup_file = os.path.join(backup_dir, f'billmymed_backup_{timestamp}.db')
         
-        # Copy database
-        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'billmymed.db')
+        # Get database path from SQLAlchemy URI
+        db_uri = current_app.config.get('SQLALCHEMY_DATABASE_URI', '')
+        if db_uri.startswith('sqlite:///'):
+            db_path = db_uri.replace('sqlite:///', '')
+            # Handle absolute vs relative paths
+            if not db_path.startswith('/'):
+                db_path = os.path.join(base_dir, db_path)
+        else:
+            # Default path
+            db_path = os.path.join(base_dir, 'instance', 'billmymed.db')
+        
         if os.path.exists(db_path):
             shutil.copy2(db_path, backup_file)
-        
-        flash(f'Backup created: {os.path.basename(backup_file)}', 'success')
-        return jsonify({'success': True, 'file': os.path.basename(backup_file)})
+            flash(f'Backup created: {os.path.basename(backup_file)}', 'success')
+            return jsonify({'success': True, 'file': os.path.basename(backup_file)})
+        else:
+            flash(f'Database file not found: {db_path}', 'error')
+            return jsonify({'success': False, 'error': f'Database file not found: {db_path}'}), 400
     
     except Exception as e:
         flash(f'Backup failed: {str(e)}', 'error')
@@ -411,7 +420,18 @@ def execute_sql():
     
     try:
         import sqlite3
-        db_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'instance', 'billmymed.db')
+        
+        # Get database path from app config
+        db_uri = current_app.config.get('SQLALCHEMY_DATABASE_URI', '')
+        if db_uri.startswith('sqlite:///'):
+            db_path = db_uri.replace('sqlite:///', '')
+            if not db_path.startswith('/'):
+                base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+                db_path = os.path.join(base_dir, db_path)
+        else:
+            base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            db_path = os.path.join(base_dir, 'instance', 'billmymed.db')
+        
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         cursor = conn.cursor()
