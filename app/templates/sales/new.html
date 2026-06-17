@@ -743,6 +743,20 @@ function showBatchSelector(product) {
         .filter(item => item.product_id === product.id)
         .map(item => item.batch_id);
     
+    // Filter available batches (not yet selected)
+    const availableBatches = product.batches.filter(batch => !selectedBatches.includes(batch.id));
+    
+    // If no available batches, show message in batch selector
+    if (availableBatches.length === 0) {
+        batchList.innerHTML = `
+            <div class="p-4 text-muted text-center">
+                <i class="bi bi-check-circle fs-4 d-block mb-2 text-success"></i>
+                All batches have been added to cart
+            </div>`;
+        batchSelector.style.display = 'block';
+        return;
+    }
+    
     batchList.innerHTML = product.batches.map((batch, index) => {
         const isAlreadySelected = selectedBatches.includes(batch.id);
         return `
