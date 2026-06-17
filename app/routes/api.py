@@ -981,3 +981,33 @@ def mark_shortlist_ordered():
     
     db.session.commit()
     return jsonify({"success": True, "message": f"{len(item_ids)} items marked as ordered"})
+
+# Sales List API
+@api_bp.route('/sales')
+@login_required
+def get_sales():
+    """Get all sales invoices"""
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 50, type=int)
+    search = request.args.get('search', '')
+    
+    query = Invoice.query
+    
+    if search:
+        query = query.filter(
+            or_(
+                Invoice.invoice_no.ilike(f'%{search}%'),
+                Invoice.patient_name.ilike(f'%{search}%')
+            )
+        )
+    
+    sales = query.order_by(Invoice.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    
+    return jsonify([{
+        'id': s.id,
+        'invoice_no': s.invoice_no,
+        'patient_name': s.patient_name,
+        'total_amount': float(s.total_amount) if s.total_amount else 0,
+        'status': s.status,
+        'created_at': s.created_at.isoformat() if s.created_at else None
+    } for s in sales.items])

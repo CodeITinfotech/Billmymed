@@ -104,8 +104,8 @@
             <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearCart()">
                 <i class="bi bi-trash me-1"></i> Clear
             </button>
-            <button type="button" class="btn btn-success btn-sm" onclick="submitSale()">
-                <i class="bi bi-check-lg me-1"></i> Submit
+            <button type="button" class="btn btn-primary btn-sm" onclick="showSalesList()">
+                <i class="bi bi-list me-1"></i> List
             </button>
         </div>
     </div>
@@ -2327,10 +2327,23 @@ async function closeTab(tabId) {
         if (tabId === currentTabId) {
             const tabs = document.querySelectorAll('.tab-pill');
             if (tabs.length > 0) {
-                const tabId = tabs[0].id.replace('tab-', '');
-                switchTab(tabId);
+                const nextTabId = tabs[0].id.replace('tab-', '');
+                switchTab(nextTabId);
             } else {
-                createNewTab();
+                // Don't auto-create new tab - just clear the current state
+                currentTabId = null;
+                clearCart();
+                document.getElementById('currentTabId').value = '';
+                // Reset form fields
+                document.getElementById('patientId').value = '';
+                document.getElementById('patientName').value = '';
+                document.getElementById('patientPhone').value = '';
+                document.getElementById('patientPlace').value = '';
+                document.getElementById('salesType').value = 'cash';
+                document.getElementById('prescription_no').value = '';
+                document.getElementById('doctorId').value = '';
+                document.getElementById('doctorName').value = '';
+                showToast('Tab closed. Click "New Tab" to start a new invoice.', 'info');
             }
         }
     } catch (err) {
@@ -2339,6 +2352,90 @@ async function closeTab(tabId) {
 }
 
 // Submit sale (save and clear)
+// Show sales list modal
+async function showSalesList() {
+    const modal = document.getElementById('salesListModal');
+    if (!modal) {
+        // Create modal if not exists
+        const modalHtml = `
+        <div id="salesListModal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-receipt me-2"></i>Sales List</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="salesListBody">
+                        <div class="text-center p-4">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2 text-muted">Loading sales...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+    
+    // Show modal
+    const bsModal = new bootstrap.Modal(document.getElementById('salesListModal'));
+    bsModal.show();
+    
+    // Load sales
+    const tbody = document.getElementById('salesListBody');
+    tbody.innerHTML = `
+        <div class="text-center p-4">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2 text-muted">Loading sales...</p>
+        </div>`;
+    
+    fetch('/api/sales')
+        .then(res => res.json())
+        .then(data => {
+            if (data.length === 0) {
+                tbody.innerHTML = '<div class="text-center p-5 text-muted"><i class="bi bi-inbox fs-1 d-block mb-3"></i>No sales found</div>';
+                return;
+            }
+            
+            tbody.innerHTML = `
+                <table class="table table-hover table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Invoice #</th>
+                            <th>Date</th>
+                            <th>Patient</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(sale => `
+                            <tr>
+                                <td><strong>${sale.invoice_no}</strong></td>
+                                <td>${new Date(sale.created_at).toLocaleDateString('en-GB')}</td>
+                                <td>${sale.patient_name || '-'}</td>
+                                <td class="text-end">₹${parseFloat(sale.total_amount || 0).toFixed(2)}</td>
+                                <td><span class="badge bg-${sale.status === 'completed' ? 'success' : 'warning'}">${sale.status || 'completed'}</span></td>
+                                <td>
+                                    <a href="/sales/view/${sale.id}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                    <a href="/sales/print/${sale.id}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                                        <i class="bi bi-printer"></i> Print
+                                    </a>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>`;
+        })
+        .catch(err => {
+            console.error('Error loading sales:', err);
+            tbody.innerHTML = '<div class="text-center p-5 text-danger"><i class="bi bi-exclamation-triangle fs-1 d-block mb-3"></i>Error loading sales</div>';
+        });
+}
+
 async function submitSale() {
     if (!currentTabId) {
         showToast('No active tab', 'error');
