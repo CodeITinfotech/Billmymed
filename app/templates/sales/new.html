@@ -931,7 +931,10 @@ function addToCart(productId, productCode) {
 
 // Add item to cart
 function addItemToCart(item) {
-    item.amount = item.unit_rate * item.quantity;
+    // Calculate amount using base rate
+    const packQty = item.pack_qty || 1;
+    const baseRate = item.base_unit_rate || (item.unit_rate / packQty);
+    item.amount = baseRate * item.quantity;
     cart.push(item);
     renderCart();
     calculateTotal();
@@ -949,9 +952,12 @@ function updateQty(id, change) {
     const item = cart.find(i => i.id === id);
     if (item) {
         const newQty = item.quantity + change;
-        if (newQty > 0 && newQty <= item.max_qty) {
+        if (newQty > 0 && newQty <= item.available_qty) {
             item.quantity = newQty;
-            item.amount = item.unit_rate * item.quantity;
+            // Calculate amount using base rate
+            const packQty = item.pack_qty || 1;
+            const baseRate = item.base_unit_rate || (item.unit_rate / packQty);
+            item.amount = baseRate * newQty;
             renderCart();
             calculateTotal();
         }
@@ -1075,6 +1081,7 @@ function updateItemRate(id, value) {
         const packQty = item.pack_qty || 1;
         item.base_unit_rate = newPackRate / packQty;  // Convert back to base rate
         item.unit_rate = newPackRate;  // Store as pack rate
+        // Amount stays based on base rate * quantity (not pack rate)
         item.amount = item.base_unit_rate * item.quantity;
         renderCart();
         calculateTotal();
@@ -1210,7 +1217,10 @@ function calculateTotal() {
     let totalTax = 0;
     
     cart.forEach(item => {
-        const itemBase = item.unit_rate * item.quantity;
+        // Use base rate for accurate calculations
+        const packQty = item.pack_qty || 1;
+        const baseRate = item.base_unit_rate || (item.unit_rate / packQty);
+        const itemBase = baseRate * item.quantity;
         const itemDiscount = itemBase * (item.discount_perc / 100);
         const taxableAmount = itemBase - itemDiscount;
         const itemTax = taxableAmount * (item.tax_perc / 100);
