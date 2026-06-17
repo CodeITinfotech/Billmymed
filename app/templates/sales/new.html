@@ -120,25 +120,8 @@
                 <!-- Customer/Patient Selection -->
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body py-2">
-                        <div class="row g-2 align-items-end">
-                            <div class="col-12 col-md-4">
-                                <label class="form-label small mb-0">Patient Name *</label>
-                                <input type="text" class="form-control form-control-sm" id="patientName" 
-                                       placeholder="Enter patient name" autocomplete="off"
-                                       oninput="searchPatient(this.value); autoSaveTab();" onkeydown="handlePatientKeydown(event)"
-                                       tabindex="5">
-                                <input type="hidden" id="patientId" name="patient_id" value="">
-                            </div>
-                            <div class="col-6 col-md-2">
-                                <label class="form-label small mb-0">Phone</label>
-                                <input type="text" class="form-control form-control-sm" id="patientPhone" 
-                                       name="patient_phone" placeholder="Phone number" onchange="autoSaveTab()">
-                            </div>
-                            <div class="col-6 col-md-2">
-                                <label class="form-label small mb-0">Place</label>
-                                <input type="text" class="form-control form-control-sm" id="patientPlace"
-                                       name="patient_place" placeholder="Place" onchange="autoSaveTab()">
-                            </div>
+                        <!-- Row 1: Sales Type and Rx No -->
+                        <div class="row g-2 align-items-end mb-2">
                             <div class="col-6 col-md-2">
                                 <label class="form-label small mb-0">Sales Type</label>
                                 <select class="form-select form-select-sm" name="sales_type" id="salesType" onchange="autoSaveTab();">
@@ -148,8 +131,35 @@
                                 </select>
                             </div>
                             <div class="col-6 col-md-2">
-                                <label class="form-label small mb-0">Rx No.</label>
-                                <input type="text" class="form-control form-control-sm" name="prescription_no" placeholder="Rx #">
+                                <label class="form-label small mb-0" title="Enter Prescription Number">Rx No.</label>
+                                <input type="text" class="form-control form-control-sm" name="prescription_no" placeholder="Rx #" title="Enter Prescription Number">
+                            </div>
+                        </div>
+                        
+                        <!-- Row 2: Patient Name, Phone, Place -->
+                        <div class="row g-2 align-items-end">
+                            <div class="col-12 col-md-4">
+                                <label class="form-label small mb-0">Patient Name *</label>
+                                <div class="position-relative">
+                                    <input type="text" class="form-control form-control-sm" id="patientName" 
+                                           placeholder="Enter patient name" autocomplete="off"
+                                           oninput="searchPatient(this.value); autoSaveTab();" onkeydown="handlePatientKeydown(event)"
+                                           tabindex="5" style="padding-right: 25px;">
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-2" onclick="clearPatient()" style="cursor: pointer; line-height: 1;">
+                                        <i class="bi bi-x text-muted"></i>
+                                    </span>
+                                </div>
+                                <input type="hidden" id="patientId" name="patient_id" value="">
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small mb-0">Phone</label>
+                                <input type="text" class="form-control form-control-sm" id="patientPhone" 
+                                       name="patient_phone" placeholder="Phone number" onchange="autoSaveTab()">
+                            </div>
+                            <div class="col-12 col-md-3">
+                                <label class="form-label small mb-0">Place</label>
+                                <input type="text" class="form-control form-control-sm" id="patientPlace"
+                                       name="patient_place" placeholder="Place" onchange="autoSaveTab()">
                             </div>
                         </div>
                         
@@ -184,20 +194,25 @@
                         
                         <!-- Doctor Info Row -->
                         <div class="row g-2 align-items-end mt-2">
-                            <div class="col-12 col-md-3">
+                            <div class="col-12 col-md-4">
                                 <label class="form-label small mb-0">Doctor (Prescribed By)</label>
-                                <input type="text" class="form-control form-control-sm" id="doctorName" 
-                                       placeholder="Search or enter doctor name" autocomplete="off"
-                                       oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)"
-                                       tabindex="6">
+                                <div class="position-relative">
+                                    <input type="text" class="form-control form-control-sm" id="doctorName" 
+                                           placeholder="Search or enter doctor name" autocomplete="off"
+                                           oninput="searchDoctor(this.value)" onkeydown="handleDoctorKeydown(event)"
+                                           tabindex="6" style="padding-right: 25px;">
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-2" onclick="clearDoctor()" style="cursor: pointer; line-height: 1;">
+                                        <i class="bi bi-x text-muted"></i>
+                                    </span>
+                                </div>
                                 <input type="hidden" id="doctorId" name="doctor_id" value="">
                             </div>
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md-3">
                                 <label class="form-label small mb-0">Doctor Phone</label>
                                 <input type="text" class="form-control form-control-sm" id="doctorPhone" 
                                        placeholder="Doctor's phone" readonly>
                             </div>
-                            <div class="col-12 col-md-4">
+                            <div class="col-12 col-md-3">
                                 <label class="form-label small mb-0">Doctor Address</label>
                                 <input type="text" class="form-control form-control-sm" id="doctorAddress" 
                                        placeholder="Doctor's address" readonly>
@@ -723,11 +738,22 @@ function showBatchSelector(product) {
     const batchList = document.getElementById('batchList');
     const batchSelector = document.getElementById('batchSelector');
     
-    batchList.innerHTML = product.batches.map((batch, index) => `
-        <div class="batch-item" data-index="${index}" onclick="selectBatch(${index})">
+    // Track selected batches in cart for this product
+    const selectedBatches = cart
+        .filter(item => item.product_id === product.id)
+        .map(item => item.batch_id);
+    
+    batchList.innerHTML = product.batches.map((batch, index) => {
+        const isAlreadySelected = selectedBatches.includes(batch.id);
+        return `
+        <div class="batch-item ${isAlreadySelected ? 'text-muted opacity-50' : ''}" 
+             data-index="${index}" 
+             onclick="${isAlreadySelected ? '' : `selectBatch(${index})`}"
+             style="${isAlreadySelected ? 'pointer-events: none;' : 'cursor: pointer;'}">
             <div class="batch-info">
                 <div>
                     <strong>${batch.batch_no}</strong>
+                    ${isAlreadySelected ? '<small class="text-success"> (Added)</small>' : ''}
                     <small class="text-muted"> | Exp: ${batch.expiry_date ? new Date(batch.expiry_date).toLocaleDateString('en-GB') : 'N/A'}</small>
                 </div>
                 <div class="text-end">
@@ -736,7 +762,7 @@ function showBatchSelector(product) {
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
     
     selectedBatchIndex = 0;
     updateBatchSelection();
@@ -759,29 +785,31 @@ function updateBatchSelection() {
 
 // Select batch from list
 function selectBatch(index) {
-    console.log('selectBatch called with index:', index);
-    if (pendingProductData && pendingProductData.batches && pendingProductData.batches[index]) {
-        const batch = pendingProductData.batches[index];
-        console.log('Adding to cart with batch:', batch.batch_no);
-        addToCartWithBatch(pendingProductData, batch);
+    // Prevent double-click by checking if already processing
+    if (!pendingProductData || !pendingProductData.batches || !pendingProductData.batches[index]) {
+        return;
     }
-    console.log('Hiding batch selector');
-    hideBatchSelector();
     
-    // Clear pending product data to prevent re-adding
+    const batch = pendingProductData.batches[index];
+    const product = pendingProductData;
+    
+    // Clear pending state BEFORE adding to prevent re-selection
     pendingProductData = null;
+    pendingProductId = null;
+    selectedBatchIndex = -1;
+    
+    // Hide batch selector immediately
+    const batchSelector = document.getElementById('batchSelector');
+    if (batchSelector) {
+        batchSelector.style.display = 'none';
+    }
+    
+    // Add to cart
+    addToCartWithBatch(product, batch);
     
     // Focus on quantity of the newly added item
     setTimeout(() => {
-        const lastItem = document.querySelector('.cart-item:last-child');
-        if (lastItem) {
-            const qtyInput = lastItem.querySelector('.qty-input');
-            if (qtyInput) {
-                console.log('Focusing on quantity input');
-                qtyInput.focus();
-                qtyInput.select();
-            }
-        }
+        focusOnLastItemQuantity();
     }, 100);
 }
 
@@ -1471,6 +1499,17 @@ function selectPatient(id, name, phone, address) {
     document.getElementById('doctorName').focus();
 }
 
+// Clear patient fields
+function clearPatient() {
+    document.getElementById('patientId').value = '';
+    document.getElementById('patientName').value = '';
+    document.getElementById('patientPhone').value = '';
+    document.getElementById('patientPlace').value = '';
+    document.getElementById('patientDropdown').style.display = 'none';
+    document.getElementById('patientName').focus();
+    autoSaveTab();
+}
+
 // Create new patient
 function createNewPatient(name) {
     // Store the name and open modal
@@ -1580,7 +1619,7 @@ function searchDoctor(query) {
             }
             
             // Position dropdown dynamically - match full input group width (input + buttons)
-            const inputGroup = document.querySelector('#doctorName').closest('.input-group');
+            const inputGroup = document.querySelector('#doctorName').closest('.position-relative');
             const rect = inputGroup.getBoundingClientRect();
             dropdown.style.left = rect.left + 'px';
             dropdown.style.top = (rect.bottom + window.scrollY + 2) + 'px';
@@ -1665,6 +1704,17 @@ function selectDoctor(id, name, specialization, degree, phone, address) {
     document.getElementById('doctorAddress').value = address || '';
     document.getElementById('doctorDropdown').style.display = 'none';
     document.getElementById('productSearch').focus();
+}
+
+// Clear doctor fields
+function clearDoctor() {
+    document.getElementById('doctorId').value = '';
+    document.getElementById('doctorName').value = '';
+    document.getElementById('doctorPhone').value = '';
+    document.getElementById('doctorAddress').value = '';
+    document.getElementById('doctorDropdown').style.display = 'none';
+    document.getElementById('doctorName').focus();
+    autoSaveTab();
 }
 
 // Create new doctor
@@ -1781,20 +1831,44 @@ document.addEventListener('DOMContentLoaded', function() {
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         // Batch selector navigation
-        if (document.getElementById('batchSelector').style.display === 'block') {
+        if (document.getElementById('batchSelector').style.display === 'block' && pendingProductData) {
+            const batches = pendingProductData.batches || [];
+            const availableBatches = batches.filter((b, i) => {
+                const selectedBatches = cart.filter(item => item.product_id === pendingProductData.id).map(item => item.batch_id);
+                return !selectedBatches.includes(b.id);
+            });
+            
             if (e.key === 'ArrowDown') {
                 e.preventDefault();
-                const batchCount = pendingProductData?.batches?.length || 0;
-                if (batchCount > 0) {
-                    selectedBatchIndex = (selectedBatchIndex + 1) % batchCount;
-                    updateBatchSelection();
+                if (availableBatches.length > 0) {
+                    // Find current selection and move to next available
+                    let currentIdx = batches.indexOf(batches.find(b => b.id === selectedBatchIndex >= 0 ? batches[selectedBatchIndex].id : null));
+                    let nextIdx = (selectedBatchIndex + 1) % batches.length;
+                    let attempts = 0;
+                    while (attempts < batches.length) {
+                        if (!cart.some(item => item.product_id === pendingProductData.id && item.batch_id === batches[nextIdx].id)) {
+                            selectedBatchIndex = nextIdx;
+                            updateBatchSelection();
+                            break;
+                        }
+                        nextIdx = (nextIdx + 1) % batches.length;
+                        attempts++;
+                    }
                 }
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
-                const batchCount = pendingProductData?.batches?.length || 0;
-                if (batchCount > 0) {
-                    selectedBatchIndex = (selectedBatchIndex - 1 + batchCount) % batchCount;
-                    updateBatchSelection();
+                if (availableBatches.length > 0) {
+                    let nextIdx = (selectedBatchIndex - 1 + batches.length) % batches.length;
+                    let attempts = 0;
+                    while (attempts < batches.length) {
+                        if (!cart.some(item => item.product_id === pendingProductData.id && item.batch_id === batches[nextIdx].id)) {
+                            selectedBatchIndex = nextIdx;
+                            updateBatchSelection();
+                            break;
+                        }
+                        nextIdx = (nextIdx - 1 + batches.length) % batches.length;
+                        attempts++;
+                    }
                 }
             } else if (e.key === 'Enter') {
                 e.preventDefault();
@@ -1817,7 +1891,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Customer search
+    // Customer search - only initialize if select2 is available
+    if (typeof $.fn.select2 !== 'undefined') {
     $('#customerSelect').select2({
         ajax: {
             url: '/api/customers',
@@ -1851,6 +1926,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('customerId').value = customerId;
             });
     });
+    } // end if select2 available
 });
 
 // Add Doctor Modal
@@ -2052,7 +2128,12 @@ async function createNewTab() {
     }
     
     try {
-        const response = await fetch('/sales/tab/create', { method: 'POST' });
+        const response = await fetch('/sales/tab/create', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+            }
+        });
         const data = await response.json();
         
         if (data.success) {
@@ -2126,20 +2207,23 @@ async function switchTab(tabId) {
             
             // Load tab data
             currentTabId = tabId;
-            document.getElementById('currentTabId').value = tabId;
-            document.getElementById('currentInvoiceNo').value = data.invoice_no;
+            const currentTabIdEl = document.getElementById('currentTabId');
+            const currentInvoiceNoEl = document.getElementById('currentInvoiceNo');
+            if (currentTabIdEl) currentTabIdEl.value = tabId;
+            if (currentInvoiceNoEl) currentInvoiceNoEl.value = data.invoice_no || '';
             
             // Load patient info
-            document.getElementById('patientId').value = data.patient_id || '';
-            document.getElementById('patientName').value = data.patient_name || '';
-            document.getElementById('patientPhone').value = data.patient_phone || '';
-            document.getElementById('patientPlace').value = data.patient_place || '';
-            document.getElementById('salesType').value = data.sales_type || 'cash';
-            document.getElementById('prescription_no').value = data.prescription_no || '';
+            const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+            setVal('patientId', data.patient_id);
+            setVal('patientName', data.patient_name);
+            setVal('patientPhone', data.patient_phone);
+            setVal('patientPlace', data.patient_place);
+            setVal('salesType', data.sales_type);
+            setVal('prescription_no', data.prescription_no);
             
             // Load doctor info
-            document.getElementById('doctorId').value = data.doctor_id || '';
-            document.getElementById('doctorName').value = data.doctor_name || '';
+            setVal('doctorId', data.doctor_id);
+            setVal('doctorName', data.doctor_name);
             
             // Load cart
             cart = data.cart_data || [];
@@ -2147,7 +2231,8 @@ async function switchTab(tabId) {
             updateTabButton(tabId);
             
             // Update header
-            document.querySelector('.page-header h5 small').textContent = `Invoice: ${data.invoice_no}`;
+            const headerEl = document.querySelector('.page-header h5 small');
+            if (headerEl) headerEl.textContent = `Invoice: ${data.invoice_no || ''}`;
             
         } else {
             showToast('Error loading tab data', 'error');
