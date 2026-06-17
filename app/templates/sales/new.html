@@ -872,6 +872,8 @@ function addToCartWithBatch(product, batch) {
     // Get default sale packaging
     let defaultPackType = 'Unit';
     let packOptions = [{pack_type: 'Unit', pack_qty: 1}];
+    let defaultPackQty = 1;
+    let defaultPackRate = batch.sale_rate || product.rate || 0;
     
     if (product.packaging && product.packaging.length > 0) {
         packOptions = product.packaging.map(p => ({pack_type: p.pack_type, pack_qty: p.pack_qty}));
@@ -879,8 +881,14 @@ function addToCartWithBatch(product, batch) {
         const defaultPack = product.packaging.find(p => p.is_default_sale);
         if (defaultPack) {
             defaultPackType = defaultPack.pack_type;
+            defaultPackQty = defaultPack.pack_qty;
+            // Calculate rate per pack
+            defaultPackRate = (batch.sale_rate || product.rate || 0) * defaultPackQty;
         } else {
-            defaultPackType = product.packaging[0].pack_type;
+            const firstPack = product.packaging[0];
+            defaultPackType = firstPack.pack_type;
+            defaultPackQty = firstPack.pack_qty;
+            defaultPackRate = (batch.sale_rate || product.rate || 0) * defaultPackQty;
         }
     }
     
@@ -893,15 +901,18 @@ function addToCartWithBatch(product, batch) {
         batch_no: batch.batch_no,
         expiry_date: batch.expiry_date,
         mrp: batch.mrp || product.mrp,
-        unit_rate: batch.sale_rate || product.rate,
+        base_unit_rate: batch.sale_rate || product.rate || 0,  // Store base rate per unit
+        unit_rate: defaultPackRate,  // Rate per selected pack
         quantity: 1,
-        max_qty: batch.available_qty,
+        max_qty: Math.floor(batch.available_qty / defaultPackQty),  // Max in selected pack units
+        available_qty: batch.available_qty,  // Store total available
         discount_perc: product.discount_perc || 0,
         tax_perc: product.tax_perc || 0,
         pack_type: defaultPackType,
+        pack_qty: defaultPackQty,
         pack_options: packOptions,
         tax_amount: 0,
-        total_amount: (batch.sale_rate || product.rate || 0)
+        total_amount: defaultPackRate
     });
 }
 
@@ -952,9 +963,16 @@ function setQty(id, value) {
     const item = cart.find(i => i.id === id);
     if (item) {
         const newQty = parseInt(value) || 1;
-        if (newQty > 0 && newQty <= item.max_qty) {
+        const packQty = item.pack_qty || 1;
+        // Allow selling partial packs - user can sell any quantity up to available_qty
+        // But rate is always per pack, so calculate proportionally
+        if (newQty > 0 && newQty <= item.available_qty) {
             item.quantity = newQty;
-            item.amount = item.unit_rate * item.quantity;
+            // If selling partial pack, calculate pro-rata rate
+            const baseRate = item.base_unit_rate || (item.unit_rate / packQty);
+            item.unit_rate = baseRate * packQty; // Keep pack rate
+            // Calculate amount based on total quantity at base rate
+            item.amount = baseRate * newQty;
             renderCart();
             calculateTotal();
         }
@@ -973,8 +991,10 @@ function renderCart() {
     }
     
     container.innerHTML = cart.map((item, index) => {
-        // Calculate amounts
-        const itemBase = item.unit_rate * item.quantity;
+        // Calculate amounts - use base rate for partial pack calculations
+        const packQty = item.pack_qty || 1;
+        const baseRate = item.base_unit_rate || (item.unit_rate / packQty);
+        const itemBase = baseRate * item.quantity;  // Base rate * quantity (can be partial pack)
         const itemTax = itemBase * (item.tax_perc / 100);
         const itemTotal = itemBase + itemTax;
         item.tax_amount = itemTax;
@@ -993,7 +1013,7 @@ function renderCart() {
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <div class="fw-medium small">${item.product_name}</div>
-                            <small class="text-muted">${item.batch_no}</small>
+                            <small class="text-muted">${item.batch_no} | ${item.available_qty || 0} units</small>
                         </div>
                         <div class="d-flex gap-1">
                             <button class="btn btn-link text-primary btn-sm p-0" onclick="toggleEditItem(${item.id})" title="Edit item">
@@ -1007,7 +1027,7 @@ function renderCart() {
                 </div>
                 <div class="col-1 text-center">
                     <input type="number" class="form-control form-control-sm text-center qty-input" 
-                           value="${item.quantity}" min="1" max="${item.max_qty}" 
+                           value="${item.quantity}" min="1" max="${item.available_qty || 0}" 
                            onchange="setQty(${item.id}, this.value)"
                            tabindex="1"
                            onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnProductSearch(); }">
@@ -1019,7 +1039,7 @@ function renderCart() {
                     </select>
                 </div>
                 <div class="col-2 text-end">
-                    <input type="number" class="form-control form-control-sm fw-bold rate-input" value="${item.unit_rate.toFixed(2)}" 
+                    <input type="number" class="form-control form-control-sm fw-bold rate-input" value="${(baseRate * packQty).toFixed(2)}" 
                            step="0.01" min="0" onchange="updateItemRate(${item.id}, this.value)" tabindex="3"
                            onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnProductSearch(); }">
                 </div>
@@ -1027,7 +1047,7 @@ function renderCart() {
                     <small class="text-muted">${item.tax_perc}%</small>
                 </div>
                 <div class="col-2 text-end">
-                    <strong>₹${itemTotal.toFixed(2)}</strong>
+                    <strong>₹${item.amount.toFixed(2)}</strong>
                 </div>
             </div>
             <input type="hidden" name="product_id" value="${item.product_id}">
@@ -1047,12 +1067,15 @@ function renderCart() {
     `}).join('');
 }
 
-// Update item rate
+// Update item rate (pack rate)
 function updateItemRate(id, value) {
     const item = cart.find(i => i.id === id);
     if (item) {
-        item.unit_rate = parseFloat(value) || 0;
-        item.amount = item.unit_rate * item.quantity;
+        const newPackRate = parseFloat(value) || 0;
+        const packQty = item.pack_qty || 1;
+        item.base_unit_rate = newPackRate / packQty;  // Convert back to base rate
+        item.unit_rate = newPackRate;  // Store as pack rate
+        item.amount = item.base_unit_rate * item.quantity;
         renderCart();
         calculateTotal();
     }
@@ -1071,10 +1094,28 @@ function updateItemTax(id, value) {
 // Update item pack
 function updateItemPack(id, packType) {
     const item = cart.find(i => i.id === id);
-    if (item) {
+    if (item && item.pack_options) {
+        // Find the selected pack's qty
+        const selectedPack = item.pack_options.find(p => p.pack_type === packType);
+        if (selectedPack) {
+            const baseRate = item.base_unit_rate || 10; // Default base rate if not set
+            item.pack_type = packType;
+            item.pack_qty = selectedPack.pack_qty;
+            // Calculate rate per pack = base rate * pack qty
+            item.unit_rate = baseRate * selectedPack.pack_qty;
+            // Recalculate max_qty in packs (max packs user can buy)
+            item.max_qty = Math.floor((item.available_qty || 0) / selectedPack.pack_qty);
+            // Keep current quantity but ensure it doesn't exceed new max
+            if (item.quantity > item.max_qty) {
+                item.quantity = Math.max(1, item.max_qty);
+            }
+            // Recalculate amount
+            item.amount = baseRate * item.quantity;
+            renderCart();
+            calculateTotal();
+        }
+    } else if (item) {
         item.pack_type = packType;
-        // Recalculate rate based on pack (if pack has different rate)
-        // For now just update the pack type
         renderCart();
     }
 }
