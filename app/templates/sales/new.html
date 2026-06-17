@@ -678,6 +678,28 @@ function focusOnLastItemQuantity() {
     }
 }
 
+// Focus on quantity input of last cart item
+function focusOnLastItemQuantity() {
+    const lastItem = document.querySelector('.cart-item:last-child');
+    if (lastItem) {
+        const qtyInput = lastItem.querySelector('.qty-input');
+        if (qtyInput) {
+            qtyInput.focus();
+            qtyInput.select();
+            // Add Enter key handler to move to pack dropdown
+            qtyInput.onkeydown = function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const packSelect = lastItem.querySelector('.pack-select');
+                    if (packSelect) {
+                        packSelect.focus();
+                    }
+                }
+            };
+        }
+    }
+}
+
 // Focus on rate input of the last cart item
 function focusOnLastItemRate() {
     const lastItem = document.querySelector('.cart-item:last-child');
@@ -839,7 +861,7 @@ function selectBatch(index) {
     // Add to cart
     addToCartWithBatch(product, batch);
     
-    // Focus on quantity of the newly added item
+    // Focus on quantity of the newly added item (then Enter will go to pack dropdown)
     setTimeout(() => {
         focusOnLastItemQuantity();
     }, 100);
@@ -988,10 +1010,11 @@ function renderCart() {
                            value="${item.quantity}" min="1" max="${item.max_qty}" 
                            onchange="setQty(${item.id}, this.value)"
                            tabindex="1"
-                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnProductSearch(); } else if(event.key === 'Tab' && !event.shiftKey) { /* Let Tab work naturally to next field */ }">
+                           onkeydown="if(event.key === 'Enter') { event.preventDefault(); focusOnProductSearch(); }">
                 </div>
                 <div class="col-2">
-                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2">
+                    <select class="form-select form-select-sm pack-select" onchange="updateItemPack(${item.id}, this.value)" tabindex="2"
+                            onkeydown="if(event.key === 'Enter' || (event.key === 'Tab' && !event.shiftKey)) { event.preventDefault(); focusOnProductSearch(); }">
                         ${packOptionsHtml}
                     </select>
                 </div>
