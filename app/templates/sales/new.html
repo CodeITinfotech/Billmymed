@@ -82,6 +82,12 @@
 .toast-notification i {
     font-size: 20px;
 }
+
+/* Tabs container - higher z-index to stay above dropdowns */
+#tabsContainer {
+    position: relative;
+    z-index: 9998;
+}
 </style>
 {% endblock %}
 
@@ -2184,7 +2190,7 @@ function addTabButton(tab) {
     tabEl.style.cursor = 'pointer';
     tabEl.style.minWidth = '100px';
     tabEl.style.maxWidth = '180px';
-    tabEl.onclick = () => switchTab(tab.id);
+    tabEl.onclick = (e) => { e.stopPropagation(); switchTab(tab.id); };
     
     const title = tab.tab_title || tab.invoice_no;
     const shortTitle = title.length > 15 ? title.substring(0, 15) + '...' : title;
