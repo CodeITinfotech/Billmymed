@@ -25,8 +25,7 @@ def list():
             or_(
                 Product.product_code.ilike(f'%{search}%'),
                 Product.product_name.ilike(f'%{search}%'),
-                Product.generic_name.ilike(f'%{search}%'),
-                Product.manufacturer.ilike(f'%{search}%')
+                Product.generic_name.ilike(f'%{search}%')
             )
         )
     
